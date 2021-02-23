@@ -1,9 +1,6 @@
 package com.example.comunity.domain;
 
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.apache.catalina.LifecycleState;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -32,9 +29,12 @@ public class Category {
         this.name = name;
     }
 
+    /**
+     * 게시판과 카테고리간의 연관관계 편의 메서드
+     * @param board 특정 카테고리에 포함시킬 게시판
+     */
     public void addBoard(Board board) {
-        if (!board.getCategory().boards.contains(board))
-            board.changeCategory(this);
+        if (!board.getCategory().boards.contains(board)) board.changeCategory(this);
     }
 
     public static Category createCategory(String name) {

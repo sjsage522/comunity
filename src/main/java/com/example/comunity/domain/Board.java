@@ -3,8 +3,6 @@ package com.example.comunity.domain;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -38,7 +36,9 @@ public class Board {
     @LastModifiedDate
     private LocalDateTime modifiedDate;
     private String boardUri;
-    //private List<UploadFile> uploadFiles;
+
+    @OneToMany(mappedBy = "board")
+    private List<UploadFile> uploadFiles;
 
 
     public Board(User user, Category category, String title, String content) {
@@ -49,7 +49,17 @@ public class Board {
     }
 
     /**
-     * 게시판과 카테고리 연관관계 편의 메서드
+     * 게시판과 파일간의 연관관계 편의 메서드
+     * @param uploadFiles 해당 게시판에 업로드될 파일들
+     */
+    public void uploadFiles(UploadFile... uploadFiles) {
+        for (UploadFile file : uploadFiles) {
+            if (!this.uploadFiles.contains(file)) file.uploadFile(this);
+        }
+    }
+
+    /**
+     * 게시판과 카테고리간의 연관관계 편의 메서드
      * @param category 해당 게시판이 포함되는 카테고리
      */
     public void changeCategory(Category category) {
@@ -70,17 +80,5 @@ public class Board {
      */
     public static Board createBoard(User user, Category category, String title, String content) {
         return new Board(user, category, title, content);
-    }
-
-    /**
-     * 추후 첨부파일을 포함하여 구현
-     * @param user
-     * @param category
-     * @param title
-     * @param content
-     * @param boardUri
-     */
-    public void createBoard(User user, Category category, String title, String content, String boardUri) {
-
     }
 }
