@@ -154,11 +154,8 @@ fabric.properties
 .idea/
 
 # Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-249601023
-
-*.iml
 modules.xml
 .idea/misc.xml
-*.ipr
 
 # Sonarlint plugin
 .idea/sonarlint
@@ -244,3 +241,7 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,intellij+all,java,database,windows
+
+# Custom
+*.yml
+gradlew
