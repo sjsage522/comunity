@@ -11,9 +11,16 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @Table(name = "Users")
+@SequenceGenerator(
+        name = "user_sequence_generator",
+        sequenceName = "user_sequence"
+)
 public class User {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "user_sequence_generator"
+    )
     private Long id;
 
     @Column(unique = true)
@@ -25,7 +32,7 @@ public class User {
     private String email;
     private String phoneNumber;
 
-    public User(String userId, String name, String nickName, String password, String email, String phoneNumber) {
+    private User(String userId, String name, String nickName, String password, String email, String phoneNumber) {
         this.userId = userId;
         this.name = name;
         this.nickName = nickName;

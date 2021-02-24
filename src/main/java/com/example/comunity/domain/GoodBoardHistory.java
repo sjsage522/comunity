@@ -8,9 +8,16 @@ import static javax.persistence.FetchType.*;
 
 @Entity
 @Getter
+@SequenceGenerator(
+        name = "good_board_history_sequence_generator",
+        sequenceName = "good_board_history_sequence"
+)
 public class GoodBoardHistory {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "good_board_history_sequence_generator"
+    )
     private Long goodBoardHistoryId;
 
     @ManyToOne(fetch = LAZY)

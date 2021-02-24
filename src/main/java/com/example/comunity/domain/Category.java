@@ -3,10 +3,7 @@ package com.example.comunity.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,9 +12,16 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
+@SequenceGenerator(
+        name = "category_sequence_generator",
+        sequenceName = "category_sequence"
+)
 public class Category {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "category_sequence_generator"
+    )
     private Long categoryId;
 
     private String name;
@@ -25,7 +29,7 @@ public class Category {
     @OneToMany(mappedBy = "category")
     private final List<Board> boards = new ArrayList<>();
 
-    public Category(String name) {
+    private Category(String name) {
         this.name = name;
     }
 

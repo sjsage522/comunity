@@ -14,9 +14,16 @@ import static javax.persistence.FetchType.*;
 
 @Entity
 @Getter
+@SequenceGenerator(
+        name = "comment_sequence_generator",
+        sequenceName = "comment_sequence"
+)
 public class Comment {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "comment_sequence_generator"
+    )
     private Long commentId;
 
     @ManyToOne(fetch = LAZY)

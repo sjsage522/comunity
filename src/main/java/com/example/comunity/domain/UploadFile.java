@@ -8,9 +8,16 @@ import static javax.persistence.FetchType.*;
 
 @Entity
 @Getter
+@SequenceGenerator(
+        name = "upload_file_sequence_generator",
+        sequenceName = "upload_file_sequence"
+)
 public class UploadFile {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "upload_file_sequence_generator"
+    )
     private Long uploadFileId;
 
     @ManyToOne(fetch = LAZY)

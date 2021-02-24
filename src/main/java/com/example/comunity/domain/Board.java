@@ -15,9 +15,15 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
+@SequenceGenerator(
+        name = "board_sequence_generator",
+        sequenceName = "board_sequence"
+)
 public class Board {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "board_sequence_generator")
     private Long boardId;
 
     @ManyToOne(fetch = LAZY)
@@ -41,7 +47,7 @@ public class Board {
     private List<UploadFile> uploadFiles;
 
 
-    public Board(User user, Category category, String title, String content) {
+    private Board(User user, Category category, String title, String content) {
         this.user = user;
         this.category = category;
         this.title = title;
