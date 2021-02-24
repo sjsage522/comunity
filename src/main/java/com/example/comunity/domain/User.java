@@ -1,11 +1,15 @@
 package com.example.comunity.domain;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import static lombok.AccessLevel.PROTECTED;
+
 @Entity
 @Getter
+@NoArgsConstructor(access = PROTECTED)
 @Table(name = "Users")
 public class User {
 
@@ -20,10 +24,6 @@ public class User {
     private String password;
     private String email;
     private String phoneNumber;
-
-    protected User() {
-
-    }
 
     public User(String userId, String name, String nickName, String password, String email, String phoneNumber) {
         this.userId = userId;
