@@ -27,21 +27,21 @@ public class User {
     private String userId;
 
     private String name;
+
+    @Column(unique = true)
     private String nickName;
     private String password;
     private String email;
-    private String phoneNumber;
 
-    private User(String userId, String name, String nickName, String password, String email, String phoneNumber) {
+    private User(String userId, String name, String nickName, String password, String email) {
         this.userId = userId;
         this.name = name;
         this.nickName = nickName;
         this.password = password;
         this.email = email;
-        this.phoneNumber = phoneNumber;
     }
 
-    public static User createUser(String userId, String name, String nickName, String password, String email, String phoneNumber) {
-        return new User(userId, name, nickName, password, email, phoneNumber);
+    public static User createUser(String userId, String name, String nickName, String password, String email) {
+        return new User(userId, name, nickName, password, email);
     }
 }
