@@ -16,8 +16,7 @@ class CategoryTest {
                 "junseok",
                 "jun",
                 "1234",
-                "junseok@example.com",
-                "010-0000-0000");
+                "junseok@example.com");
 
         Category category = Category.createCategory("game");
 

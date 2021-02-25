@@ -19,8 +19,7 @@ class UserTest {
                 "junseok",
                 "jun",
                 "1234",
-                "junseok@example.com",
-                "010-0000-0000");
+                "junseok@example.com");
 
         //when
         //then
@@ -29,6 +28,5 @@ class UserTest {
         assertThat(user.getNickName()).isEqualTo("jun");
         assertThat(user.getPassword()).isEqualTo("1234");
         assertThat(user.getEmail()).isEqualTo("junseok@example.com");
-        assertThat(user.getPhoneNumber()).isEqualTo("010-0000-0000");
     }
 }
