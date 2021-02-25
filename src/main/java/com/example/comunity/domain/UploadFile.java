@@ -34,7 +34,7 @@ public class UploadFile {
      * 파일과 게시판간의 연관관계 편의 메서드
      * @param board 파일이 업로드 될 게시판
      */
-    public void uploadFile(Board board) {
+    public void uploadFile(final Board board) {
         this.board = board;
         board.getUploadFiles().add(this);
     }

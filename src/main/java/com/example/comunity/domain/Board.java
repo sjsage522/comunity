@@ -47,7 +47,7 @@ public class Board {
     private List<UploadFile> uploadFiles;
 
 
-    private Board(User user, Category category, String title, String content) {
+    private Board(final User user, final Category category, final String title, final String content) {
         this.user = user;
         this.category = category;
         this.title = title;
@@ -58,7 +58,7 @@ public class Board {
      * 게시판과 파일간의 연관관계 편의 메서드
      * @param uploadFiles 해당 게시판에 업로드될 파일들
      */
-    public void uploadFiles(UploadFile... uploadFiles) {
+    public void uploadFiles(final UploadFile... uploadFiles) {
         for (UploadFile file : uploadFiles) {
             if (!this.uploadFiles.contains(file)) file.uploadFile(this);
         }
@@ -68,7 +68,7 @@ public class Board {
      * 게시판과 카테고리간의 연관관계 편의 메서드
      * @param category 해당 게시판이 포함되는 카테고리
      */
-    public void changeCategory(Category category) {
+    public void changeCategory(final Category category) {
         this.category = category;
 
         List<Board> boards = category.getBoards();
@@ -84,7 +84,7 @@ public class Board {
      * @param title 게시판의 제목
      * @param content 게시판 글 내용
      */
-    public static Board createBoard(User user, Category category, String title, String content) {
+    public static Board createBoard(final User user, final Category category, final String title, final String content) {
         return new Board(user, category, title, content);
     }
 }

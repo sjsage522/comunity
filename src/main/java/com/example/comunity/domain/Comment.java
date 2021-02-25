@@ -54,12 +54,12 @@ public class Comment {
      * 부모 댓글과 답변 댓글간의 연관관계 편의 메서드
      * @param child 부모댓글의 답글 (계층형)
      */
-    public void addChildComment(Comment child) {
+    public void addChildComment(final Comment child) {
         this.children.add(child);
         child.setParent(this);
     }
 
-    private void setParent(Comment parent) {
+    private void setParent(final Comment parent) {
         this.parent = parent;
     }
     //====                                 ====//

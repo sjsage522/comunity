@@ -33,7 +33,7 @@ public class User {
     private String password;
     private String email;
 
-    private User(String userId, String name, String nickName, String password, String email) {
+    private User(final String userId, final String name, final String nickName, final String password, final String email) {
         this.userId = userId;
         this.name = name;
         this.nickName = nickName;
@@ -41,7 +41,7 @@ public class User {
         this.email = email;
     }
 
-    public static User createUser(String userId, String name, String nickName, String password, String email) {
+    public static User createUser(final String userId, final String name, final String nickName, final String password, final String email) {
         return new User(userId, name, nickName, password, email);
     }
 }
