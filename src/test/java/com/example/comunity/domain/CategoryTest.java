@@ -36,5 +36,4 @@ class CategoryTest {
 
         assertThat(board.getCategory().getName()).isEqualTo("game");
     }
-
 }

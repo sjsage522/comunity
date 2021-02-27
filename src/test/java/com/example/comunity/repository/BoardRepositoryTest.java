@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -31,21 +32,9 @@ class BoardRepositoryTest {
     @DisplayName("게시판 조회 테스트")
     void findAllBoardTest() {
         //given
-        User user1 = User.createUser(
-                "junseok1234",
-                "junseok",
-                "jun",
-                "1234",
-                "junseok@example.com"
-        );
+        User user1 = getUser("junseok1234", "junseok", "jun", "1234", "junseok@example.com");
 
-        User user2 = User.createUser(
-                "person55",
-                "person",
-                "ps55",
-                "1234",
-                "person@example.com"
-        );
+        User user2 = getUser("person55", "person", "ps55", "1234", "person@example.com");
 
         userRepository.join(user1);
         userRepository.join(user2);
@@ -100,38 +89,48 @@ class BoardRepositoryTest {
     }
 
     @Test
-    @DisplayName("게시판 삭제 테스트")
-    void deleteBoardTest() {
+    @DisplayName("게시판 수정 테스트")
+    void boardModifyTest() throws InterruptedException {
         //given
-        User user1 = User.createUser(
-                "junseok1234",
-                "junseok",
-                "jun",
-                "1234",
-                "junseok@example.com"
-        );
-
+        User user1 = getUser("junseok1234", "junseok", "jun", "1234", "junseok@example.com");
         userRepository.join(user1);
 
         Category category1 = Category.createCategory("game");
-
+        Category category2 = Category.createCategory("economy");
         categoryRepository.create(category1);
+        categoryRepository.create(category2);
 
         Board board1 = Board.createBoard(user1, category1, "game1", "content...");
-        Board board2 = Board.createBoard(user1, category1, "game2", "content...");
-
         boardRepository.create(board1);
-        boardRepository.create(board2);
 
         em.flush();
         em.clear();
 
         //when
-        boardRepository.delete(board2.getBoardId(), user1.getUserId());
-        List<Board> boards = boardRepository.findAll();
+        Board findBoard = boardRepository.findBoardById(board1.getBoardId());
+
+        findBoard.modifyBoard(category2, "game1", "content");
+
+        em.flush();
+        em.clear();
+
+//        Board reference = em.getReference(Board.class, findBoard.getBoardId());
+//        System.out.println("reference = " + reference);
+//        System.out.println("reference = " + reference.getCategory().getName());
 
         //then
-        assertThat(boards.size()).isEqualTo(1);
+
+        Board findModifiedBoard = boardRepository.findBoardById(board1.getBoardId());
+        assertThat(findModifiedBoard.getCategory().getName()).isEqualTo("economy");
     }
 
+    private User getUser(String userId, String name, String nickName, String password, String email) {
+        return User.createUser(
+                userId,
+                name,
+                nickName,
+                password,
+                email
+        );
+    }
 }

@@ -18,7 +18,7 @@ import static javax.persistence.FetchType.*;
         name = "comment_sequence_generator",
         sequenceName = "comment_sequence"
 )
-public class Comment {
+public class Comment extends BaseTimeEntity {
 
     @Id @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
@@ -63,4 +63,8 @@ public class Comment {
         this.parent = parent;
     }
     //====                                 ====//
+
+    /**
+     * 변경을 위한 추가 메서드 (게시판 정보 수정)
+     */
 }

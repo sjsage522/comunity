@@ -15,7 +15,7 @@ import static lombok.AccessLevel.PROTECTED;
         name = "user_sequence_generator",
         sequenceName = "user_sequence"
 )
-public class User {
+public class User extends BaseTimeEntity {
 
     @Id @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
@@ -44,4 +44,8 @@ public class User {
     public static User createUser(final String userId, final String name, final String nickName, final String password, final String email) {
         return new User(userId, name, nickName, password, email);
     }
+
+    /**
+     * 변경을 위한 추가 메서드 (사용자 정보 수정)
+     */
 }

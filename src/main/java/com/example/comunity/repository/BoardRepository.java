@@ -23,22 +23,33 @@ public class BoardRepository {
     }
 
     /**
+     * 특정 게시판 삭제
+     */
+    public int delete(final Long boardId) {
+        return em.createQuery(
+                "delete from Board b" +
+                        " where b.boardId = :boardId")
+                .setParameter("boardId", boardId)
+                .executeUpdate();
+    }
+
+    /**
      * 사용자가 작성한 게시판 삭제
      */
-    public Long delete(Long boardId, String userId) {
-        List<Board> boards = this.findBoardByIdWithUser(userId);
-        Board deletedBoard = null;
-
-        for (Board board : boards) {
-            if (board.getBoardId().equals(boardId)) {
-                em.remove(board);
-                deletedBoard = board;
-                break;
-            }
-        }
-
-        return deletedBoard != null ? deletedBoard.getBoardId() : null;
-    }
+//    public Long deleteWithUser(final Long boardId, final String userId) {
+//        List<Board> boards = this.findBoardByIdWithUser(userId);
+//        Board deletedBoard = null;
+//
+//        for (Board board : boards) {
+//            if (board.getBoardId().equals(boardId)) {
+//                em.remove(board);
+//                deletedBoard = board;
+//                break;
+//            }
+//        }
+//
+//        return deletedBoard != null ? deletedBoard.getBoardId() : null;
+//    }
 
     /**
      * 모든 게시판 조회
@@ -52,21 +63,13 @@ public class BoardRepository {
      * 게시판 번호로 하나의 게시판 조회
      */
     public Board findBoardById(final Long boardId) {
-        try {
-            return em.createQuery("select b from Board b where b.boardId = :boardId", Board.class)
-                    .setParameter("boardId", boardId)
-                    .getSingleResult();
-        } catch (NoResultException nre) {
-            String message = nre.getMessage();
-            System.out.println("nre(message) = " + message);
-            return null;
-        }
+        return em.find(Board.class, boardId);
     }
 
     /**
      * 특정 카테고리에 포함된 모든 게시판 조회
      */
-    public List<Board> findAllWithCategory(String categoryName) {
+    public List<Board> findAllWithCategory(final String categoryName) {
         return em.createQuery(
                 "select b from Board b" +
                         " join fetch b.category c" +
@@ -81,7 +84,7 @@ public class BoardRepository {
      * @param boardId      조회할 게시판의 번호
      * @param categoryName 조회할 게시판이 포함된 카테고리 이름
      */
-    public Board findBoardByIdWithCategory(Long boardId, String categoryName) {
+    public Board findBoardByIdWithCategory(final Long boardId, final String categoryName) {
         try {
             return em.createQuery(
                     "select b from Board b" +
@@ -101,7 +104,7 @@ public class BoardRepository {
     /**
      * 사용자가 작성한 게시판 전부 조회
      */
-    public List<Board> findBoardByIdWithUser(String userId) {
+    public List<Board> findBoardByIdWithUser(final String userId) {
         return em.createQuery(
                 "select b from Board b" +
                         " join fetch b.user u" +
@@ -113,7 +116,7 @@ public class BoardRepository {
     /**
      * 사용자가 작성한 특정 카테고리에 포함된 게시판 전부 조회
      */
-    public List<Board> findBoardByIdWithCategoryAndUser(String categoryName, String userId) {
+    public List<Board> findBoardByIdWithCategoryAndUser(final String categoryName, final String userId) {
         return em.createQuery(
                 "select b from Board b" +
                         " join fetch b.category c" +

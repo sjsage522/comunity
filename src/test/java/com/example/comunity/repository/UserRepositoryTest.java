@@ -77,10 +77,10 @@ class UserRepositoryTest {
         String userId = userRepository.join(user);
 
         //when
-        String deletedUserId = userRepository.delete(userId);
+        int count = userRepository.delete(userId);
 
         //then
-        Assertions.assertThat(userRepository.findUserById(deletedUserId)).isNull();
+        Assertions.assertThat(count).isEqualTo(1);
     }
 
     private User getUser(String userId, String name, String nickName, String password, String email) {

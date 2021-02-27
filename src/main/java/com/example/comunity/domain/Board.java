@@ -2,11 +2,9 @@ package com.example.comunity.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
@@ -19,7 +17,7 @@ import static lombok.AccessLevel.PROTECTED;
         name = "board_sequence_generator",
         sequenceName = "board_sequence"
 )
-public class Board {
+public class Board extends BaseTimeEntity {
 
     @Id @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
@@ -37,10 +35,6 @@ public class Board {
     private String title;
     private String content;
 
-    @CreatedDate
-    private LocalDateTime createdDate;
-    @LastModifiedDate
-    private LocalDateTime modifiedDate;
     private String boardUri;
 
     @OneToMany(mappedBy = "board")
@@ -86,5 +80,15 @@ public class Board {
      */
     public static Board createBoard(final User user, final Category category, final String title, final String content) {
         return new Board(user, category, title, content);
+    }
+
+    /**
+     * 변경을 위한 추가 메서드 (게시판 정보 수정)
+     */
+    public void modifyBoard(final Category category, final String title, final String content, final UploadFile... uploadFiles) {
+        this.category = category;
+        this.title = title;
+        this.content = content;
+        this.uploadFiles = Arrays.asList(uploadFiles);
     }
 }

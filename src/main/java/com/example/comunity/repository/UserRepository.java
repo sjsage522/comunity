@@ -25,14 +25,16 @@ public class UserRepository {
 
     /**
      * 사용자 탈퇴 기능
+     *
      * @param userId 탈퇴할 사용자 Id
      * @return 탈퇴한 사용자 id
      */
-    public String delete(final String userId) {
-        User user = this.findUserById(userId);
-        em.remove(user);
-
-        return user != null ? user.getUserId() : null;
+    public int delete(final String userId) {
+        return em.createQuery(
+                "delete from User u" +
+                        " where u.userId = :userId")
+                .setParameter("userId", userId)
+                .executeUpdate();
     }
 
     /**

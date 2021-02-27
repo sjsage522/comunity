@@ -24,6 +24,7 @@ public class Category {
     )
     private Long categoryId;
 
+    @Column(unique = true)
     private String name;
 
     @OneToMany(mappedBy = "category")
@@ -47,5 +48,12 @@ public class Category {
      */
     public static Category createCategory(final String name) {
         return new Category(name);
+    }
+
+    /**
+     * 변경을 위한 추가 메서드 (카테고리 정보 수정)
+     */
+    public void modifyCategory(String modifiedName) {
+        this.name = modifiedName;
     }
 }
