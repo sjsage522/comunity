@@ -20,12 +20,12 @@ public class ApiResponse {
         localDateTime = LocalDateTime.now();
     }
 
-    public ApiResponse(HttpStatus status) {
+    public ApiResponse(final HttpStatus status) {
         this();
         this.status = status;
     }
 
-    public ApiResponse(HttpStatus status, Object dtoInfo) {
+    public ApiResponse(final HttpStatus status, final Object dtoInfo) {
         this();
         this.status = status;
         this.dtoInfo = dtoInfo;

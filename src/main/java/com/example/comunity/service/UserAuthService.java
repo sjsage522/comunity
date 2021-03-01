@@ -14,7 +14,7 @@ public class UserAuthService {
 
     private final UserRepository userRepository;
 
-    public User authenticate(String userId, String password) {
+    public User authenticate(final String userId, final String password) {
         User findUser = userRepository.findUserByIdWithPassword(userId, password);
 
         if (findUser == null) {

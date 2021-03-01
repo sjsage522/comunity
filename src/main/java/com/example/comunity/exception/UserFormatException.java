@@ -4,15 +4,15 @@ public class UserFormatException extends RuntimeException {
     public UserFormatException() {
     }
 
-    public UserFormatException(String message) {
+    public UserFormatException(final String message) {
         super(message);
     }
 
-    public UserFormatException(String message, Throwable cause) {
+    public UserFormatException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public UserFormatException(Throwable cause) {
+    public UserFormatException(final Throwable cause) {
         super(cause);
     }
 }

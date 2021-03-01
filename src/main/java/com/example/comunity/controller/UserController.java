@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,7 +27,7 @@ public class UserController {
     private final UserAuthService userAuthService;
 
     @PostMapping("/users")
-    public ResponseEntity<UserJoinDto> join(@RequestBody final UserJoinDto userJoinDto)
+    public ResponseEntity<UserJoinDto> join(@Valid @RequestBody final UserJoinDto userJoinDto)
             throws DuplicateUserIdException, DuplicateUserNickNameException {
 
         userService.join(userJoinDto);
@@ -35,9 +36,9 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserLoginDto> login(@RequestBody final UserLoginDto userLoginDto, final HttpSession session)
+    public ResponseEntity<UserLoginDto> login(@Valid @RequestBody final UserLoginDto userLoginDto, final HttpSession session)
             throws NoMatchUserInfoException {
-        User loginUser = userAuthService.authenticate(userLoginDto.getUserId(), userLoginDto.getPw());
+        User loginUser = userAuthService.authenticate(userLoginDto.getUserId(), userLoginDto.getPassword());
 
         session.setAttribute("authInfo", loginUser);
         userLoginDto.setNickName(loginUser.getNickName());

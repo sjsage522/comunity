@@ -5,15 +5,15 @@ public class NoMatchUserInfoException extends RuntimeException {
     public NoMatchUserInfoException() {
     }
 
-    public NoMatchUserInfoException(String message) {
+    public NoMatchUserInfoException(final String message) {
         super(message);
     }
 
-    public NoMatchUserInfoException(String message, Throwable cause) {
+    public NoMatchUserInfoException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public NoMatchUserInfoException(Throwable cause) {
+    public NoMatchUserInfoException(final Throwable cause) {
         super(cause);
     }
 }

@@ -20,12 +20,12 @@ public class ApiError {
         localDateTime = LocalDateTime.now();
     }
 
-    public ApiError(HttpStatus status) {
+    public ApiError(final HttpStatus status) {
         this();
         this.status = status;
     }
 
-    public ApiError(HttpStatus status, String message) {
+    public ApiError(final HttpStatus status, final String message) {
         this();
         this.status = status;
         this.message = message;

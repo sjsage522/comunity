@@ -5,15 +5,15 @@ public class DuplicateUserIdException extends RuntimeException {
     public DuplicateUserIdException() {
     }
 
-    public DuplicateUserIdException(String message) {
+    public DuplicateUserIdException(final String message) {
         super(message);
     }
 
-    public DuplicateUserIdException(String message, Throwable cause) {
+    public DuplicateUserIdException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public DuplicateUserIdException(Throwable cause) {
+    public DuplicateUserIdException(final Throwable cause) {
         super(cause);
     }
 }

@@ -53,7 +53,7 @@ public class Category {
     /**
      * 변경을 위한 추가 메서드 (카테고리 정보 수정)
      */
-    public void modifyCategory(String modifiedName) {
+    public void modifyCategory(final String modifiedName) {
         this.name = modifiedName;
     }
 }

@@ -5,15 +5,15 @@ public class DuplicateUserNickNameException extends RuntimeException {
     public DuplicateUserNickNameException() {
     }
 
-    public DuplicateUserNickNameException(String message) {
+    public DuplicateUserNickNameException(final String message) {
         super(message);
     }
 
-    public DuplicateUserNickNameException(String message, Throwable cause) {
+    public DuplicateUserNickNameException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public DuplicateUserNickNameException(Throwable cause) {
+    public DuplicateUserNickNameException(final Throwable cause) {
         super(cause);
     }
 }

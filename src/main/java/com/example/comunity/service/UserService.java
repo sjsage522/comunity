@@ -18,7 +18,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public String join(UserJoinDto userJoinDto) {
+    public String join(final UserJoinDto userJoinDto) {
         User findUserById = userRepository.findUserById(userJoinDto.getUserId());
         if (findUserById != null) {
             if (findUserById.getUserId().equals(userJoinDto.getUserId())) {
