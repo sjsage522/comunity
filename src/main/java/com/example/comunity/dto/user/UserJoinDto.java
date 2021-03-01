@@ -1,16 +1,17 @@
-package com.example.comunity.dto;
+package com.example.comunity.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserJoinDto {
+public class UserJoinDto extends UserDto {
 
     @NotBlank(message = "아이디는 필수입니다.")
     private String userId;

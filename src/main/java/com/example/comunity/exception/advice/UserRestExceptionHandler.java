@@ -3,7 +3,7 @@ package com.example.comunity.exception.advice;
 import com.example.comunity.exception.DuplicateUserIdException;
 import com.example.comunity.exception.DuplicateUserNickNameException;
 import com.example.comunity.exception.NoMatchUserInfoException;
-import com.example.comunity.dto.ApiError;
+import com.example.comunity.dto.api.ApiError;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

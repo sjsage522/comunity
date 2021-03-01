@@ -1,4 +1,4 @@
-package com.example.comunity.dto;
+package com.example.comunity.dto.api;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
@@ -7,27 +7,27 @@ import org.springframework.http.HttpStatus;
 import java.time.LocalDateTime;
 
 @Data
-public class ApiError {
+public class ApiResponse {
 
     private HttpStatus status;
+
+    private Object dtoInfo;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private LocalDateTime localDateTime;
 
-    private String message;
-
-    private ApiError() {
+    private ApiResponse() {
         localDateTime = LocalDateTime.now();
     }
 
-    public ApiError(final HttpStatus status) {
+    public ApiResponse(final HttpStatus status) {
         this();
         this.status = status;
     }
 
-    public ApiError(final HttpStatus status, final String message) {
+    public ApiResponse(final HttpStatus status, final Object dtoInfo) {
         this();
         this.status = status;
-        this.message = message;
+        this.dtoInfo = dtoInfo;
     }
 }

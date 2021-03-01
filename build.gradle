@@ -34,6 +34,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 	compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5'
+
+	implementation 'org.springframework.boot:spring-boot-starter-hateoas'
 }
 
 test {
