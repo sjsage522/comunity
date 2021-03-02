@@ -1,7 +1,9 @@
 package com.example.comunity.service;
 
 import com.example.comunity.domain.User;
+import com.example.comunity.dto.user.UserDeleteDto;
 import com.example.comunity.dto.user.UserJoinDto;
+import com.example.comunity.dto.user.UserUpdateDto;
 import com.example.comunity.exception.DuplicateUserIdException;
 import com.example.comunity.exception.DuplicateUserNickNameException;
 import com.example.comunity.exception.NoMatchUserInfoException;
@@ -9,6 +11,7 @@ import com.example.comunity.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -42,7 +45,31 @@ public class UserService {
                 userJoinDto.getEmail()
         );
 
+
         return userRepository.join(newUser);
+    }
+
+    @Transactional
+    public User update(final String id, final UserUpdateDto userUpdateDto) {
+        User findUser = userRepository.findUserById(id);
+
+        findUser.changeName(userUpdateDto.getName());
+        findUser.changeNickname(userUpdateDto.getNickName());
+        findUser.changePassword(userUpdateDto.getPassword());
+
+
+        return findUser;
+    }
+
+    @Transactional
+    public int delete(final String id, final UserDeleteDto userDeleteDto) {
+        User findUser = findById(id);
+
+        if (findUser.getUserId().equals(userDeleteDto.getUserId()) &&
+                findUser.getPassword().equals(userDeleteDto.getPassword())) {
+            return userRepository.delete(id);
+        }
+        return 0;
     }
 
     public User findById(final String userId) {

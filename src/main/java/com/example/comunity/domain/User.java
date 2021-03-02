@@ -48,15 +48,15 @@ public class User extends BaseTimeEntity {
     /**
      * 변경을 위한 추가 메서드 (사용자 정보 수정)
      */
-    public void changeUserName(final String name) {
+    public void changeName(final String name) {
         this.name = name;
     }
 
-    public void changeUserNickname(final String nickName) {
+    public void changeNickname(final String nickName) {
         this.nickName = nickName;
     }
 
-    public void changeUserPassword(final String password) {
+    public void changePassword(final String password) {
         this.password = password;
     }
 }

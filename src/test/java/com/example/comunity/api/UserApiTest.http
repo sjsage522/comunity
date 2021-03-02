@@ -1,0 +1,52 @@
+### 회원가입
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+  "userId": "testId",
+  "name": "testName",
+  "nickName": "testNickName",
+  "password": "testPassword",
+  "email": "test@example.com"
+}
+
+### 로그인
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+  "userId": "testId",
+  "password": "testPassword"
+}
+
+### 특정 사용자 조회
+GET http://localhost:8080/users/testId
+Accept: application/json
+
+
+### 사용자 전체 조회
+GET http://localhost:8080/users
+Accept: application/json
+
+### 로그아웃
+GET http://localhost:8080/logout
+Accept: application/json
+
+### 회원 정보 수정
+PATCH http://localhost:8080/users/testId
+Content-Type: application/json
+
+{
+  "name": "testName",
+  "nickName": "changed_testNickName",
+  "password": "testPassword"
+}
+
+### 회원 탈퇴
+DELETE http://localhost:8080/users/testId
+Content-Type: application/json
+
+{
+  "userId": "testId",
+  "password": "testPassword"
+}
