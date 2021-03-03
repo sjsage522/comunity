@@ -1,6 +1,5 @@
 package com.example.comunity.interceptor;
 
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +12,7 @@ public class AuthCheckInterceptor implements HandlerInterceptor {
     public boolean preHandle(
             final HttpServletRequest request,
             final HttpServletResponse response,
-            final Object handler) throws Exception {
+            final Object handler) {
         HttpSession session = request.getSession();
         if (session != null) {
             Object authInfo = session.getAttribute("authInfo");
@@ -21,6 +20,4 @@ public class AuthCheckInterceptor implements HandlerInterceptor {
         }
         return false;
     }
-
-
 }
