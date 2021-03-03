@@ -11,7 +11,6 @@ import com.example.comunity.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -56,7 +55,6 @@ public class UserService {
         findUser.changeName(userUpdateDto.getName());
         findUser.changeNickname(userUpdateDto.getNickName());
         findUser.changePassword(userUpdateDto.getPassword());
-
 
         return findUser;
     }

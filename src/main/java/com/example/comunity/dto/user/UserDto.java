@@ -21,7 +21,7 @@ public class UserDto {
 
     private String email;
 
-    public UserDto(String userId, String name, String nickName, String email) {
+    public UserDto(final String userId, final String name, final String nickName, final String email) {
         this.userId = userId;
         this.name = name;
         this.nickName = nickName;
