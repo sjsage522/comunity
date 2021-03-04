@@ -32,7 +32,7 @@ class BoardRepositoryTest {
     @DisplayName("게시판 조회 테스트")
     void findAllBoardTest() {
         //given
-        User user1 = getUser("junseok1234", "junseok", "jun", "1234", "junseok@example.com");
+        User user1 = getUser("junseok1234", "junseok", "junEE", "1234", "junseok@example.com");
 
         User user2 = getUser("person55", "person", "ps55", "1234", "person@example.com");
 
@@ -51,10 +51,10 @@ class BoardRepositoryTest {
         Board board3 = Board.createBoard(user1, category2, "economy1", "content...");
         Board board4 = Board.createBoard(user2, category2, "economy2", "user2's content...");
 
-        boardRepository.create(board1);
-        boardRepository.create(board2);
-        boardRepository.create(board3);
-        boardRepository.create(board4);
+        boardRepository.upload(board1);
+        boardRepository.upload(board2);
+        boardRepository.upload(board3);
+        boardRepository.upload(board4);
 
         em.flush();
         em.clear();
@@ -92,7 +92,7 @@ class BoardRepositoryTest {
     @DisplayName("게시판 수정 테스트")
     void boardModifyTest() throws InterruptedException {
         //given
-        User user1 = getUser("junseok1234", "junseok", "jun", "1234", "junseok@example.com");
+        User user1 = getUser("junseok1234", "junseok", "junEE", "1234", "junseok@example.com");
         userRepository.join(user1);
 
         Category category1 = Category.createCategory("game");
@@ -101,7 +101,7 @@ class BoardRepositoryTest {
         categoryRepository.create(category2);
 
         Board board1 = Board.createBoard(user1, category1, "game1", "content...");
-        boardRepository.create(board1);
+        boardRepository.upload(board1);
 
         em.flush();
         em.clear();

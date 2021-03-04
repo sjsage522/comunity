@@ -1,7 +1,10 @@
 package com.example.comunity.config;
 
+import com.example.comunity.domain.Category;
 import com.example.comunity.domain.User;
+import com.example.comunity.dto.category.CategoryCreateDto;
 import com.example.comunity.dto.user.UserJoinDto;
+import com.example.comunity.service.CategoryService;
 import com.example.comunity.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -22,7 +25,7 @@ public class LoadDatabase {
     }
 
     @Bean
-    CommandLineRunner initDatabase(UserService userService) {
+    CommandLineRunner initDatabase(UserService userService, CategoryService categoryService) {
         return new CommandLineRunner() {
             final Logger log = log();
 
@@ -37,6 +40,14 @@ public class LoadDatabase {
                                         newUser.getNickName(),
                                         newUser.getPassword(),
                                         newUser.getEmail()
+                                )
+                        ) + "] } CommandLineRunner...");
+
+                Category newCategory = Category.createCategory("게임");
+                log.info("Preloading { categoryName : [" + categoryService
+                        .create(
+                                new CategoryCreateDto(
+                                        newCategory.getName()
                                 )
                         ) + "] } CommandLineRunner...");
 

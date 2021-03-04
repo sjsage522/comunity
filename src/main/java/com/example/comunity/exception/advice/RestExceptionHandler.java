@@ -1,8 +1,6 @@
 package com.example.comunity.exception.advice;
 
-import com.example.comunity.exception.DuplicateUserIdException;
-import com.example.comunity.exception.DuplicateUserNickNameException;
-import com.example.comunity.exception.NoMatchUserInfoException;
+import com.example.comunity.exception.*;
 import com.example.comunity.dto.api.ApiError;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -14,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice(annotations = RestController.class)
 @Slf4j
-public class UserRestExceptionHandler {
+public class RestExceptionHandler {
 
     @ExceptionHandler(DuplicateUserIdException.class)
     private ResponseEntity<Object> handleDuplicateUser(
@@ -35,6 +33,22 @@ public class UserRestExceptionHandler {
     @ExceptionHandler(NoMatchUserInfoException.class)
     protected ResponseEntity<Object> handleNoMatchUserInfo(
             final NoMatchUserInfoException ex) {
+        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND);
+        apiError.setMessage(ex.getMessage());
+        return buildResponseEntity(apiError);
+    }
+
+    @ExceptionHandler(DuplicateCategoryNameException.class)
+    protected ResponseEntity<Object> handleDuplicateCategoryName(
+            final DuplicateCategoryNameException ex) {
+        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND);
+        apiError.setMessage(ex.getMessage());
+        return buildResponseEntity(apiError);
+    }
+
+    @ExceptionHandler(NoMatchCategoryInfoException.class)
+    protected ResponseEntity<Object> handleNoMatchCategoryInfo(
+            final NoMatchCategoryInfoException ex) {
         ApiError apiError = new ApiError(HttpStatus.NOT_FOUND);
         apiError.setMessage(ex.getMessage());
         return buildResponseEntity(apiError);

@@ -18,7 +18,7 @@ class UserServiceTest {
     @DisplayName("회원가입 테스트")
     void userJoinTest() {
         //given
-        User user = getUser("junseok1234", "junseok", "jun", "1234", "junseok@example.com");
+        User user = getUser("junseok1234", "junseok", "junEE", "1234", "junseok@example.com");
 
         //when
         String joinUser = userService.join(new UserJoinDto(user.getUserId(), user.getName(), user.getNickName(), user.getPassword(), user.getEmail()));

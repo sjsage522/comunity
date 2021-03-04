@@ -1,5 +1,5 @@
 ### 회원가입
-POST http://localhost:8080/users
+POST http://localhost:8080/user
 Content-Type: application/json
 
 {

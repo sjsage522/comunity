@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,7 @@ public class UserController {
     private final UserAuthService userAuthService;
     private final UserDtoModelAssembler assembler;
 
-    @PostMapping("/users")
+    @PostMapping("/user")
     public ResponseEntity<EntityModel<UserDto>> join(@Valid @RequestBody final UserJoinDto userJoinDto)
             throws DuplicateUserIdException, DuplicateUserNickNameException {
 
@@ -92,11 +93,12 @@ public class UserController {
 
     @GetMapping("/users")
     public CollectionModel<EntityModel<UserDto>> findAll() {
-        List<EntityModel<UserDto>> users =
-                userService.findAll().stream()
-                        .map(user -> new UserDto(user.getUserId(), user.getName(), user.getNickName(), user.getEmail()))
-                        .map(assembler::toModel)
-                        .collect(Collectors.toList());
+        List<EntityModel<UserDto>> users = new ArrayList<>();
+        for (User user : userService.findAll()) {
+            UserDto userDto = new UserDto(user.getUserId(), user.getName(), user.getNickName(), user.getEmail());
+            EntityModel<UserDto> userDtoEntityModel = assembler.toModel(userDto);
+            users.add(userDtoEntityModel);
+        }
 
         return CollectionModel.of(users,
                 linkTo(methodOn(UserController.class).findAll()).withSelfRel());

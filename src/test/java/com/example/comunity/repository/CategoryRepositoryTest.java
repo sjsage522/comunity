@@ -36,7 +36,7 @@ class CategoryRepositoryTest {
         User user = User.createUser(
                 "junseok1234",
                 "junseok",
-                "jun",
+                "junEE",
                 "1234",
                 "junseok@example.com");
         userRepository.join(user);
@@ -47,7 +47,7 @@ class CategoryRepositoryTest {
         String title = "제목";
         String content = "내용";
         Board board = Board.createBoard(user, category, title, content);
-        boardRepository.create(board);
+        boardRepository.upload(board);
 
         em.flush();
         em.clear();

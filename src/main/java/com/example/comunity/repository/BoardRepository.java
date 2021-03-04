@@ -17,7 +17,7 @@ public class BoardRepository {
     /**
      * 게시판 생성
      */
-    public Long create(final Board board) {
+    public Long upload(final Board board) {
         em.persist(board);
         return board.getBoardId();
     }

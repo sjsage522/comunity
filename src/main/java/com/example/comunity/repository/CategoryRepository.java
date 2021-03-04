@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,9 +74,16 @@ public class CategoryRepository {
      * 카테고리 단건 조회 (name)
      */
     public Category findByName(final String categoryName) {
-        return em.createQuery(
-                "select c from Category c" +
-                        " where c.name = :categoryName", Category.class)
-                .getSingleResult();
+        try {
+            return em.createQuery(
+                    "select c from Category c" +
+                            " where c.name = :categoryName", Category.class)
+                    .setParameter("categoryName", categoryName)
+                    .getSingleResult();
+        } catch (NoResultException nre) {
+            String message = nre.getMessage();
+            System.out.println("nre(message) = " + message);
+            return null;
+        }
     }
 }
