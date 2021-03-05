@@ -17,40 +17,43 @@ public class RestExceptionHandler {
     @ExceptionHandler(DuplicateUserIdException.class)
     private ResponseEntity<Object> handleDuplicateUser(
             final DuplicateUserIdException ex) {
-        ApiError apiError = new ApiError(HttpStatus.CONFLICT);
-        apiError.setMessage(ex.getMessage());
+        ApiError apiError = getApiError(HttpStatus.CONFLICT, ex.getMessage());
         return buildResponseEntity(apiError);
     }
 
     @ExceptionHandler(DuplicateUserNickNameException.class)
     private ResponseEntity<Object> handleDuplicateUser(
             final DuplicateUserNickNameException ex) {
-        ApiError apiError = new ApiError(HttpStatus.CONFLICT);
-        apiError.setMessage(ex.getMessage());
-        return buildResponseEntity(apiError);
-    }
-
-    @ExceptionHandler(NoMatchUserInfoException.class)
-    protected ResponseEntity<Object> handleNoMatchUserInfo(
-            final NoMatchUserInfoException ex) {
-        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND);
-        apiError.setMessage(ex.getMessage());
+        ApiError apiError = getApiError(HttpStatus.CONFLICT, ex.getMessage());
         return buildResponseEntity(apiError);
     }
 
     @ExceptionHandler(DuplicateCategoryNameException.class)
     protected ResponseEntity<Object> handleDuplicateCategoryName(
             final DuplicateCategoryNameException ex) {
-        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND);
-        apiError.setMessage(ex.getMessage());
+        ApiError apiError = getApiError(HttpStatus.CONFLICT, ex.getMessage());
+        return buildResponseEntity(apiError);
+    }
+
+    @ExceptionHandler(NoMatchUserInfoException.class)
+    protected ResponseEntity<Object> handleNoMatchUserInfo(
+            final NoMatchUserInfoException ex) {
+        ApiError apiError = getApiError(HttpStatus.NOT_FOUND, ex.getMessage());
+        return buildResponseEntity(apiError);
+    }
+
+    @ExceptionHandler(NoMatchBoardInfoException.class)
+    protected ResponseEntity<Object> handleNoMatchBoardInfo(
+            final NoMatchBoardInfoException ex) {
+        ApiError apiError =
+                getApiError(HttpStatus.NOT_FOUND, ex.getMessage());
         return buildResponseEntity(apiError);
     }
 
     @ExceptionHandler(NoMatchCategoryInfoException.class)
     protected ResponseEntity<Object> handleNoMatchCategoryInfo(
             final NoMatchCategoryInfoException ex) {
-        ApiError apiError = new ApiError(HttpStatus.NOT_FOUND);
-        apiError.setMessage(ex.getMessage());
+        ApiError apiError = getApiError(HttpStatus.NOT_FOUND, ex.getMessage());
         return buildResponseEntity(apiError);
     }
 
@@ -68,5 +71,11 @@ public class RestExceptionHandler {
 
     private ResponseEntity<Object> buildResponseEntity(final ApiError apiError) {
         return new ResponseEntity<>(apiError, apiError.getStatus());
+    }
+
+    private ApiError getApiError(HttpStatus notFound, String message) {
+        ApiError apiError = new ApiError(notFound);
+        apiError.setMessage(message);
+        return apiError;
     }
 }

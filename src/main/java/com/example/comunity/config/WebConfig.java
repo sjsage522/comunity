@@ -16,8 +16,9 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(authCheckInterceptor())
                 .addPathPatterns("/*")
                 .addPathPatterns("/*/*")
+                .addPathPatterns("/*/*/*")
                 .excludePathPatterns("/login")  //로그인은 요청을 인터셉트 안함
-                .excludePathPatterns("/user"); //회원가입은 요청을 인터셉트 안함
+                .excludePathPatterns("/users"); //회원가입은 요청을 인터셉트 안함
     }
 
     @Bean
