@@ -1,9 +1,6 @@
 package com.example.comunity.dto.board;
 
-import com.example.comunity.domain.Category;
 import com.example.comunity.domain.UploadFile;
-import com.example.comunity.domain.User;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,8 +20,6 @@ public class BoardUploadDto extends BoardDto {
 
     @NotBlank(message = "글내용을 입력해주세요.")
     private String content;
-
-    private String userId;
 
     @NotBlank(message = "카테고리를 설정해주세요.")
     private String categoryName;

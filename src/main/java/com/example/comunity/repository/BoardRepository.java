@@ -34,24 +34,6 @@ public class BoardRepository {
     }
 
     /**
-     * 사용자가 작성한 게시판 삭제
-     */
-//    public Long deleteWithUser(final Long boardId, final String userId) {
-//        List<Board> boards = this.findBoardByIdWithUser(userId);
-//        Board deletedBoard = null;
-//
-//        for (Board board : boards) {
-//            if (board.getBoardId().equals(boardId)) {
-//                em.remove(board);
-//                deletedBoard = board;
-//                break;
-//            }
-//        }
-//
-//        return deletedBoard != null ? deletedBoard.getBoardId() : null;
-//    }
-
-    /**
      * 모든 게시판 조회
      */
     public List<Board> findAll() {
@@ -104,7 +86,7 @@ public class BoardRepository {
     /**
      * 사용자가 작성한 게시판 전부 조회
      */
-    public List<Board> findBoardByIdWithUser(final String userId) {
+    public List<Board> findAllWithUser(final String userId) {
         return em.createQuery(
                 "select b from Board b" +
                         " join fetch b.user u" +
@@ -116,13 +98,15 @@ public class BoardRepository {
     /**
      * 사용자가 작성한 특정 카테고리에 포함된 게시판 전부 조회
      */
-    public List<Board> findBoardByIdWithCategoryAndUser(final String categoryName, final String userId) {
+    public List<Board> findBoardByIdWithCategoryAndUser(final Long boardId, final String categoryName, final String userId) {
         return em.createQuery(
                 "select b from Board b" +
                         " join fetch b.category c" +
                         " join fetch b.user u" +
-                        " where c.name = :categoryName" +
+                        " where b.boardId = :boardId" +
+                        " and c.name = :categoryName" +
                         " and u.userId = :userId", Board.class)
+                .setParameter("boardId", boardId)
                 .setParameter("categoryName", categoryName)
                 .setParameter("userId", userId)
                 .getResultList();

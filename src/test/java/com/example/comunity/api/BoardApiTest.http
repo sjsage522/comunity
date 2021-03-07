@@ -1,0 +1,27 @@
+### 게시글 작성
+POST http://localhost:8080/boards
+Content-Type: application/json
+Accept: */*
+Accept-Encoding: gzip, deflate, br
+
+{
+  "title": "board title",
+  "content": "content",
+  "categoryName": "게임"
+}
+
+### 게시글 전체 조회
+GET http://localhost:8080/boards
+Accept: application/json
+
+### 특정 카테고리에 포함된 게시글 전체 조회
+GET http://localhost:8080/category/게임/boards
+Accept: application/json
+
+### 특정 카테고리에 포함된 게시글 단건 조회
+GET http://localhost:8080/category/게임/boards/1
+Accept: application/json
+
+### 특정 카테고리에 포함된 원하는 게시글 삭제
+DELETE http://localhost:8080/category/게임/boards/1
+Accept: application/json

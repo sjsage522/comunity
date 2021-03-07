@@ -34,15 +34,11 @@ public class UserController {
     public ResponseEntity<EntityModel<UserDto>> join(@Valid @RequestBody final UserJoinDto userJoinDto)
             throws DuplicateUserIdException, DuplicateUserNickNameException {
 
-        String newUserId = userService.join(userJoinDto);
+        userService.join(userJoinDto);
 
         return ResponseEntity
                 .created(linkTo(methodOn(UserController.class).join(userJoinDto)).toUri())
-                .body(EntityModel.of(userJoinDto,
-                        linkTo(methodOn(UserController.class).findAll()).withSelfRel()
-                                .andAffordance(afford(methodOn(UserController.class).update(newUserId, null)))
-                                .andAffordance(afford(methodOn(UserController.class).delete(newUserId, null))),
-                        linkTo(methodOn(UserController.class).findAll()).withRel("users")));
+                .body(assembler.toModel(userJoinDto));
     }
 
     @PostMapping("/login")
@@ -52,9 +48,6 @@ public class UserController {
 
         session.setAttribute("authInfo", loginUser);
         userLoginDto.setNickName(loginUser.getNickName());
-
-        EntityModel<UserDto> model = assembler.toModel(userLoginDto);
-        model.add(linkTo(methodOn(UserController.class).login(userLoginDto, session)).withSelfRel());
 
         return ResponseEntity
                 .created(linkTo(methodOn(UserController.class).findById(userLoginDto.getUserId())).toUri())
@@ -85,25 +78,14 @@ public class UserController {
 
         return ResponseEntity
                 .created(linkTo(methodOn(UserController.class).findAll()).toUri())
-                .body(EntityModel.of(userDto,
-                        linkTo(methodOn(UserController.class).findById(id)).withSelfRel()
-                                .andAffordance(afford(methodOn(UserController.class).update(id, null)))
-                                .andAffordance(afford(methodOn(UserController.class).delete(id, null))),
-                        linkTo(methodOn(UserController.class).logout(null)).withRel("logout"),
-                        linkTo(methodOn(UserController.class).findAll()).withRel("users")));
+                .body(assembler.toModel(userDto));
     }
 
     @GetMapping("/users")
     public ResponseEntity<CollectionModel<EntityModel<UserDto>>> findAll() {
         List<EntityModel<UserDto>> users = new ArrayList<>();
         for (User user : userService.findAll()) {
-            UserDto userDto = createUserDto(user);
-            EntityModel<UserDto> userDtoEntityModel = EntityModel.of(userDto,
-                    linkTo(methodOn(UserController.class).findById(userDto.getUserId())).withSelfRel()
-                            .andAffordance(afford(methodOn(UserController.class).update(userDto.getUserId(), null)))
-                            .andAffordance(afford(methodOn(UserController.class).delete(userDto.getUserId(), null))),
-                    linkTo(methodOn(UserController.class).findAll()).withSelfRel());
-            users.add(userDtoEntityModel);
+            users.add(assembler.toModel(createUserDto(user)));
         }
 
         return ResponseEntity.ok(CollectionModel.of(users,
@@ -118,11 +100,7 @@ public class UserController {
 
         return ResponseEntity
                 .created(linkTo(methodOn(UserController.class).findById(id)).toUri())
-                .body(EntityModel.of(userUpdateDto,
-                        linkTo(methodOn(UserController.class).findById(id)).withSelfRel()
-                                .andAffordance(afford(methodOn(UserController.class).update(id, userUpdateDto)))
-                                .andAffordance(afford(methodOn(UserController.class).delete(id, null))),
-                        linkTo(methodOn(UserController.class).findAll()).withRel("users")));
+                .body(assembler.toModel(userUpdateDto));
     }
 
     /**
@@ -130,8 +108,11 @@ public class UserController {
      * @return http 204 response
      */
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<EntityModel<UserDto>> delete(@PathVariable final String id, @Valid @RequestBody final UserDeleteDto userDeleteDto) {
+    public ResponseEntity<EntityModel<UserDto>> delete(@PathVariable final String id, @Valid @RequestBody final UserDeleteDto userDeleteDto, final HttpSession session) {
         userService.delete(id, userDeleteDto);
+
+        session.invalidate();
+
         return ResponseEntity.noContent().build();
     }
 
@@ -142,7 +123,9 @@ public class UserController {
         public EntityModel<UserDto> toModel(final UserDto userDto) {
 
             return EntityModel.of(userDto,
-                    linkTo(methodOn(UserController.class).findById(userDto.getUserId())).withSelfRel(),
+                    linkTo(methodOn(UserController.class).findById(userDto.getUserId())).withSelfRel()
+                            .andAffordance(afford(methodOn(UserController.class).update(userDto.getUserId(), null)))
+                            .andAffordance(afford(methodOn(UserController.class).delete(userDto.getUserId(), null, null))),
                     linkTo(methodOn(UserController.class).findAll()).withRel("users"));
         }
     }

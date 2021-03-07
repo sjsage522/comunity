@@ -31,4 +31,7 @@ public class BoardDto {
     private String boardUri;
 
     private List<UploadFile> uploadFiles;
+
+    private String userId;
+    private String categoryName;
 }

@@ -4,7 +4,6 @@ import com.example.comunity.domain.Board;
 import com.example.comunity.domain.User;
 import com.example.comunity.dto.board.BoardDto;
 import com.example.comunity.dto.board.BoardUploadDto;
-import com.example.comunity.dto.user.UserDto;
 import com.example.comunity.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
@@ -33,15 +32,29 @@ public class BoardController {
     public ResponseEntity<EntityModel<BoardDto>> upload(@Valid @RequestBody final BoardUploadDto boardUploadDto, final HttpSession session) {
         User loginUser = (User) session.getAttribute("authInfo");
 
-        boardUploadDto.setUser(loginUser);
-        boardUploadDto.setUserId(loginUser.getUserId());
-        boardService.upload(boardUploadDto);
+        boardService.upload(boardUploadDto, loginUser);
 
         return ResponseEntity
                 .created(linkTo(methodOn(BoardController.class).findAll()).toUri())
                 .body(EntityModel.of(boardUploadDto,
                         linkTo(methodOn(BoardController.class).upload(boardUploadDto, session)).withSelfRel(),
                         linkTo(methodOn(BoardController.class).findAll()).withRel("boards")));
+    }
+
+    /**
+     * 게시글 삭제
+     * @param id 게시글을 작성한 사용자 id
+     * @param name 게시글이 포함된 특정 카테고리 이름
+     * @param session 현재 사용자 세션
+     */
+    @DeleteMapping("/category/{name}/boards/{id}")
+    public ResponseEntity<EntityModel<BoardDto>> delete(
+            @PathVariable final Long id, @PathVariable final String name, final HttpSession session) {
+        User loginUser = (User) session.getAttribute("authInfo");
+
+        boardService.delete(id, name, loginUser);
+
+        return ResponseEntity.noContent().build();
     }
 
     /**
@@ -61,38 +74,26 @@ public class BoardController {
                 linkTo(methodOn(BoardController.class).findAll()).withSelfRel());
     }
 
-
-
     @GetMapping("/boards")
-    public CollectionModel<EntityModel<BoardDto>> findAll() {
+    public ResponseEntity<CollectionModel<EntityModel<BoardDto>>> findAll() {
         List<EntityModel<BoardDto>> boards = new ArrayList<>();
         for (Board board : boardService.findAll()) {
-            BoardDto boardDto = createBoardDto(board);
-            EntityModel<BoardDto> boardDtoEntityModel = assembler.toModel(boardDto);
-            boards.add(boardDtoEntityModel);
+            boards.add(assembler.toModel(createBoardDto(board)));
         }
 
-        return CollectionModel.of(boards,
-                linkTo(methodOn(BoardController.class).findAll()).withSelfRel());
+        return ResponseEntity.ok(CollectionModel.of(boards,
+                linkTo(methodOn(BoardController.class).findAll()).withSelfRel()));
     }
 
-//    @GetMapping("/category/{name}/board/{id}")
-//    public ResponseEntity<EntityModel<BoardDto>> findByIdWithCategory(@PathVariable final Long id, @PathVariable final String name) {
-//        Board findBoard = boardService.findByIdWithCategory(id, name);
-//
-//        BoardDto boardDto = createBoardDto(findBoard);
-//
-//    }
+    @GetMapping("/category/{name}/boards/{id}")
+    public ResponseEntity<EntityModel<BoardDto>> findByIdWithCategory(@PathVariable final Long id, @PathVariable final String name) {
+        Board findBoard = boardService.findByIdWithCategory(id, name);
 
-    private BoardDto createBoardDto(Board board) {
-        return new BoardDto(
-                board.getBoardId(),
-                board.getUser(),
-                board.getCategory(),
-                board.getTitle(),
-                board.getContent(),
-                board.getBoardUri(),
-                board.getUploadFiles());
+        BoardDto boardDto = createBoardDto(findBoard);
+
+        return ResponseEntity.
+                created(linkTo(methodOn(BoardController.class).findAllWithCategory(name)).toUri())
+                .body(assembler.toModel(boardDto));
     }
 
     @Component
@@ -102,7 +103,20 @@ public class BoardController {
         public EntityModel<BoardDto> toModel(final BoardDto boardDto) {
 
             return EntityModel.of(boardDto,
-                    linkTo(methodOn(UserController.class).findAll()).withRel("boards"));
+                    linkTo(methodOn(BoardController.class).findAll()).withRel("boards"));
         }
+    }
+
+    private BoardDto createBoardDto(Board board) {
+        return new BoardDto(
+                board.getBoardId(),
+                board.getUser(),
+                board.getCategory(),
+                board.getTitle(),
+                board.getContent(),
+                board.getBoardUri(),
+                board.getUploadFiles(),
+                board.getUser().getUserId(),
+                board.getCategory().getName());
     }
 }

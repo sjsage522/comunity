@@ -50,7 +50,7 @@ public class UserService {
 
     @Transactional
     public User update(final String id, final UserUpdateDto userUpdateDto) {
-        User findUser = userRepository.findUserById(id);
+        User findUser = findById(id);
 
         findUser.changeName(userUpdateDto.getName());
         findUser.changeNickname(userUpdateDto.getNickName());
