@@ -30,7 +30,7 @@ public class BoardDto {
     private String title;
     private String content;
 
-    private String boardUri;
+//    private String boardUri;
 
     private List<UploadFile> uploadFiles;
 

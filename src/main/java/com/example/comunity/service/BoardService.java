@@ -41,7 +41,10 @@ public class BoardService {
                 boardUploadDto.getContent());
         newBoard.uploadFiles();
 
-        return boardRepository.upload(newBoard);
+        Long boardId = boardRepository.upload(newBoard);
+        boardUploadDto.setBoardId(boardId);
+
+        return boardId;
     }
 
     public List<Board> findAllWithCategory(final String name) {
@@ -67,12 +70,6 @@ public class BoardService {
         return boardRepository.delete(boardId);
     }
 
-    public Category findCategoryByName(final String name) {
-        Category findCategory = categoryRepository.findByName(name);
-        if (findCategory == null) throw new NoMatchCategoryInfoException("존재하지 않는 카테고리명 입니다.");
-        return findCategory;
-    }
-
     @Transactional
     public Board update(final Long boardId, final String categoryName, final BoardUpdateDto boardUpdateDto) {
 
@@ -81,6 +78,8 @@ public class BoardService {
 
         if (findBoard == null) throw new NoMatchBoardInfoException("존재하지 않는 게시글 입니다.");
 
+        boardUpdateDto.setBoardId(boardId);
+
         findBoard.changeTitle(boardUpdateDto.getTitle());
         findBoard.changeContent(boardUpdateDto.getContent());
 
@@ -88,5 +87,11 @@ public class BoardService {
         findBoard.changeCategory(changedCategory);
 
         return findBoard;
+    }
+
+    private Category findCategoryByName(final String name) {
+        Category findCategory = categoryRepository.findByName(name);
+        if (findCategory == null) throw new NoMatchCategoryInfoException("존재하지 않는 카테고리명 입니다.");
+        return findCategory;
     }
 }

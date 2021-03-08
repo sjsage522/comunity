@@ -19,8 +19,7 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,15 +39,14 @@ public class BoardController {
 
         return ResponseEntity
                 .created(linkTo(methodOn(BoardController.class).findAll()).toUri())
-                .body(EntityModel.of(boardUploadDto,
-                        linkTo(methodOn(BoardController.class).upload(boardUploadDto, session)).withSelfRel(),
-                        linkTo(methodOn(BoardController.class).findAll()).withRel("boards")));
+                .body(assembler.toModel(boardUploadDto));
     }
 
     /**
      * 게시글 삭제
-     * @param id 게시글을 작성한 사용자 id
-     * @param name 게시글이 포함된 특정 카테고리 이름
+     *
+     * @param id      게시글을 작성한 사용자 id
+     * @param name    게시글이 포함된 특정 카테고리 이름
      * @param session 현재 사용자 세션
      */
     @DeleteMapping("/category/{name}/boards/{id}")
@@ -62,6 +60,7 @@ public class BoardController {
 
     /**
      * 특정 카테고리에 포함되는 모든 게시글을 조회
+     *
      * @param name 카테고리 명
      */
     @GetMapping("/category/{name}/boards")
@@ -116,6 +115,9 @@ public class BoardController {
         public EntityModel<BoardDto> toModel(final BoardDto boardDto) {
 
             return EntityModel.of(boardDto,
+                    linkTo(methodOn(BoardController.class).findByIdWithCategory(boardDto.getBoardId(), boardDto.getCategoryName())).withSelfRel()
+                            .andAffordance(afford(methodOn(BoardController.class).update(boardDto.getBoardId(), boardDto.getCategoryName(), null)))
+                            .andAffordance(afford(methodOn(BoardController.class).delete(boardDto.getBoardId(), boardDto.getCategoryName(), null))),
                     linkTo(methodOn(BoardController.class).findAll()).withRel("boards"));
         }
     }
@@ -127,7 +129,6 @@ public class BoardController {
                 board.getCategory(),
                 board.getTitle(),
                 board.getContent(),
-                board.getBoardUri(),
                 board.getUploadFiles(),
                 board.getUser().getUserId(),
                 board.getCategory().getName(),

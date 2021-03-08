@@ -27,7 +27,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 	/**
-	 * SQL Logging
+	 * SQL Logging.
 	 */
 	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.6'
 
@@ -36,6 +36,12 @@ dependencies {
 	compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5'
 
 	implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+
+	/**
+	 * file upload feat.
+	 */
+	compile group: 'commons-io', name: 'commons-io'
+	compile group: 'commons-fileupload', name: 'commons-fileupload'
 }
 
 test {
