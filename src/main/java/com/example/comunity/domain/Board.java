@@ -38,7 +38,7 @@ public class Board extends BaseTimeEntity {
 
 //    private String boardUri;
 
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
     private List<UploadFile> uploadFiles;
 
 

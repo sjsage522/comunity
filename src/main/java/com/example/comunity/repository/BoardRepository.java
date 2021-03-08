@@ -25,12 +25,9 @@ public class BoardRepository {
     /**
      * 특정 게시판 삭제
      */
-    public int delete(final Long boardId) {
-        return em.createQuery(
-                "delete from Board b" +
-                        " where b.boardId = :boardId")
-                .setParameter("boardId", boardId)
-                .executeUpdate();
+    public void delete(final Long boardId) {
+        Board findBoard = findBoardById(boardId);
+        em.remove(findBoard);
     }
 
     /**

@@ -13,6 +13,7 @@ import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -31,11 +32,40 @@ public class BoardController {
     /**
      * 게시글 작성
      */
-    @PostMapping("/boards")
-    public ResponseEntity<EntityModel<BoardDto>> upload(@Valid @RequestBody final BoardUploadDto boardUploadDto, final HttpSession session) {
+//    @PostMapping("/boards")
+//    public ResponseEntity<EntityModel<BoardDto>> upload(@Valid @RequestBody final BoardUploadDto boardUploadDto, final HttpSession session) {
+//        User loginUser = (User) session.getAttribute("authInfo");
+//
+//        boardService.upload(boardUploadDto, loginUser);
+//
+//        return ResponseEntity
+//                .created(linkTo(methodOn(BoardController.class).findAll()).toUri())
+//                .body(assembler.toModel(boardUploadDto));
+//    }
+
+//    @PostMapping(value = "/boards")
+//    public ResponseEntity<EntityModel<BoardDto>> upload(
+//            @RequestPart("boardUploadDto") final String boardUploadString,
+//            @RequestPart(value = "files", required = false) final MultipartFile[] files,
+//            final HttpSession session) {
+//        User loginUser = (User) session.getAttribute("authInfo");
+//
+//        BoardUploadDto boardUploadDto = boardService.getJson(boardUploadString);
+//        boardService.upload(boardUploadDto, loginUser, files);
+//
+//        return ResponseEntity
+//                .created(linkTo(methodOn(BoardController.class).findAll()).toUri())
+//                .body(assembler.toModel(boardUploadDto));
+//    }
+
+    @PostMapping(value = "/boards")
+    public ResponseEntity<EntityModel<BoardDto>> upload(
+            @Valid @RequestPart final BoardUploadDto boardUploadDto,
+            @RequestPart(value = "files", required = false) final MultipartFile[] files,
+            final HttpSession session) {
         User loginUser = (User) session.getAttribute("authInfo");
 
-        boardService.upload(boardUploadDto, loginUser);
+        boardService.upload(boardUploadDto, loginUser, files);
 
         return ResponseEntity
                 .created(linkTo(methodOn(BoardController.class).findAll()).toUri())
@@ -56,6 +86,18 @@ public class BoardController {
         boardService.delete(id, name, loginUser);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/category/{name}/boards/{id}")
+    public ResponseEntity<EntityModel<BoardDto>> update(
+            @PathVariable final Long id, @PathVariable final String name, @Valid @RequestBody final BoardUpdateDto boardUpdateDto, final HttpSession session) {
+        User loginUser = (User) session.getAttribute("authInfo");
+
+        boardService.update(id, name, boardUpdateDto, loginUser);
+
+        return ResponseEntity
+                .created(linkTo(methodOn(BoardController.class).findByIdWithCategory(id, name)).toUri())
+                .body(assembler.toModel(boardUpdateDto));
     }
 
     /**
@@ -98,16 +140,6 @@ public class BoardController {
                 .body(assembler.toModel(boardDto));
     }
 
-    @PatchMapping("/category/{name}/boards/{id}")
-    public ResponseEntity<EntityModel<BoardDto>> update(
-            @PathVariable final Long id, @PathVariable final String name, @Valid @RequestBody final BoardUpdateDto boardUpdateDto) {
-        boardService.update(id, name, boardUpdateDto);
-
-        return ResponseEntity
-                .created(linkTo(methodOn(BoardController.class).findByIdWithCategory(id, name)).toUri())
-                .body(assembler.toModel(boardUpdateDto));
-    }
-
     @Component
     public static class BoardDtoModelAssembler implements RepresentationModelAssembler<BoardDto, EntityModel<BoardDto>> {
 
@@ -116,7 +148,7 @@ public class BoardController {
 
             return EntityModel.of(boardDto,
                     linkTo(methodOn(BoardController.class).findByIdWithCategory(boardDto.getBoardId(), boardDto.getCategoryName())).withSelfRel()
-                            .andAffordance(afford(methodOn(BoardController.class).update(boardDto.getBoardId(), boardDto.getCategoryName(), null)))
+                            .andAffordance(afford(methodOn(BoardController.class).update(boardDto.getBoardId(), boardDto.getCategoryName(), null, null)))
                             .andAffordance(afford(methodOn(BoardController.class).delete(boardDto.getBoardId(), boardDto.getCategoryName(), null))),
                     linkTo(methodOn(BoardController.class).findAll()).withRel("boards"));
         }

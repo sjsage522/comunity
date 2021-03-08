@@ -32,6 +32,7 @@ public class BoardDto {
 
 //    private String boardUri;
 
+    @JsonIgnore
     private List<UploadFile> uploadFiles;
 
     @JsonProperty("writer")

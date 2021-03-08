@@ -1,14 +1,25 @@
 ### 게시글 작성
-POST http://localhost:8080/boards
+POST /boards HTTP/1.1
+Host: localhost:8080
+Content-Length: 392
+Content-Type: multipart/form-data; boundary=WebKitFormBoundary7MA4YWxkTrZu0gW
+
+--WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="boardUploadDto"
 Content-Type: application/json
-Accept: */*
-Accept-Encoding: gzip, deflate, br
 
 {
-  "title": "board title",
-  "content": "content",
+  "title": "title",
+  "content": "content files...",
   "categoryName": "게임"
 }
+
+--WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="files"; filename="me.jpeg"
+Content-Type: multipart/form-data
+
+< /Users/jun/Postman/files/me.jpeg
+
 
 ### 게시글 전체 조회
 GET http://localhost:8080/boards

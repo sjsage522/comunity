@@ -40,8 +40,11 @@ dependencies {
 	/**
 	 * file upload feat.
 	 */
-	compile group: 'commons-io', name: 'commons-io'
-	compile group: 'commons-fileupload', name: 'commons-fileupload'
+	//compile group: 'commons-io', name: 'commons-io'
+	implementation group: 'commons-io', name: 'commons-io', version: '2.6'
+	// https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload
+	implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
+	//compile group: 'commons-fileupload', name: 'commons-fileupload'
 }
 
 test {
