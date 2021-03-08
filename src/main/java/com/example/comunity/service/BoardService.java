@@ -3,6 +3,7 @@ package com.example.comunity.service;
 import com.example.comunity.domain.Board;
 import com.example.comunity.domain.Category;
 import com.example.comunity.domain.User;
+import com.example.comunity.dto.board.BoardUpdateDto;
 import com.example.comunity.dto.board.BoardUploadDto;
 import com.example.comunity.exception.NoMatchBoardInfoException;
 import com.example.comunity.exception.NoMatchCategoryInfoException;
@@ -31,15 +32,13 @@ public class BoardService {
     public Long upload(final BoardUploadDto boardUploadDto, final User loginUser) {
         Category findCategory = findCategoryByName(boardUploadDto.getCategoryName());
 
-        boardUploadDto.setUser(loginUser);
         boardUploadDto.setUserId(loginUser.getUserId());
 
         Board newBoard = Board.createBoard(
-                boardUploadDto.getUser(),
+                loginUser,
                 findCategory,
                 boardUploadDto.getTitle(),
                 boardUploadDto.getContent());
-
         newBoard.uploadFiles();
 
         return boardRepository.upload(newBoard);
@@ -58,25 +57,36 @@ public class BoardService {
     @Transactional
     public int delete(final Long boardId, final String categoryName, final User loginUser) {
 
-        Category findCategory = findCategoryByName(categoryName);
-        if (findCategory != null) {
-            Board findBoard = boardRepository.findBoardById(boardId);
-            if (findBoard == null) throw new NoMatchBoardInfoException("존재하지 않는 게시글 입니다.");
-            User findUser = findBoard.getUser();
-            if (findUser == null) throw new NoMatchUserInfoException("존재하지 않는 사용자 입니다.");
-            if (findUser.getUserId().equals(loginUser.getUserId())) {
-                return boardRepository.delete(boardId);
-            } else {
-                throw new NoMatchUserInfoException("다른 사용자의 게시글을 삭제할 수 없습니다.");
-            }
-        }
+        Board findBoard = boardRepository.findBoardByIdWithCategory(boardId, categoryName);
+        if (findBoard == null) throw new NoMatchBoardInfoException("존재하지 않는 게시글 입니다.");
 
-        return 0;
+        User findUser = findBoard.getUser();
+        if (!findUser.getUserId().equals(loginUser.getUserId()))
+            throw new NoMatchUserInfoException("다른 사용자의 게시글을 삭제할 수 없습니다.");
+
+        return boardRepository.delete(boardId);
     }
 
     public Category findCategoryByName(final String name) {
         Category findCategory = categoryRepository.findByName(name);
         if (findCategory == null) throw new NoMatchCategoryInfoException("존재하지 않는 카테고리명 입니다.");
         return findCategory;
+    }
+
+    @Transactional
+    public Board update(final Long boardId, final String categoryName, final BoardUpdateDto boardUpdateDto) {
+
+
+        Board findBoard = boardRepository.findBoardByIdWithCategory(boardId, categoryName);
+
+        if (findBoard == null) throw new NoMatchBoardInfoException("존재하지 않는 게시글 입니다.");
+
+        findBoard.changeTitle(boardUpdateDto.getTitle());
+        findBoard.changeContent(boardUpdateDto.getContent());
+
+        Category changedCategory = findCategoryByName(boardUpdateDto.getCategoryName());
+        findBoard.changeCategory(changedCategory);
+
+        return findBoard;
     }
 }

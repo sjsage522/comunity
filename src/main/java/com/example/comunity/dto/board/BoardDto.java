@@ -5,10 +5,12 @@ import com.example.comunity.domain.UploadFile;
 import com.example.comunity.domain.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -32,6 +34,12 @@ public class BoardDto {
 
     private List<UploadFile> uploadFiles;
 
+    @JsonProperty("writer")
     private String userId;
     private String categoryName;
+
+    @JsonProperty("created_at")
+    private LocalDateTime createdDate;
+    @JsonProperty("last_modified_at")
+    private LocalDateTime lastModifiedDate;
 }

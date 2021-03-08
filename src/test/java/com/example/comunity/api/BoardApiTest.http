@@ -25,3 +25,13 @@ Accept: application/json
 ### 특정 카테고리에 포함된 원하는 게시글 삭제
 DELETE http://localhost:8080/category/게임/boards/1
 Accept: application/json
+
+### 특정 카테고리에 포함된 원하는 게시글 수정
+PATCH http://localhost:8080/category/게임/boards/1
+Content-Type: application/json
+
+{
+  "title": "changed title",
+  "content": "changed content",
+  "categoryName": "economy"
+}

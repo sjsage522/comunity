@@ -49,6 +49,14 @@ public class Board extends BaseTimeEntity {
         this.content = content;
     }
 
+    public void changeTitle(final String title) {
+        this.title = title;
+    }
+
+    public void changeContent(final String content) {
+        this.content = content;
+    }
+
     /**
      * 게시판과 파일간의 연관관계 편의 메서드
      * @param uploadFiles 해당 게시판에 업로드될 파일들

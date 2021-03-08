@@ -3,6 +3,7 @@ package com.example.comunity.controller;
 import com.example.comunity.domain.Board;
 import com.example.comunity.domain.User;
 import com.example.comunity.dto.board.BoardDto;
+import com.example.comunity.dto.board.BoardUpdateDto;
 import com.example.comunity.dto.board.BoardUploadDto;
 import com.example.comunity.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,9 @@ public class BoardController {
     private final BoardService boardService;
     private final BoardDtoModelAssembler assembler;
 
+    /**
+     * 게시글 작성
+     */
     @PostMapping("/boards")
     public ResponseEntity<EntityModel<BoardDto>> upload(@Valid @RequestBody final BoardUploadDto boardUploadDto, final HttpSession session) {
         User loginUser = (User) session.getAttribute("authInfo");
@@ -48,8 +52,7 @@ public class BoardController {
      * @param session 현재 사용자 세션
      */
     @DeleteMapping("/category/{name}/boards/{id}")
-    public ResponseEntity<EntityModel<BoardDto>> delete(
-            @PathVariable final Long id, @PathVariable final String name, final HttpSession session) {
+    public ResponseEntity<EntityModel<BoardDto>> delete(@PathVariable final Long id, @PathVariable final String name, final HttpSession session) {
         User loginUser = (User) session.getAttribute("authInfo");
 
         boardService.delete(id, name, loginUser);
@@ -96,6 +99,16 @@ public class BoardController {
                 .body(assembler.toModel(boardDto));
     }
 
+    @PatchMapping("/category/{name}/boards/{id}")
+    public ResponseEntity<EntityModel<BoardDto>> update(
+            @PathVariable final Long id, @PathVariable final String name, @Valid @RequestBody final BoardUpdateDto boardUpdateDto) {
+        boardService.update(id, name, boardUpdateDto);
+
+        return ResponseEntity
+                .created(linkTo(methodOn(BoardController.class).findByIdWithCategory(id, name)).toUri())
+                .body(assembler.toModel(boardUpdateDto));
+    }
+
     @Component
     public static class BoardDtoModelAssembler implements RepresentationModelAssembler<BoardDto, EntityModel<BoardDto>> {
 
@@ -117,6 +130,8 @@ public class BoardController {
                 board.getBoardUri(),
                 board.getUploadFiles(),
                 board.getUser().getUserId(),
-                board.getCategory().getName());
+                board.getCategory().getName(),
+                board.getCreatedDate(),
+                board.getLastModifiedDate());
     }
 }

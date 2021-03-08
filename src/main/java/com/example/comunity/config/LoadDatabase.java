@@ -50,6 +50,13 @@ public class LoadDatabase {
                                         newCategory.getName()
                                 )
                         ) + "] } CommandLineRunner...");
+                Category newCategory2 = Category.createCategory("economy");
+                log.info("Preloading { categoryName : [" + categoryService
+                        .create(
+                                new CategoryCreateDto(
+                                        newCategory2.getName()
+                                )
+                        ) + "] } CommandLineRunner...");
 
                 Logger logger = df.getBean(Logger.class);
                 log.info("logger = " + logger);

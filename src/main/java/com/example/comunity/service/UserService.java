@@ -55,6 +55,7 @@ public class UserService {
         findUser.changeName(userUpdateDto.getName());
         findUser.changeNickname(userUpdateDto.getNickName());
         findUser.changePassword(userUpdateDto.getPassword());
+        userUpdateDto.setUserId(id);
 
         return findUser;
     }

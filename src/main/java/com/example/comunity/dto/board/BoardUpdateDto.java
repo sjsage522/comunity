@@ -11,14 +11,14 @@ import javax.validation.constraints.NotBlank;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BoardUploadDto extends BoardDto {
+public class BoardUpdateDto extends BoardDto {
 
-    @NotBlank(message = "제목은 필수입니다.")
+    @NotBlank(message = "변경할 제목을 입력해주세요.")
     private String title;
 
-    @NotBlank(message = "글내용을 입력해주세요.")
+    @NotBlank(message = "변경할 내용을 입력해주세요.")
     private String content;
 
-    @NotBlank(message = "카테고리를 설정해주세요.")
+    @NotBlank(message = "변경할 카테고리를 입력해주세요.")
     private String categoryName;
 }

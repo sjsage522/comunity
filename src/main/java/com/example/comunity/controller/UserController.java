@@ -96,7 +96,6 @@ public class UserController {
     @PatchMapping("/users/{id}")
     public ResponseEntity<EntityModel<UserDto>> update(@PathVariable final String id, @Valid @RequestBody final UserUpdateDto userUpdateDto) {
         userService.update(id, userUpdateDto);
-        userUpdateDto.setUserId(id);
 
         return ResponseEntity
                 .created(linkTo(methodOn(UserController.class).findById(id)).toUri())
