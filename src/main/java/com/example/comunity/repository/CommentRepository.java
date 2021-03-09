@@ -13,21 +13,22 @@ public class CommentRepository {
 
     private final EntityManager em;
 
-    public Long create(final Comment comment) {
+    public Long apply(final Comment comment) {
         em.persist(comment);
+        em.flush();
         return comment.getCommentId();
     }
 
-    public int delete(final Long commentId) {
-        return em.createQuery(
-                "delete from Comment c" +
-                " where c.commentId = :commentId")
-                .setParameter("commentId", commentId)
-                .executeUpdate();
+    public void delete(final Comment comment) {
+        em.remove(comment);
+        em.flush();
     }
 
-    public List<Comment> findAll() {
-        return em.createQuery("select c from Comment c", Comment.class)
+    public List<Comment> findAll(final Long boardId) {
+        return em.createQuery(
+                "select c from Comment c" +
+                        " where c.board.boardId = :boardId", Comment.class)
+                .setParameter("boardId", boardId)
                 .getResultList();
     }
 

@@ -19,6 +19,7 @@ public class BoardRepository {
      */
     public Long upload(final Board board) {
         em.persist(board);
+        em.flush();
         return board.getBoardId();
     }
 

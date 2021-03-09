@@ -1,6 +1,8 @@
 package com.example.comunity.domain;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -14,6 +16,7 @@ import static javax.persistence.FetchType.*;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SequenceGenerator(
         name = "comment_sequence_generator",
         sequenceName = "comment_sequence"
@@ -36,18 +39,18 @@ public class Comment extends BaseTimeEntity {
 
     private String content;
 
-    @CreatedDate
-    private LocalDateTime createdDate;
-
-    @LastModifiedDate
-    private LocalDateTime modifiedDate;
-
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "parent_id")
     private Comment parent;
 
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE)
     private final List<Comment> children = new ArrayList<>();
+
+    public Comment(final User user, final Board board, final String content) {
+        this.user = user;
+        this.board = board;
+        this.content = content;
+    }
 
     //====                                ====//
     /**
@@ -64,7 +67,14 @@ public class Comment extends BaseTimeEntity {
     }
     //====                                 ====//
 
+    public static Comment createComment(final User user, final Board board, final String content) {
+        return new Comment(user, board, content);
+    }
+
     /**
      * 변경을 위한 추가 메서드 (게시판 정보 수정)
      */
+    public void changeContent(final String content) {
+        this.content = content;
+    }
 }

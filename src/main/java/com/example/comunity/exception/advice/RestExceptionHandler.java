@@ -57,6 +57,13 @@ public class RestExceptionHandler {
         return buildResponseEntity(apiError);
     }
 
+    @ExceptionHandler(NoMatchCommentInfoException.class)
+    protected ResponseEntity<Object> handleNoMatchCommentInfo(
+            final NoMatchCommentInfoException ex) {
+        ApiError apiError = getApiError(HttpStatus.NOT_FOUND, ex.getMessage());
+        return buildResponseEntity(apiError);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ResponseEntity<Object> methodArgumentNoValid(
             final MethodArgumentNotValidException ex) {

@@ -22,6 +22,7 @@ public class CategoryRepository {
      */
     public Long create(final Category category) {
         em.persist(category);
+        em.flush();
         return category.getCategoryId();
     }
 
@@ -29,25 +30,6 @@ public class CategoryRepository {
      * 카테고리 삭제 (id)
      */
     public int delete(final Long categoryId) {
-//        Category findCategory = this.findById(categoryId);
-//
-//        if (findCategory == null) return null;
-//
-//        List<Board> boardsWithCategory = boardRepository.findAllWithCategory(findCategory.getName());
-//
-//        List<Long> boardIds = new ArrayList<>();
-//        boardsWithCategory.forEach(board -> {
-//            boardIds.add(board.getBoardId());
-//        });
-//
-//        em.createQuery(
-//                "delete from Board b" +
-//                        " where b.boardId in :boardIds")
-//                .setParameter("boardIds", boardIds)
-//                .executeUpdate();
-//
-//        em.remove(findCategory);
-//        return findCategory.getCategoryId();
         return em.createQuery(
                 "delete from Category c" +
                         " where c.categoryId = :categoryId")

@@ -23,6 +23,7 @@ public class FileRepository {
             }
             em.persist(fileList.get(i));
         }
+        em.flush();
         return size;
     }
 

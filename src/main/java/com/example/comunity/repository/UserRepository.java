@@ -20,6 +20,7 @@ public class UserRepository {
      */
     public String join(final User user) {
         em.persist(user);
+        em.flush();
         return user.getUserId();
     }
 

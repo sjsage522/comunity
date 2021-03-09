@@ -29,35 +29,6 @@ public class BoardController {
     private final BoardService boardService;
     private final BoardDtoModelAssembler assembler;
 
-    /**
-     * 게시글 작성
-     */
-//    @PostMapping("/boards")
-//    public ResponseEntity<EntityModel<BoardDto>> upload(@Valid @RequestBody final BoardUploadDto boardUploadDto, final HttpSession session) {
-//        User loginUser = (User) session.getAttribute("authInfo");
-//
-//        boardService.upload(boardUploadDto, loginUser);
-//
-//        return ResponseEntity
-//                .created(linkTo(methodOn(BoardController.class).findAll()).toUri())
-//                .body(assembler.toModel(boardUploadDto));
-//    }
-
-//    @PostMapping(value = "/boards")
-//    public ResponseEntity<EntityModel<BoardDto>> upload(
-//            @RequestPart("boardUploadDto") final String boardUploadString,
-//            @RequestPart(value = "files", required = false) final MultipartFile[] files,
-//            final HttpSession session) {
-//        User loginUser = (User) session.getAttribute("authInfo");
-//
-//        BoardUploadDto boardUploadDto = boardService.getJson(boardUploadString);
-//        boardService.upload(boardUploadDto, loginUser, files);
-//
-//        return ResponseEntity
-//                .created(linkTo(methodOn(BoardController.class).findAll()).toUri())
-//                .body(assembler.toModel(boardUploadDto));
-//    }
-
     @PostMapping(value = "/boards")
     public ResponseEntity<EntityModel<BoardDto>> upload(
             @Valid @RequestPart final BoardUploadDto boardUploadDto,

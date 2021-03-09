@@ -71,6 +71,7 @@ public class BoardService {
 
         Long boardId = boardRepository.upload(newBoard);
         boardUploadDto.setBoardId(boardId);
+        System.out.println("boardId = " + boardId);
 
         List<UploadFileDto> fileDtoList = fileUtils.uploadFiles(files, boardId);
 
@@ -139,16 +140,5 @@ public class BoardService {
         Category findCategory = categoryRepository.findByName(name);
         if (findCategory == null) throw new NoMatchCategoryInfoException("존재하지 않는 카테고리명 입니다.");
         return findCategory;
-    }
-
-    public BoardUploadDto getJson(String boardUploadDto) {
-        BoardUploadDto dtoJson = new BoardUploadDto();
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            dtoJson = objectMapper.readValue(boardUploadDto, BoardUploadDto.class);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-        return dtoJson;
     }
 }
