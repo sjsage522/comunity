@@ -35,4 +35,12 @@ public class CommentRepository {
     public Comment findById(final Long commentId) {
         return em.find(Comment.class, commentId);
     }
+
+    public void deleteAllByIds(List<Long> ids) {
+        em.createQuery(
+                "delete from Comment c " +
+                        " where c.commentId in :ids")
+                .setParameter("ids", ids)
+                .executeUpdate();
+    }
 }

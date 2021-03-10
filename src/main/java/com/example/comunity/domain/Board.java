@@ -39,9 +39,11 @@ public class Board extends BaseTimeEntity {
 
 //    private String boardUri;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
-    private List<UploadFile> uploadFiles = new ArrayList<>();
+    @OneToMany(mappedBy = "board")
+    private final List<UploadFile> uploadFiles = new ArrayList<>();
 
+    @OneToMany(mappedBy = "board")
+    private final List<Comment> comments = new ArrayList<>();
 
     private Board(final User user, final Category category, final String title, final String content) {
         this.user = user;
@@ -95,10 +97,10 @@ public class Board extends BaseTimeEntity {
     /**
      * 변경을 위한 추가 메서드 (게시판 정보 수정)
      */
-    public void modifyBoard(final Category category, final String title, final String content, final UploadFile... uploadFiles) {
-        this.category = category;
-        this.title = title;
-        this.content = content;
-        this.uploadFiles = Arrays.asList(uploadFiles);
-    }
+//    public void modifyBoard(final Category category, final String title, final String content, final UploadFile... uploadFiles) {
+//        this.category = category;
+//        this.title = title;
+//        this.content = content;
+//        this.uploadFiles = Arrays.asList(uploadFiles);
+//    }
 }

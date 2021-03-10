@@ -1,17 +1,22 @@
 package com.example.comunity.repository;
 
 import com.example.comunity.domain.Board;
+import com.example.comunity.domain.Comment;
+import com.example.comunity.domain.UploadFile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
 public class BoardRepository {
 
+    private final UploadFileRepository uploadFileRepository;
+    private final CommentRepository commentRepository;
     private final EntityManager em;
 
     /**
@@ -28,7 +33,24 @@ public class BoardRepository {
      */
     public void delete(final Long boardId) {
         Board findBoard = findBoardById(boardId);
+
+        /**
+         * 게시판 내의 여러개의 첨부파일을 batch delete
+         */
+        List<UploadFile> uploadFiles = uploadFileRepository.findAll();
+        List<Long> fileIds = uploadFiles.stream()
+                .map(UploadFile::getUploadFileId)
+                .collect(Collectors.toList());
+        uploadFileRepository.deleteAllById(fileIds);
+
+        List<Comment> comments = commentRepository.findAll(boardId);
+        List<Long> commentIds = comments.stream()
+                .map(Comment::getCommentId)
+                .collect(Collectors.toList());
+        commentRepository.deleteAllByIds(commentIds);
+
         em.remove(findBoard);
+        em.flush();
     }
 
     /**
