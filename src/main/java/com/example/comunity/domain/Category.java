@@ -25,13 +25,13 @@ public class Category {
     private Long categoryId;
 
     @Column(unique = true)
-    private String name;
+    private String categoryName;
 
     @OneToMany(mappedBy = "category")
     private final List<Board> boards = new ArrayList<>();
 
-    private Category(final String name) {
-        this.name = name;
+    private Category(final String categoryName) {
+        this.categoryName = categoryName;
     }
 
     /**
@@ -54,6 +54,6 @@ public class Category {
      * 변경을 위한 추가 메서드 (카테고리 정보 수정)
      */
     public void modifyCategory(final String modifiedName) {
-        this.name = modifiedName;
+        this.categoryName = modifiedName;
     }
 }

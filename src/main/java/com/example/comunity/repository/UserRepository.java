@@ -18,10 +18,10 @@ public class UserRepository {
      * @param user 가입할 사용자
      * @return 회원가입한 사용자 id
      */
-    public String join(final User user) {
+    public User join(final User user) {
         em.persist(user);
         em.flush();
-        return user.getUserId();
+        return user;
     }
 
     /**

@@ -8,12 +8,18 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-//@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UploadFileDto {
 
-    private String uploadFileId;
+    private Long uploadFileId;
     private Long boardId;
     private String originalFileName;
     private String storedFileName;
     private Long fileSize;
+
+    public UploadFileDto(final Long uploadFileId, final String originalFileName, final Long fileSize) {
+        this.uploadFileId = uploadFileId;
+        this.originalFileName = originalFileName;
+        this.fileSize = fileSize;
+    }
 }

@@ -7,11 +7,10 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BoardUploadDto extends BoardDto {
+public class BoardUploadDto {
 
     @NotBlank(message = "제목은 필수입니다.")
     private String title;

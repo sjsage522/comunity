@@ -13,10 +13,10 @@ public class CommentRepository {
 
     private final EntityManager em;
 
-    public Long apply(final Comment comment) {
+    public Comment apply(final Comment comment) {
         em.persist(comment);
         em.flush();
-        return comment.getCommentId();
+        return comment;
     }
 
     public void delete(final Comment comment) {

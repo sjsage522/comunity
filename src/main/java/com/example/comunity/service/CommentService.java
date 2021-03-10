@@ -24,7 +24,7 @@ public class CommentService {
     private final BoardRepository boardRepository;
 
     @Transactional
-    public Long apply(final User loginUser, final Long boardId, final CommentApplyDto commentApplyDto) {
+    public Comment apply(final User loginUser, final Long boardId, final CommentApplyDto commentApplyDto) {
 
         Board findBoard = boardRepository.findBoardById(boardId);
         Comment comment = Comment.createComment(loginUser, findBoard, commentApplyDto.getContent());

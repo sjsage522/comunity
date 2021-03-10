@@ -40,10 +40,8 @@ public class BoardService {
     }
 
     @Transactional
-    public Long upload(final BoardUploadDto boardUploadDto, final User loginUser) {
+    public Board upload(final BoardUploadDto boardUploadDto, final User loginUser, final MultipartFile[] files) {
         Category findCategory = findCategoryByName(boardUploadDto.getCategoryName());
-
-        boardUploadDto.setUserId(loginUser.getUserId());
 
         Board newBoard = Board.createBoard(
                 loginUser,
@@ -51,29 +49,9 @@ public class BoardService {
                 boardUploadDto.getTitle(),
                 boardUploadDto.getContent());
 
-        Long boardId = boardRepository.upload(newBoard);
-        boardUploadDto.setBoardId(boardId);
+        Board uploadedBoard = boardRepository.upload(newBoard);
 
-        return boardId;
-    }
-
-    @Transactional
-    public Long upload(final BoardUploadDto boardUploadDto, final User loginUser, final MultipartFile[] files) {
-        Category findCategory = findCategoryByName(boardUploadDto.getCategoryName());
-
-        boardUploadDto.setUserId(loginUser.getUserId());
-
-        Board newBoard = Board.createBoard(
-                loginUser,
-                findCategory,
-                boardUploadDto.getTitle(),
-                boardUploadDto.getContent());
-
-        Long boardId = boardRepository.upload(newBoard);
-        boardUploadDto.setBoardId(boardId);
-        System.out.println("boardId = " + boardId);
-
-        List<UploadFileDto> fileDtoList = fileUtils.uploadFiles(files, boardId);
+        List<UploadFileDto> fileDtoList = fileUtils.uploadFiles(files, uploadedBoard);
 
         List<UploadFile> fileList = new ArrayList<>();
         for (UploadFileDto uploadFileDto : fileDtoList) {
@@ -86,9 +64,10 @@ public class BoardService {
 
         if (!CollectionUtils.isEmpty(fileList)) {
             fileRepository.uploadFiles(fileList);
+            uploadedBoard.uploadFiles(fileList);
         }
 
-        return boardId;
+        return uploadedBoard;
     }
 
     public List<Board> findAllWithCategory(final String name) {
@@ -124,8 +103,6 @@ public class BoardService {
         User findUser = findBoard.getUser();
         if (!findUser.getUserId().equals(loginUser.getUserId()))
             throw new NoMatchUserInfoException("다른 사용자의 게시글을 수정할 수 없습니다.");
-
-        boardUpdateDto.setBoardId(boardId);
 
         findBoard.changeTitle(boardUpdateDto.getTitle());
         findBoard.changeContent(boardUpdateDto.getContent());

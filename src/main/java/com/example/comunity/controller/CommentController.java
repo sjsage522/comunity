@@ -48,11 +48,8 @@ public class CommentController {
             @PathVariable final Long id,
             final HttpSession session) {
         User loginUser = (User) session.getAttribute("authInfo");
-        Long appliedCommentId = commentService.apply(loginUser, id, commentApplyDto);
 
-        Comment findComment = commentService.findById(appliedCommentId);
-
-        CommentResponseDto commentResponseDto = getCommentResponseDto(findComment);
+        CommentResponseDto commentResponseDto = getCommentResponseDto(commentService.apply(loginUser, id, commentApplyDto));
 
         return ResponseEntity
                 .created(linkTo(methodOn(CommentController.class).apply(commentApplyDto, id, session)).toUri())
@@ -78,9 +75,7 @@ public class CommentController {
             final HttpSession session) {
         User loginUser = (User) session.getAttribute("authInfo");
 
-        Comment updateComment = commentService.update(loginUser, id, commentUpdateDto);
-
-        CommentResponseDto commentResponseDto = getCommentResponseDto(updateComment);
+        CommentResponseDto commentResponseDto = getCommentResponseDto(commentService.update(loginUser, id, commentUpdateDto));
 
         return ResponseEntity
                 .created(linkTo(methodOn(CommentController.class).update(id, commentUpdateDto, session)).toUri())
@@ -88,6 +83,9 @@ public class CommentController {
                         linkTo(methodOn(CommentController.class).update(id, commentUpdateDto, session)).withSelfRel()));
     }
 
+    /**
+     * 계층형 댓글로 나타내기 위한 로직
+     */
     private CommentResponseDto getCommentResponseDto(Comment comment) {
         CommentResponseDto commentResponseDto = new CommentResponseDto(
                 comment.getCommentId(),

@@ -17,10 +17,10 @@ public class BoardRepository {
     /**
      * 게시판 생성
      */
-    public Long upload(final Board board) {
+    public Board upload(final Board board) {
         em.persist(board);
         em.flush();
-        return board.getBoardId();
+        return board;
     }
 
     /**
@@ -53,7 +53,7 @@ public class BoardRepository {
         return em.createQuery(
                 "select b from Board b" +
                         " join fetch b.category c" +
-                        " where c.name = :categoryName", Board.class)
+                        " where c.categoryName = :categoryName", Board.class)
                 .setParameter("categoryName", categoryName)
                 .getResultList();
     }
@@ -70,7 +70,7 @@ public class BoardRepository {
                     "select b from Board b" +
                             " join fetch b.category c" +
                             " where b.boardId = :boardId" +
-                            " and c.name = :categoryName", Board.class)
+                            " and c.categoryName = :categoryName", Board.class)
                     .setParameter("boardId", boardId)
                     .setParameter("categoryName", categoryName)
                     .getSingleResult();
@@ -102,7 +102,7 @@ public class BoardRepository {
                         " join fetch b.category c" +
                         " join fetch b.user u" +
                         " where b.boardId = :boardId" +
-                        " and c.name = :categoryName" +
+                        " and c.categoryName = :categoryName" +
                         " and u.userId = :userId", Board.class)
                 .setParameter("boardId", boardId)
                 .setParameter("categoryName", categoryName)

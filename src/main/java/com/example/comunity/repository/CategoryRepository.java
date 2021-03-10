@@ -59,7 +59,7 @@ public class CategoryRepository {
         try {
             return em.createQuery(
                     "select c from Category c" +
-                            " where c.name = :categoryName", Category.class)
+                            " where c.categoryName = :categoryName", Category.class)
                     .setParameter("categoryName", categoryName)
                     .getSingleResult();
         } catch (NoResultException nre) {

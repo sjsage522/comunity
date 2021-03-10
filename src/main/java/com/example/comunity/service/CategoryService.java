@@ -17,14 +17,14 @@ public class CategoryService {
     @Transactional
     public Long create(final CategoryCreateDto categoryCreateDto) {
 
-        String name = categoryCreateDto.getName();
+        String categoryName = categoryCreateDto.getCategoryName();
 
-        Category findCategoryByName = categoryRepository.findByName(name);
+        Category findCategoryByName = categoryRepository.findByName(categoryName);
         if (findCategoryByName != null) {
             throw new DuplicateCategoryNameException("이미 존재하는 카테고리명 입니다.");
         }
 
-        Category newCategory = Category.createCategory(name);
+        Category newCategory = Category.createCategory(categoryName);
         return categoryRepository.create(newCategory);
     }
 }

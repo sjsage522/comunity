@@ -1,5 +1,6 @@
 package com.example.comunity.util;
 
+import com.example.comunity.domain.Board;
 import com.example.comunity.dto.file.UploadFileDto;
 import com.example.comunity.exception.UploadFileException;
 import org.apache.commons.io.FilenameUtils;
@@ -30,7 +31,7 @@ public class FileUtils {
         return UUID.randomUUID().toString().replaceAll("-", "");
     }
 
-    public List<UploadFileDto> uploadFiles(final MultipartFile[] files, final Long boardId) {
+    public List<UploadFileDto> uploadFiles(final MultipartFile[] files, final Board board) {
 
         /* 파일이 비어있는 경우 */
         if (files == null || files[0].getSize() < 1) {
@@ -58,7 +59,7 @@ public class FileUtils {
 
                 /* 파일 정보 저장 */
                 UploadFileDto uploadFileDto = new UploadFileDto();
-                uploadFileDto.setBoardId(boardId);
+                uploadFileDto.setBoardId(board.getBoardId());
                 uploadFileDto.setOriginalFileName(file.getOriginalFilename());
                 uploadFileDto.setStoredFileName(saveName);
                 uploadFileDto.setFileSize(file.getSize());

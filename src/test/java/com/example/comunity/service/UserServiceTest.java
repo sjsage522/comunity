@@ -21,10 +21,9 @@ class UserServiceTest {
         User user = getUser("junseok1234", "junseok", "junEE", "1234", "junseok@example.com");
 
         //when
-        String joinUser = userService.join(new UserJoinDto(user.getUserId(), user.getName(), user.getNickName(), user.getPassword(), user.getEmail()));
+        User joinUser = userService.join(new UserJoinDto(user.getUserId(), user.getName(), user.getNickName(), user.getPassword(), user.getEmail()));
 
         //then
-        Assertions.assertThat(joinUser).isEqualTo("junseok1234");
     }
 
     private User getUser(String userId, String name, String nickName, String password, String email) {

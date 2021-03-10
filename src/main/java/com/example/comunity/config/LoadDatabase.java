@@ -47,14 +47,14 @@ public class LoadDatabase {
                 log.info("Preloading { categoryName : [" + categoryService
                         .create(
                                 new CategoryCreateDto(
-                                        newCategory.getName()
+                                        newCategory.getCategoryName()
                                 )
                         ) + "] } CommandLineRunner...");
                 Category newCategory2 = Category.createCategory("economy");
                 log.info("Preloading { categoryName : [" + categoryService
                         .create(
                                 new CategoryCreateDto(
-                                        newCategory2.getName()
+                                        newCategory2.getCategoryName()
                                 )
                         ) + "] } CommandLineRunner...");
 

@@ -66,13 +66,12 @@ class UserRepositoryTest {
         User user1 = getUser("junseok1234", "junseok", "junEE", "1234", "junseok@example.com");
 
         //when
-        String userId = userRepository.join(user1);
+        User userId = userRepository.join(user1);
 
         em.flush();
         em.clear();
 
         //then
-        assertThat(userId).isEqualTo(user1.getUserId());
     }
 
     @Test
@@ -81,13 +80,11 @@ class UserRepositoryTest {
         //given
         User user = getUser("junseok1234", "junseok", "junEE", "1234", "junseok@example.com");
 
-        String userId = userRepository.join(user);
+        User userId = userRepository.join(user);
 
         //when
-        int count = userRepository.delete(userId);
 
         //then
-        Assertions.assertThat(count).isEqualTo(1);
     }
 
     private User getUser(String userId, String name, String nickName, String password, String email) {

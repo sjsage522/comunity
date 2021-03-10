@@ -3,8 +3,10 @@ package com.example.comunity.controller;
 import com.example.comunity.domain.Board;
 import com.example.comunity.domain.User;
 import com.example.comunity.dto.board.BoardDto;
+import com.example.comunity.dto.board.BoardResponseDto;
 import com.example.comunity.dto.board.BoardUpdateDto;
 import com.example.comunity.dto.board.BoardUploadDto;
+import com.example.comunity.dto.file.UploadFileDto;
 import com.example.comunity.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
@@ -19,6 +21,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
@@ -36,11 +39,11 @@ public class BoardController {
             final HttpSession session) {
         User loginUser = (User) session.getAttribute("authInfo");
 
-        boardService.upload(boardUploadDto, loginUser, files);
+        Board newBoard = boardService.upload(boardUploadDto, loginUser, files);
 
         return ResponseEntity
                 .created(linkTo(methodOn(BoardController.class).findAll()).toUri())
-                .body(assembler.toModel(boardUploadDto));
+                .body(assembler.toModel(getBoardResponseDto(newBoard)));
     }
 
     /**
@@ -64,11 +67,11 @@ public class BoardController {
             @PathVariable final Long id, @PathVariable final String name, @Valid @RequestBody final BoardUpdateDto boardUpdateDto, final HttpSession session) {
         User loginUser = (User) session.getAttribute("authInfo");
 
-        boardService.update(id, name, boardUpdateDto, loginUser);
+        Board updatedBoard = boardService.update(id, name, boardUpdateDto, loginUser);
 
         return ResponseEntity
                 .created(linkTo(methodOn(BoardController.class).findByIdWithCategory(id, name)).toUri())
-                .body(assembler.toModel(boardUpdateDto));
+                .body(assembler.toModel(getBoardResponseDto(updatedBoard)));
     }
 
     /**
@@ -80,9 +83,7 @@ public class BoardController {
     public CollectionModel<EntityModel<BoardDto>> findAllWithCategory(@PathVariable String name) {
         List<EntityModel<BoardDto>> boards = new ArrayList<>();
         for (Board board : boardService.findAllWithCategory(name)) {
-            BoardDto boardDto = createBoardDto(board);
-            EntityModel<BoardDto> boardDtoEntityModel = assembler.toModel(boardDto);
-            boards.add(boardDtoEntityModel);
+            boards.add(assembler.toModel(getBoardResponseDto(board)));
         }
 
         return CollectionModel.of(boards,
@@ -93,7 +94,7 @@ public class BoardController {
     public ResponseEntity<CollectionModel<EntityModel<BoardDto>>> findAll() {
         List<EntityModel<BoardDto>> boards = new ArrayList<>();
         for (Board board : boardService.findAll()) {
-            boards.add(assembler.toModel(createBoardDto(board)));
+            boards.add(assembler.toModel(getBoardResponseDto(board)));
         }
 
         return ResponseEntity.ok(CollectionModel.of(boards,
@@ -104,11 +105,9 @@ public class BoardController {
     public ResponseEntity<EntityModel<BoardDto>> findByIdWithCategory(@PathVariable final Long id, @PathVariable final String name) {
         Board findBoard = boardService.findByIdWithCategory(id, name);
 
-        BoardDto boardDto = createBoardDto(findBoard);
-
         return ResponseEntity.
                 created(linkTo(methodOn(BoardController.class).findAllWithCategory(name)).toUri())
-                .body(assembler.toModel(boardDto));
+                .body(assembler.toModel(getBoardResponseDto(findBoard)));
     }
 
     @Component
@@ -125,17 +124,22 @@ public class BoardController {
         }
     }
 
-    private BoardDto createBoardDto(Board board) {
-        return new BoardDto(
-                board.getBoardId(),
-                board.getUser(),
-                board.getCategory(),
-                board.getTitle(),
-                board.getContent(),
-                board.getUploadFiles(),
-                board.getUser().getUserId(),
-                board.getCategory().getName(),
-                board.getCreatedDate(),
-                board.getLastModifiedDate());
+    private BoardResponseDto getBoardResponseDto(Board newBoard) {
+        return new BoardResponseDto(
+                newBoard.getBoardId(),
+                newBoard.getUser().getUserId(),
+                newBoard.getCategory().getCategoryName(),
+                newBoard.getTitle(),
+                newBoard.getContent(),
+                newBoard.getUploadFiles()
+                        .stream()
+                        .map(f -> new UploadFileDto(
+                                f.getUploadFileId(),
+                                f.getOriginalFileName(),
+                                f.getFileSize()
+                        )).collect(Collectors.toList()),
+                newBoard.getCreatedDate(),
+                newBoard.getLastModifiedDate()
+        );
     }
 }

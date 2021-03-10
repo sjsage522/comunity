@@ -10,22 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserDto {
+public abstract class UserDto {
 
-    private Long id;
     private String userId;
-    private String name;
-    private String nickName;
-
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String password;
-
-    private String email;
-
-    public UserDto(final String userId, final String name, final String nickName, final String email) {
-        this.userId = userId;
-        this.name = name;
-        this.nickName = nickName;
-        this.email = email;
-    }
 }

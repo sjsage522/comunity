@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class Board extends BaseTimeEntity {
 //    private String boardUri;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
-    private List<UploadFile> uploadFiles;
+    private List<UploadFile> uploadFiles = new ArrayList<>();
 
 
     private Board(final User user, final Category category, final String title, final String content) {
@@ -61,7 +62,7 @@ public class Board extends BaseTimeEntity {
      * 게시판과 파일간의 연관관계 편의 메서드
      * @param uploadFiles 해당 게시판에 업로드될 파일들
      */
-    public void uploadFiles(final UploadFile... uploadFiles) {
+    public void uploadFiles(final List<UploadFile> uploadFiles) {
         for (UploadFile file : uploadFiles) {
             if (!this.uploadFiles.contains(file)) file.uploadFile(this);
         }

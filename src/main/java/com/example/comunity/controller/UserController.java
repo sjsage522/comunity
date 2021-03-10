@@ -34,11 +34,11 @@ public class UserController {
     public ResponseEntity<EntityModel<UserDto>> join(@Valid @RequestBody final UserJoinDto userJoinDto)
             throws DuplicateUserIdException, DuplicateUserNickNameException {
 
-        userService.join(userJoinDto);
+        User newUser = userService.join(userJoinDto);
 
         return ResponseEntity
                 .created(linkTo(methodOn(UserController.class).join(userJoinDto)).toUri())
-                .body(assembler.toModel(userJoinDto));
+                .body(assembler.toModel(getUserResponseDto(newUser)));
     }
 
     @PostMapping("/login")
@@ -47,11 +47,10 @@ public class UserController {
         User loginUser = userAuthService.authenticate(userLoginDto.getUserId(), userLoginDto.getPassword());
 
         session.setAttribute("authInfo", loginUser);
-        userLoginDto.setNickName(loginUser.getNickName());
 
         return ResponseEntity
                 .created(linkTo(methodOn(UserController.class).findById(userLoginDto.getUserId())).toUri())
-                .body(EntityModel.of(userLoginDto,
+                .body(EntityModel.of(getUserResponseDto(loginUser),
                         linkTo(methodOn(UserController.class).login(userLoginDto, session)).withSelfRel(),
                         linkTo(methodOn(UserController.class).findById(userLoginDto.getUserId())).withRel("id"),
                         linkTo(methodOn(UserController.class).findAll()).withRel("users")));
@@ -65,7 +64,7 @@ public class UserController {
         UserLoginDto userLoginDto = new UserLoginDto(loginUser.getUserId(), loginUser.getNickName());
         return ResponseEntity
                 .created(linkTo(methodOn(UserController.class).login(userLoginDto, session)).toUri())
-                .body(EntityModel.of(userLoginDto,
+                .body(EntityModel.of(getUserResponseDto(loginUser),
                         linkTo(methodOn(UserController.class).logout(session)).withSelfRel(),
                         linkTo(methodOn(UserController.class).login(userLoginDto, session)).withRel("login")));
     }
@@ -74,18 +73,16 @@ public class UserController {
     public ResponseEntity<EntityModel<UserDto>> findById(@PathVariable final String id) {
         User findUser = userService.findById(id);
 
-        UserDto userDto = createUserDto(findUser);
-
         return ResponseEntity
                 .created(linkTo(methodOn(UserController.class).findAll()).toUri())
-                .body(assembler.toModel(userDto));
+                .body(assembler.toModel(getUserResponseDto(findUser)));
     }
 
     @GetMapping("/users")
     public ResponseEntity<CollectionModel<EntityModel<UserDto>>> findAll() {
         List<EntityModel<UserDto>> users = new ArrayList<>();
         for (User user : userService.findAll()) {
-            users.add(assembler.toModel(createUserDto(user)));
+            users.add(assembler.toModel(getUserResponseDto(user)));
         }
 
         return ResponseEntity.ok(CollectionModel.of(users,
@@ -95,11 +92,11 @@ public class UserController {
 
     @PatchMapping("/users/{id}")
     public ResponseEntity<EntityModel<UserDto>> update(@PathVariable final String id, @Valid @RequestBody final UserUpdateDto userUpdateDto) {
-        userService.update(id, userUpdateDto);
+        User updatedUser = userService.update(id, userUpdateDto);
 
         return ResponseEntity
                 .created(linkTo(methodOn(UserController.class).findById(id)).toUri())
-                .body(assembler.toModel(userUpdateDto));
+                .body(assembler.toModel(getUserResponseDto(updatedUser)));
     }
 
     /**
@@ -129,7 +126,13 @@ public class UserController {
         }
     }
 
-    private UserDto createUserDto(User findUser) {
-        return new UserDto(findUser.getUserId(), findUser.getName(), findUser.getNickName(), findUser.getEmail());
+    private UserResponseDto getUserResponseDto(User newUser) {
+        return new UserResponseDto(
+                newUser.getUserId(),
+                newUser.getNickName(),
+                newUser.getEmail(),
+                newUser.getName(),
+                newUser.getCreatedDate()
+        );
     }
 }

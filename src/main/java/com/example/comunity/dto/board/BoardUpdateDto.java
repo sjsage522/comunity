@@ -7,11 +7,10 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BoardUpdateDto extends BoardDto {
+public class BoardUpdateDto {
 
     @NotBlank(message = "변경할 제목을 입력해주세요.")
     private String title;

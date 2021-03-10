@@ -13,5 +13,5 @@ import javax.validation.constraints.NotBlank;
 public class CategoryCreateDto {
 
     @NotBlank(message = "카테고리 이름을 설정해야 합니다.")
-    private String name;
+    private String categoryName;
 }
