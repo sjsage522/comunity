@@ -18,7 +18,7 @@ public class UploadFileRepository {
                 .getResultList();
     }
 
-    public void deleteAllById(final List<Long> ids) {
+    public void deleteAllByIds(final List<Long> ids) {
         em.createQuery(
                 "delete from UploadFile f " +
                         " where f.uploadFileId in :ids")

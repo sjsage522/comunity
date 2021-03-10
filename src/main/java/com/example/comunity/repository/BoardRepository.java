@@ -41,7 +41,7 @@ public class BoardRepository {
         List<Long> fileIds = uploadFiles.stream()
                 .map(UploadFile::getUploadFileId)
                 .collect(Collectors.toList());
-        uploadFileRepository.deleteAllById(fileIds);
+        uploadFileRepository.deleteAllByIds(fileIds);
 
         List<Comment> comments = commentRepository.findAll(boardId);
         List<Long> commentIds = comments.stream()
