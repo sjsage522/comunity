@@ -32,6 +32,12 @@ public class BoardController {
     private final BoardService boardService;
     private final BoardDtoModelAssembler assembler;
 
+    /**
+     * 게시글 작성
+     * @param boardUploadDto 게시글 작성 dto
+     * @param files 첨부파일
+     * @param session 현재 사용자 세션
+     */
     @PostMapping(value = "/boards")
     public ResponseEntity<EntityModel<BoardDto>> upload(
             @Valid @RequestPart final BoardUploadDto boardUploadDto,
@@ -62,6 +68,13 @@ public class BoardController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * 게시글 수정
+     * @param id 게시글 번호
+     * @param name 카테고리 이름
+     * @param boardUpdateDto 게시글 변경 dto
+     * @param session 현재 사용자 세션
+     */
     @PatchMapping("/category/{name}/boards/{id}")
     public ResponseEntity<EntityModel<BoardDto>> update(
             @PathVariable final Long id, @PathVariable final String name, @Valid @RequestBody final BoardUpdateDto boardUpdateDto, final HttpSession session) {
@@ -90,6 +103,9 @@ public class BoardController {
                 linkTo(methodOn(BoardController.class).findAll()).withSelfRel());
     }
 
+    /**
+     * 모든 게시글 조회
+     */
     @GetMapping("/boards")
     public ResponseEntity<CollectionModel<EntityModel<BoardDto>>> findAll() {
         List<EntityModel<BoardDto>> boards = new ArrayList<>();
@@ -101,6 +117,11 @@ public class BoardController {
                 linkTo(methodOn(BoardController.class).findAll()).withSelfRel()));
     }
 
+    /**
+     * 특정 카테고리에 포함된 모든 게시글 조회
+     * @param id 게시글 번호
+     * @param name 카테고리 이름
+     */
     @GetMapping("/category/{name}/boards/{id}")
     public ResponseEntity<EntityModel<BoardDto>> findByIdWithCategory(@PathVariable final Long id, @PathVariable final String name) {
         Board findBoard = boardService.findByIdWithCategory(id, name);
@@ -110,6 +131,9 @@ public class BoardController {
                 .body(assembler.toModel(getBoardResponseDto(findBoard)));
     }
 
+    /**
+     * 리소스 관계 표현
+     */
     @Component
     public static class BoardDtoModelAssembler implements RepresentationModelAssembler<BoardDto, EntityModel<BoardDto>> {
 
@@ -124,6 +148,9 @@ public class BoardController {
         }
     }
 
+    /**
+     * 응답 dto 생성
+     */
     private BoardResponseDto getBoardResponseDto(Board newBoard) {
         return new BoardResponseDto(
                 newBoard.getBoardId(),
