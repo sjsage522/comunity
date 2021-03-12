@@ -50,12 +50,15 @@ public class UserService {
 
     @Transactional
     public User update(final String id, final UserUpdateDto userUpdateDto) {
+        /* 영속상태의 entity */
         User findUser = findById(id);
 
+        /* dirty check */
         findUser.changeName(userUpdateDto.getName());
         findUser.changeNickname(userUpdateDto.getNickName());
         findUser.changePassword(userUpdateDto.getPassword());
         userUpdateDto.setUserId(id);
+        /* 트랜잭션 커밋시점에 1차캐시의 스냅샷과 db의 데이터와의 비교 (변경 감지) */
 
         return findUser;
     }
