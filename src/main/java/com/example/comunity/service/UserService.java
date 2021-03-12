@@ -57,8 +57,9 @@ public class UserService {
         findUser.changeName(userUpdateDto.getName());
         findUser.changeNickname(userUpdateDto.getNickName());
         findUser.changePassword(userUpdateDto.getPassword());
-        userUpdateDto.setUserId(id);
         /* 트랜잭션 커밋시점에 1차캐시의 스냅샷과 db의 데이터와의 비교 (변경 감지) */
+
+        userUpdateDto.setUserId(id);
 
         return findUser;
     }
