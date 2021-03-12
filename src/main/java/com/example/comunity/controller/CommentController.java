@@ -27,6 +27,10 @@ public class CommentController {
 
     private final CommentService commentService;
 
+    /**
+     * 특정 게시글에 달린 모든 답글들 조회
+     * @param id 게시글 번호
+     */
     @GetMapping("/boards/{id}/comments")
     public ResponseEntity<CollectionModel<EntityModel<CommentDto>>> findAll(@PathVariable final Long id) {
         List<EntityModel<CommentDto>> responseComments = new ArrayList<>();
@@ -42,6 +46,12 @@ public class CommentController {
                 linkTo(methodOn(CommentController.class).findAll(id)).withSelfRel()));
     }
 
+    /**
+     * 특정 게시글에 답글 작성
+     * @param commentApplyDto 답글 작성 dto
+     * @param id 게시글 번호
+     * @param session 현재 사용자 세션
+     */
     @PostMapping("/boards/{id}/comments")
     public ResponseEntity<EntityModel<CommentDto>> apply(
             @Valid @RequestBody final CommentApplyDto commentApplyDto,
@@ -57,6 +67,11 @@ public class CommentController {
                         linkTo(methodOn(CommentController.class).apply(commentApplyDto, id, session)).withSelfRel()));
     }
 
+    /**
+     * 답글 삭제, 부모 답글 삭제 시 연관된 자식 답글들 모두 삭제
+     * @param id 답글 번호
+     * @param session 현재 사용자 세션
+     */
     @DeleteMapping("/comments/{id}")
     public ResponseEntity<EntityModel<CommentDto>> delete(
             @PathVariable final Long id,
@@ -68,6 +83,12 @@ public class CommentController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * 답글 내용 수정
+     * @param id 답글 번호
+     * @param commentUpdateDto 답글 수정 dto
+     * @param session 현재 사용자 세션
+     */
     @PatchMapping("/comments/{id}")
     public ResponseEntity<EntityModel<CommentDto>> update(
             @PathVariable final Long id,
