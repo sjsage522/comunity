@@ -24,6 +24,13 @@ public class LoadDatabase {
         return LoggerFactory.getLogger(LoadDatabase.class);
     }
 
+    /**
+     * Use Spring to inject {@link UserService} and {@link CategoryService} that can then load data. Since this will run
+     * only after the app is operational, the database will be up.
+     *
+     * @param userService .
+     * @param categoryService .
+     */
     @Bean
     CommandLineRunner initDatabase(UserService userService, CategoryService categoryService) {
         return new CommandLineRunner() {
