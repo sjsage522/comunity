@@ -30,6 +30,12 @@ public class UserController {
     private final UserAuthService userAuthService;
     private final UserDtoModelAssembler assembler;
 
+    /**
+     * 회원가입
+     * @param userJoinDto 회원가입 dto
+     * @throws DuplicateUserIdException 이미 존재하는 id가 있는지 검사
+     * @throws DuplicateUserNickNameException 이미 존재하는 별명이 있는지 검사
+     */
     @PostMapping("/users")
     public ResponseEntity<EntityModel<UserDto>> join(@Valid @RequestBody final UserJoinDto userJoinDto)
             throws DuplicateUserIdException, DuplicateUserNickNameException {
@@ -41,6 +47,12 @@ public class UserController {
                 .body(assembler.toModel(getUserResponseDto(newUser)));
     }
 
+    /**
+     * 로그인
+     * @param userLoginDto 로그인 dto
+     * @param session 헌재 사용자 세션
+     * @throws NoMatchUserInfoException 아이디와 비밀번호가 유효한지 검사
+     */
     @PostMapping("/login")
     public ResponseEntity<EntityModel<UserDto>> login(@Valid @RequestBody final UserLoginDto userLoginDto, final HttpSession session)
             throws NoMatchUserInfoException {
@@ -56,6 +68,10 @@ public class UserController {
                         linkTo(methodOn(UserController.class).findAll()).withRel("users")));
     }
 
+    /**
+     * 로그아웃
+     * @param session 현재 사용자 세션
+     */
     @GetMapping("/logout")
     public ResponseEntity<EntityModel<UserDto>> logout(final HttpSession session) {
         User loginUser = (User) session.getAttribute("authInfo");
@@ -69,6 +85,10 @@ public class UserController {
                         linkTo(methodOn(UserController.class).login(userLoginDto, session)).withRel("login")));
     }
 
+    /**
+     * 특정 사용자 조회
+     * @param id 조회할 아이디
+     */
     @GetMapping("/users/{id}")
     public ResponseEntity<EntityModel<UserDto>> findById(@PathVariable final String id) {
         User findUser = userService.findById(id);
@@ -78,6 +98,9 @@ public class UserController {
                 .body(assembler.toModel(getUserResponseDto(findUser)));
     }
 
+    /**
+     * 모든 사용자 조호
+     */
     @GetMapping("/users")
     public ResponseEntity<CollectionModel<EntityModel<UserDto>>> findAll() {
         List<EntityModel<UserDto>> users = new ArrayList<>();
@@ -90,6 +113,11 @@ public class UserController {
                         .andAffordance(afford(methodOn(UserController.class).join(null)))));
     }
 
+    /**
+     * 사용자 정보 수정
+     * @param id 사용자 아이디
+     * @param userUpdateDto 사용자 정보 수정 dto
+     */
     @PatchMapping("/users/{id}")
     public ResponseEntity<EntityModel<UserDto>> update(@PathVariable final String id, @Valid @RequestBody final UserUpdateDto userUpdateDto) {
         User updatedUser = userService.update(id, userUpdateDto);
