@@ -152,21 +152,6 @@ public class BoardController {
      * 응답 dto 생성
      */
     private BoardResponseDto getBoardResponseDto(Board newBoard) {
-        return new BoardResponseDto(
-                newBoard.getBoardId(),
-                newBoard.getUser().getUserId(),
-                newBoard.getCategory().getCategoryName(),
-                newBoard.getTitle(),
-                newBoard.getContent(),
-                newBoard.getUploadFiles()
-                        .stream()
-                        .map(f -> new UploadFileDto(
-                                f.getUploadFileId(),
-                                f.getOriginalFileName(),
-                                f.getFileSize()
-                        )).collect(Collectors.toList()),
-                newBoard.getCreatedDate(),
-                newBoard.getLastModifiedDate()
-        );
+        return new BoardResponseDto(newBoard);
     }
 }
