@@ -1,5 +1,6 @@
 package com.example.comunity.dto.user;
 
+import com.example.comunity.domain.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,4 +26,12 @@ public class UserResponseDto extends UserDto {
 
     @JsonProperty("created_at")
     private LocalDateTime createdDate;
+
+    public UserResponseDto(User newUser) {
+        this.userId = newUser.getUserId();
+        this.nickName = newUser.getNickName();
+        this.email = newUser.getEmail();
+        this.name = newUser.getName();
+        this.createdDate = newUser.getCreatedDate();
+    }
 }

@@ -155,12 +155,6 @@ public class UserController {
     }
 
     private UserResponseDto getUserResponseDto(User newUser) {
-        return new UserResponseDto(
-                newUser.getUserId(),
-                newUser.getNickName(),
-                newUser.getEmail(),
-                newUser.getName(),
-                newUser.getCreatedDate()
-        );
+        return new UserResponseDto(newUser);
     }
 }
