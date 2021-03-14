@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import java.io.File;
 import java.util.List;
 
 @Repository
@@ -38,6 +39,10 @@ public class FileRepository {
     public List<UploadFile> findAll() {
         return em.createQuery("select f from UploadFile f", UploadFile.class)
                 .getResultList();
+    }
+
+    public UploadFile findById(final Long id) {
+        return em.find(UploadFile.class, id);
     }
 
     public void deleteAllByIds(final List<Long> ids) {
