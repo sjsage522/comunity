@@ -1,12 +1,10 @@
 package com.example.comunity.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
@@ -52,14 +50,6 @@ public class Board extends BaseTimeEntity {
         this.content = content;
     }
 
-    public void changeTitle(final String title) {
-        this.title = title;
-    }
-
-    public void changeContent(final String content) {
-        this.content = content;
-    }
-
     /**
      * 게시판과 파일간의 연관관계 편의 메서드
      * @param uploadFiles 해당 게시판에 업로드될 파일들
@@ -70,6 +60,7 @@ public class Board extends BaseTimeEntity {
         }
     }
 
+    /* 변경 메서드 */
     /**
      * 게시판과 카테고리간의 연관관계 편의 메서드
      * @param category 해당 게시판이 포함되는 카테고리
@@ -82,6 +73,23 @@ public class Board extends BaseTimeEntity {
             category.getBoards().add(this);
     }
 
+    public void changeTitle(final String title) {
+        this.title = title;
+    }
+
+    public void changeContent(final String content) {
+        this.content = content;
+    }
+    /*          */
+
+    /**
+     * 변경을 위한 추가 메서드 (게시판 정보 수정)
+     */
+    public void changeBoard(final String title, final String content, final Category changedCategory) {
+        this.changeTitle(title);
+        this.changeContent(content);
+        this.changeCategory(changedCategory);
+    }
 
     /**
      * 게시판 생성
@@ -93,14 +101,4 @@ public class Board extends BaseTimeEntity {
     public static Board createBoard(final User user, final Category category, final String title, final String content) {
         return new Board(user, category, title, content);
     }
-
-    /**
-     * 변경을 위한 추가 메서드 (게시판 정보 수정)
-     */
-//    public void modifyBoard(final Category category, final String title, final String content, final UploadFile... uploadFiles) {
-//        this.category = category;
-//        this.title = title;
-//        this.content = content;
-//        this.uploadFiles = Arrays.asList(uploadFiles);
-//    }
 }

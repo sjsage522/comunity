@@ -12,14 +12,12 @@ import com.example.comunity.repository.CategoryRepository;
 import com.example.comunity.repository.CommentRepository;
 import com.example.comunity.repository.FileRepository;
 import com.example.comunity.util.FileUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -116,11 +114,9 @@ public class BoardService {
         if (!findUser.getUserId().equals(loginUser.getUserId()))
             throw new NoMatchUserInfoException("다른 사용자의 게시글을 수정할 수 없습니다.");
 
-        findBoard.changeTitle(boardUpdateDto.getTitle());
-        findBoard.changeContent(boardUpdateDto.getContent());
-
         Category changedCategory = findCategoryByName(boardUpdateDto.getCategoryName());
-        findBoard.changeCategory(changedCategory);
+
+        findBoard.changeBoard(boardUpdateDto.getTitle(), boardUpdateDto.getContent(), changedCategory);
 
         return findBoard;
     }
