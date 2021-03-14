@@ -6,7 +6,6 @@ import com.example.comunity.dto.board.BoardDto;
 import com.example.comunity.dto.board.BoardResponseDto;
 import com.example.comunity.dto.board.BoardUpdateDto;
 import com.example.comunity.dto.board.BoardUploadDto;
-import com.example.comunity.dto.file.UploadFileDto;
 import com.example.comunity.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
@@ -21,7 +20,6 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
