@@ -21,6 +21,8 @@ import java.util.UUID;
 public class FileUtils {
 
     private final String today = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMdd"));
+
+    /* 서버에 첨부파일들을 저장 */
     private final String uploadPath = Paths.get("/Users", "jun", "Development", "downloads", today).toString();
 
 
@@ -58,11 +60,14 @@ public class FileUtils {
                 file.transferTo(target);
 
                 /* 파일 정보 저장 */
-                UploadFileDto uploadFileDto = new UploadFileDto();
-                uploadFileDto.setBoardId(board.getBoardId());
-                uploadFileDto.setOriginalFileName(file.getOriginalFilename());
-                uploadFileDto.setStoredFileName(saveName);
-                uploadFileDto.setFileSize(file.getSize());
+                UploadFileDto uploadFileDto = new UploadFileDto(
+                        board.getBoardId(),
+                        file.getOriginalFilename(),
+                        saveName,
+                        file.getSize(),
+                        uploadPath,
+                        extension
+                );
 
                 fileList.add(uploadFileDto);
 

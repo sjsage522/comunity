@@ -57,7 +57,9 @@ public class BoardService {
                     newBoard,
                     uploadFileDto.getOriginalFileName(),
                     uploadFileDto.getStoredFileName(),
-                    uploadFileDto.getFileSize()));
+                    uploadFileDto.getFileSize(),
+                    uploadFileDto.getFileDownLoadUri(),
+                    uploadFileDto.getFileType()));
         }
 
         if (!CollectionUtils.isEmpty(fileList)) {
