@@ -108,14 +108,7 @@ public class CommentController {
      * 계층형 댓글로 나타내기 위한 로직
      */
     private CommentResponseDto getCommentResponseDto(Comment comment) {
-        CommentResponseDto commentResponseDto = new CommentResponseDto(
-                comment.getCommentId(),
-                comment.getContent(),
-                comment.getUser().getUserId(),
-                comment.getBoard().getBoardId(),
-                comment.getCreatedDate(),
-                comment.getLastModifiedDate()
-        );
+        CommentResponseDto commentResponseDto = new CommentResponseDto(comment);
 
         Comment parent = comment.getParent();
 

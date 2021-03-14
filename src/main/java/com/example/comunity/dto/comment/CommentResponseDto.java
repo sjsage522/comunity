@@ -39,12 +39,12 @@ public class CommentResponseDto extends CommentDto {
     @JsonProperty("last_modified_at")
     private LocalDateTime lastModifiedDate;
 
-    public CommentResponseDto(final Long commentId, final String content, final String userId, final Long boardId, final LocalDateTime createdDate, final LocalDateTime lastModifiedDate) {
-        this.commentId = commentId;
-        this.content = content;
-        this.userId = userId;
-        this.boardId = boardId;
-        this.createdDate = createdDate;
-        this.lastModifiedDate = lastModifiedDate;
+    public CommentResponseDto(final Comment comment) {
+        this.commentId = comment.getCommentId();
+        this.content = comment.getContent();
+        this.userId = comment.getUser().getUserId();
+        this.boardId = comment.getBoard().getBoardId();
+        this.createdDate = comment.getCreatedDate();
+        this.lastModifiedDate = comment.getLastModifiedDate();
     }
 }
