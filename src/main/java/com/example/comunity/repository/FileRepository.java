@@ -27,18 +27,6 @@ public class FileRepository {
         return size;
     }
 
-    public UploadFile findFileById(final Long fileId) {
-        return em.find(UploadFile.class, fileId);
-    }
-
-    public int deleteFilesByBoardId(final Long boardId) {
-        return em.createQuery(
-                "delete from UploadFile f " +
-                        " where f.board.boardId = :boardId")
-                .setParameter("boardId", boardId)
-                .executeUpdate();
-    }
-
     public List<UploadFile> findAll(final Long boardId) {
         return em.createQuery(
                 "select f from UploadFile f" +
@@ -47,11 +35,16 @@ public class FileRepository {
                 .getResultList();
     }
 
-    public Long findCount(final Long boardId) {
-        return (Long) em.createQuery(
-                "select count(f) from UploadFile f" +
-                        " where f.board.boardId = :boardId")
-                .setParameter("boardId", boardId)
-                .getSingleResult();
+    public List<UploadFile> findAll() {
+        return em.createQuery("select f from UploadFile f", UploadFile.class)
+                .getResultList();
+    }
+
+    public void deleteAllByIds(final List<Long> ids) {
+        em.createQuery(
+                "delete from UploadFile f " +
+                        " where f.uploadFileId in :ids")
+                .setParameter("ids", ids)
+                .executeUpdate();
     }
 }

@@ -1,9 +1,6 @@
 package com.example.comunity.service;
 
-import com.example.comunity.domain.Board;
-import com.example.comunity.domain.Category;
-import com.example.comunity.domain.UploadFile;
-import com.example.comunity.domain.User;
+import com.example.comunity.domain.*;
 import com.example.comunity.dto.board.BoardUpdateDto;
 import com.example.comunity.dto.board.BoardUploadDto;
 import com.example.comunity.dto.file.UploadFileDto;
@@ -12,6 +9,7 @@ import com.example.comunity.exception.NoMatchCategoryInfoException;
 import com.example.comunity.exception.NoMatchUserInfoException;
 import com.example.comunity.repository.BoardRepository;
 import com.example.comunity.repository.CategoryRepository;
+import com.example.comunity.repository.CommentRepository;
 import com.example.comunity.repository.FileRepository;
 import com.example.comunity.util.FileUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -33,6 +32,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final CategoryRepository categoryRepository;
     private final FileRepository fileRepository;
+    private final CommentRepository commentRepository;
     private final FileUtils fileUtils;
 
     public List<Board> findAll() {
@@ -89,6 +89,18 @@ public class BoardService {
         User findUser = findBoard.getUser();
         if (!findUser.getUserId().equals(loginUser.getUserId()))
             throw new NoMatchUserInfoException("다른 사용자의 게시글을 삭제할 수 없습니다.");
+
+        List<UploadFile> uploadFiles = fileRepository.findAll();
+        List<Long> fileIds = uploadFiles.stream()
+                .map(UploadFile::getUploadFileId)
+                .collect(Collectors.toList());
+        fileRepository.deleteAllByIds(fileIds);
+
+        List<Comment> comments = commentRepository.findAll(boardId);
+        List<Long> commentIds = comments.stream()
+                .map(Comment::getCommentId)
+                .collect(Collectors.toList());
+        commentRepository.deleteAllByIds(commentIds);
 
         boardRepository.delete(boardId);
     }

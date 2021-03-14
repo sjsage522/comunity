@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BoardRepository {
 
-    private final UploadFileRepository uploadFileRepository;
     private final CommentRepository commentRepository;
     private final EntityManager em;
 
@@ -33,22 +32,6 @@ public class BoardRepository {
      */
     public void delete(final Long boardId) {
         Board findBoard = findBoardById(boardId);
-
-        /**
-         * 게시판 내의 여러개의 첨부파일을 batch delete
-         */
-        List<UploadFile> uploadFiles = uploadFileRepository.findAll();
-        List<Long> fileIds = uploadFiles.stream()
-                .map(UploadFile::getUploadFileId)
-                .collect(Collectors.toList());
-        uploadFileRepository.deleteAllByIds(fileIds);
-
-        List<Comment> comments = commentRepository.findAll(boardId);
-        List<Long> commentIds = comments.stream()
-                .map(Comment::getCommentId)
-                .collect(Collectors.toList());
-        commentRepository.deleteAllByIds(commentIds);
-
         em.remove(findBoard);
         em.flush();
     }
