@@ -27,7 +27,7 @@ public class UserResponseDto extends UserDto {
     @JsonProperty("created_at")
     private LocalDateTime createdDate;
 
-    public UserResponseDto(User newUser) {
+    public UserResponseDto(final User newUser) {
         this.userId = newUser.getUserId();
         this.nickName = newUser.getNickName();
         this.email = newUser.getEmail();
