@@ -3,18 +3,16 @@ package com.example.comunity.repository;
 import com.example.comunity.domain.Board;
 import com.example.comunity.domain.Category;
 import com.example.comunity.domain.User;
-import org.junit.jupiter.api.Assertions;
+import com.example.comunity.repository.board.BoardRepositoryCustomImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -23,7 +21,7 @@ class CategoryRepositoryTest {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private BoardRepository boardRepository;
+    private BoardRepositoryCustomImpl boardRepositoryCustomImpl;
     @Autowired
     private CategoryRepository categoryRepository;
     @Autowired
@@ -47,20 +45,20 @@ class CategoryRepositoryTest {
         String title = "제목";
         String content = "내용";
         Board board = Board.createBoard(user, category, title, content);
-        boardRepository.upload(board);
+        boardRepositoryCustomImpl.upload(board);
 
         em.flush();
         em.clear();
 
         //when
-        Board findBoard = boardRepository.findBoardById(board.getBoardId());
+        Board findBoard = boardRepositoryCustomImpl.findBoardById(board.getBoardId());
         findBoard.getCategory().modifyCategory("economy");
 
         em.flush();
         em.clear();
 
         //then
-        assertThat(findBoard.getCategory().getName()).isEqualTo("economy"); //변경감지 update
+        assertThat(findBoard.getCategory().getCategoryName()).isEqualTo("economy"); //변경감지 update
     }
 
     @Test
@@ -75,7 +73,7 @@ class CategoryRepositoryTest {
         Category invalidCategory = categoryRepository.findById(30L);
 
         //then
-        assertThat(findCategory.getName()).isEqualTo("game");
+        assertThat(findCategory.getCategoryName()).isEqualTo("game");
         assertThat(invalidCategory).isNull();
     }
 }
