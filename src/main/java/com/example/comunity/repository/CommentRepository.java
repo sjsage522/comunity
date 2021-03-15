@@ -15,13 +15,11 @@ public class CommentRepository {
 
     public Comment apply(final Comment comment) {
         em.persist(comment);
-        em.flush();
         return comment;
     }
 
     public void delete(final Comment comment) {
         em.remove(comment);
-        em.flush();
     }
 
     public List<Comment> findAll(final Long boardId) {

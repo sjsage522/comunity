@@ -21,7 +21,6 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
     @Override
     public Board upload(final Board board) {
         em.persist(board);
-        em.flush();
         return board;
     }
 
@@ -32,7 +31,6 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
     public void delete(final Long boardId) {
         Board findBoard = findBoardById(boardId);
         em.remove(findBoard);
-        em.flush();
     }
 
     /**

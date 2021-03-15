@@ -16,10 +16,9 @@ public class CategoryRepository {
     /**
      * 카테고리 생성
      */
-    public Long create(final Category category) {
+    public Category create(final Category category) {
         em.persist(category);
-        em.flush();
-        return category.getCategoryId();
+        return category;
     }
 
     /**

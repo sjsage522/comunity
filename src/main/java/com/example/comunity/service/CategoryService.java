@@ -14,8 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+
     @Transactional
-    public Long create(final CategoryCreateDto categoryCreateDto) {
+    public Category create(final CategoryCreateDto categoryCreateDto) {
 
         String categoryName = categoryCreateDto.getCategoryName();
 
