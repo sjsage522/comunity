@@ -22,11 +22,11 @@ Content-Type: multipart/form-data
 
 
 ### 게시글 전체 조회
-GET http://localhost:8080/boards
+GET http://localhost:8080/boards/page/0
 Accept: application/json
 
 ### 특정 카테고리에 포함된 게시글 전체 조회
-GET http://localhost:8080/category/게임/boards
+GET http://localhost:8080/category/게임/boards/page/0
 Accept: application/json
 
 ### 특정 카테고리에 포함된 게시글 단건 조회
