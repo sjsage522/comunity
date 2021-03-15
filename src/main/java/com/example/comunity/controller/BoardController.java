@@ -88,22 +88,23 @@ public class BoardController {
 
     /**
      * 특정 카테고리에 포함되는 모든 게시글을 조회
-     *
+     * 페이징 처리 (10개 씩)
      * @param name 카테고리 명
      */
     @GetMapping("/category/{name}/boards/page/{pageNumber}")
-    public CollectionModel<EntityModel<BoardDto>> findAllWithCategory(@PathVariable String name, @PathVariable @Min(0) Integer pageNumber) {
+    public ResponseEntity<CollectionModel<EntityModel<BoardDto>>> findAllWithCategory(@PathVariable String name, @PathVariable @Min(0) Integer pageNumber) {
         List<EntityModel<BoardDto>> boards = new ArrayList<>();
         for (Board board : boardService.findAllWithCategory(name, pageNumber)) {
             boards.add(assembler.toModel(getBoardResponseDto(board)));
         }
 
-        return CollectionModel.of(boards,
-                linkTo(methodOn(BoardController.class).findAll(pageNumber)).withSelfRel());
+        return ResponseEntity.ok(CollectionModel.of(boards,
+                linkTo(methodOn(BoardController.class).findAll(pageNumber)).withSelfRel()));
     }
 
     /**
      * 모든 게시글 조회
+     * 페이징 처리 (10개 씩)
      */
     @GetMapping("/boards/page/{pageNumber}")
     public ResponseEntity<CollectionModel<EntityModel<BoardDto>>> findAll(@PathVariable @Min(0) Integer pageNumber) {
