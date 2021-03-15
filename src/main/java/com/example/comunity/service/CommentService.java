@@ -7,7 +7,7 @@ import com.example.comunity.dto.comment.CommentApplyDto;
 import com.example.comunity.dto.comment.CommentUpdateDto;
 import com.example.comunity.exception.NoMatchCommentInfoException;
 import com.example.comunity.exception.NoMatchUserInfoException;
-import com.example.comunity.repository.BoardRepository;
+import com.example.comunity.repository.board.BoardRepository;
 import com.example.comunity.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

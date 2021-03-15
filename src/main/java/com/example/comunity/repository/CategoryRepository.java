@@ -1,20 +1,16 @@
 package com.example.comunity.repository;
 
-import com.example.comunity.domain.Board;
 import com.example.comunity.domain.Category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
 public class CategoryRepository {
 
-    private final BoardRepository boardRepository;
     private final EntityManager em;
 
     /**
