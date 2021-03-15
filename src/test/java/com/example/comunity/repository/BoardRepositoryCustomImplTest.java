@@ -3,26 +3,25 @@ package com.example.comunity.repository;
 import com.example.comunity.domain.Board;
 import com.example.comunity.domain.Category;
 import com.example.comunity.domain.User;
+import com.example.comunity.repository.board.BoardRepositoryCustomImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
-class BoardRepositoryTest {
+class BoardRepositoryCustomImplTest {
 
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private BoardRepository boardRepository;
+    private BoardRepositoryCustomImpl boardRepositoryCustomImpl;
     @Autowired
     private CategoryRepository categoryRepository;
     @Autowired
@@ -101,13 +100,13 @@ class BoardRepositoryTest {
         categoryRepository.create(category2);
 
         Board board1 = Board.createBoard(user1, category1, "game1", "content...");
-        boardRepository.upload(board1);
+        boardRepositoryCustomImpl.upload(board1);
 
         em.flush();
         em.clear();
 
         //when
-        Board findBoard = boardRepository.findBoardById(board1.getBoardId());
+        Board findBoard = boardRepositoryCustomImpl.findBoardById(board1.getBoardId());
 
 //        findBoard.modifyBoard(category2, "game1", "content");
 
@@ -120,7 +119,7 @@ class BoardRepositoryTest {
 
         //then
 
-        Board findModifiedBoard = boardRepository.findBoardById(board1.getBoardId());
+        Board findModifiedBoard = boardRepositoryCustomImpl.findBoardById(board1.getBoardId());
 //        assertThat(findModifiedBoard.getCategory().getName()).isEqualTo("economy");
     }
 
