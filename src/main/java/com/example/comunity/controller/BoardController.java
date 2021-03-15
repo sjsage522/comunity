@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class BoardController {
         Board newBoard = boardService.upload(boardUploadDto, loginUser, files);
 
         return ResponseEntity
-                .created(linkTo(methodOn(BoardController.class).findAll()).toUri())
+                .created(linkTo(methodOn(BoardController.class).findAll(null)).toUri())
                 .body(assembler.toModel(getBoardResponseDto(newBoard)));
     }
 
@@ -90,33 +91,33 @@ public class BoardController {
      *
      * @param name 카테고리 명
      */
-    @GetMapping("/category/{name}/boards")
-    public CollectionModel<EntityModel<BoardDto>> findAllWithCategory(@PathVariable String name) {
+    @GetMapping("/category/{name}/boards/page/{pageNumber}")
+    public CollectionModel<EntityModel<BoardDto>> findAllWithCategory(@PathVariable String name, @PathVariable @Min(0) Integer pageNumber) {
         List<EntityModel<BoardDto>> boards = new ArrayList<>();
-        for (Board board : boardService.findAllWithCategory(name)) {
+        for (Board board : boardService.findAllWithCategory(name, pageNumber)) {
             boards.add(assembler.toModel(getBoardResponseDto(board)));
         }
 
         return CollectionModel.of(boards,
-                linkTo(methodOn(BoardController.class).findAll()).withSelfRel());
+                linkTo(methodOn(BoardController.class).findAll(pageNumber)).withSelfRel());
     }
 
     /**
      * 모든 게시글 조회
      */
-    @GetMapping("/boards")
-    public ResponseEntity<CollectionModel<EntityModel<BoardDto>>> findAll() {
+    @GetMapping("/boards/page/{pageNumber}")
+    public ResponseEntity<CollectionModel<EntityModel<BoardDto>>> findAll(@PathVariable @Min(0) Integer pageNumber) {
         List<EntityModel<BoardDto>> boards = new ArrayList<>();
-        for (Board board : boardService.findAll()) {
+        for (Board board : boardService.findAll(pageNumber)) {
             boards.add(assembler.toModel(getBoardResponseDto(board)));
         }
 
         return ResponseEntity.ok(CollectionModel.of(boards,
-                linkTo(methodOn(BoardController.class).findAll()).withSelfRel()));
+                linkTo(methodOn(BoardController.class).findAll(pageNumber)).withSelfRel()));
     }
 
     /**
-     * 특정 카테고리에 포함된 모든 게시글 조회
+     * 특정 카테고리에 포함된 게시글 단건 조회
      * @param id 게시글 번호
      * @param name 카테고리 이름
      */
@@ -125,7 +126,7 @@ public class BoardController {
         Board findBoard = boardService.findByIdWithCategory(id, name);
 
         return ResponseEntity.
-                created(linkTo(methodOn(BoardController.class).findAllWithCategory(name)).toUri())
+                created(linkTo(methodOn(BoardController.class).findAllWithCategory(name, null)).toUri())
                 .body(assembler.toModel(getBoardResponseDto(findBoard)));
     }
 
@@ -142,7 +143,7 @@ public class BoardController {
                     linkTo(methodOn(BoardController.class).findByIdWithCategory(boardDto.getBoardId(), boardDto.getCategoryName())).withSelfRel()
                             .andAffordance(afford(methodOn(BoardController.class).update(boardDto.getBoardId(), boardDto.getCategoryName(), null, null)))
                             .andAffordance(afford(methodOn(BoardController.class).delete(boardDto.getBoardId(), boardDto.getCategoryName(), null))),
-                    linkTo(methodOn(BoardController.class).findAll()).withRel("boards"));
+                    linkTo(methodOn(BoardController.class).findAll(null)).withRel("boards"));
         }
     }
 

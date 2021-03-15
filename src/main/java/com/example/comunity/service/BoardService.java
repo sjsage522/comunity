@@ -7,12 +7,14 @@ import com.example.comunity.dto.file.UploadFileDto;
 import com.example.comunity.exception.NoMatchBoardInfoException;
 import com.example.comunity.exception.NoMatchCategoryInfoException;
 import com.example.comunity.exception.NoMatchUserInfoException;
-import com.example.comunity.repository.BoardRepository;
+import com.example.comunity.repository.board.BoardRepository;
 import com.example.comunity.repository.CategoryRepository;
 import com.example.comunity.repository.CommentRepository;
 import com.example.comunity.repository.FileRepository;
 import com.example.comunity.util.FileUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -33,8 +35,12 @@ public class BoardService {
     private final CommentRepository commentRepository;
     private final FileUtils fileUtils;
 
-    public List<Board> findAll() {
-        return boardRepository.findAll();
+    public List<Board> findAll(final Integer pageNumber) {
+
+        /* 10개씩 페이징 */
+        Page<Board> boards = boardRepository.findAll(PageRequest.of(pageNumber, 10));
+        boards.getTotalPages();
+        return boards.stream().collect(Collectors.toList());
     }
 
     @Transactional
@@ -70,8 +76,11 @@ public class BoardService {
         return uploadedBoard;
     }
 
-    public List<Board> findAllWithCategory(final String name) {
-        return boardRepository.findAllWithCategory(name);
+    public List<Board> findAllWithCategory(final String name, final Integer pageNumber) {
+
+        /* 10개씩 페이징 */
+        Page<Board> boards = boardRepository.findAllWithCategory(name, PageRequest.of(pageNumber, 10));
+        return boards.stream().collect(Collectors.toList());
     }
 
     public Board findByIdWithCategory(final Long id, final String name) {
