@@ -83,6 +83,13 @@ public class RestExceptionHandler {
         return buildResponseEntity(apiError);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    protected ResponseEntity<Object> illegalArgument(
+            final IllegalArgumentException ex) {
+        ApiError apiError = getApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+        return buildResponseEntity(apiError);
+    }
+
     private ResponseEntity<Object> buildResponseEntity(final ApiError apiError) {
         return new ResponseEntity<>(apiError, apiError.getStatus());
     }
