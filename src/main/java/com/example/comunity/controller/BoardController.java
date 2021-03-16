@@ -103,7 +103,7 @@ public class BoardController {
     }
 
     /**
-     * 모든 게시글 조회
+     * 모든 게시글 조회 (모든 카테고리내 게시글들 중에서 가장 최근 게시글 10개를 조회)
      * 페이징 처리 (10개 씩)
      */
     @GetMapping("/boards/page/{pageNumber}")
