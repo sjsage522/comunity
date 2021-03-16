@@ -38,7 +38,7 @@ public class BoardService {
     public List<Board> findAll(final Integer pageNumber) {
 
         /* 10개씩 페이징 */
-        Page<Board> boards = boardRepository.findAll(PageRequest.of(pageNumber, 10));
+        Page<Board> boards = boardRepository.findAllByOrderByBoardIdDesc(PageRequest.of(pageNumber, 10));
         boards.getTotalPages();
         return boards.stream().collect(Collectors.toList());
     }
