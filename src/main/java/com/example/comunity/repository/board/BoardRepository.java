@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface BoardRepository extends JpaRepository<Board, Long>, BoardRepositoryCustom {
 
     /**
@@ -15,7 +17,9 @@ public interface BoardRepository extends JpaRepository<Board, Long>, BoardReposi
      *
      * @param pageable .
      */
-    @Query(value = "select b from Board b join fetch b.category c where c.categoryName = :categoryName",
+    @Query(value = "select b from Board b join fetch b.category c where c.categoryName = :categoryName order by b.boardId desc",
             countQuery = "select count(b) from Board b join b.category c where c.categoryName = :categoryName")
     Page<Board> findAllWithCategory(@Param("categoryName") final String categoryName, final Pageable pageable);
+
+    Page<Board> findAllByOrderByBoardIdDesc(final Pageable pageable);
 }
