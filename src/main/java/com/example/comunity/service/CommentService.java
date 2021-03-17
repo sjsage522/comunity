@@ -5,6 +5,7 @@ import com.example.comunity.domain.Comment;
 import com.example.comunity.domain.User;
 import com.example.comunity.dto.comment.CommentApplyDto;
 import com.example.comunity.dto.comment.CommentUpdateDto;
+import com.example.comunity.exception.NoMatchBoardInfoException;
 import com.example.comunity.exception.NoMatchCommentInfoException;
 import com.example.comunity.exception.NoMatchUserInfoException;
 import com.example.comunity.repository.board.BoardRepository;
@@ -27,6 +28,9 @@ public class CommentService {
     public Comment apply(final User loginUser, final Long boardId, final CommentApplyDto commentApplyDto) {
 
         Board findBoard = boardRepository.findBoardById(boardId);
+
+        if (findBoard == null) throw new NoMatchBoardInfoException("존재하지 않는 게시글입니다.");
+
         Comment comment = Comment.createComment(loginUser, findBoard, commentApplyDto.getContent());
 
         Long parentId = commentApplyDto.getParentId();
