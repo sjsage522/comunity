@@ -17,6 +17,8 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
@@ -117,6 +119,7 @@ public class CommentController {
         }
 
         List<Comment> children = comment.getChildren();
+        children.sort(Comparator.comparing(Comment::getCommentId).reversed());
 
         for (Comment child : children) {
             CommentResponseDto childDto = getCommentResponseDto(child);
