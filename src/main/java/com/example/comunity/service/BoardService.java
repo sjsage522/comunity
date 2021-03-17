@@ -7,10 +7,10 @@ import com.example.comunity.dto.file.UploadFileDto;
 import com.example.comunity.exception.NoMatchBoardInfoException;
 import com.example.comunity.exception.NoMatchCategoryInfoException;
 import com.example.comunity.exception.NoMatchUserInfoException;
-import com.example.comunity.repository.board.BoardRepository;
 import com.example.comunity.repository.CategoryRepository;
-import com.example.comunity.repository.CommentRepository;
 import com.example.comunity.repository.FileRepository;
+import com.example.comunity.repository.board.BoardRepository;
+import com.example.comunity.repository.comment.CommentRepository;
 import com.example.comunity.util.FileUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -39,7 +39,6 @@ public class BoardService {
 
         /* 10개씩 페이징 */
         Page<Board> boards = boardRepository.findAllByOrderByBoardIdDesc(PageRequest.of(pageNumber, 10));
-        boards.getTotalPages();
         return boards.stream().collect(Collectors.toList());
     }
 
