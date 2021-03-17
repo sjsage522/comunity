@@ -76,7 +76,8 @@ public class BoardController {
      */
     @PatchMapping("/category/{name}/boards/{id}")
     public ResponseEntity<EntityModel<BoardDto>> update(
-            @PathVariable final Long id, @PathVariable final String name, @Valid @RequestBody final BoardUpdateDto boardUpdateDto, final HttpSession session) {
+            @PathVariable final Long id, @PathVariable final String name,
+            @Valid @RequestBody final BoardUpdateDto boardUpdateDto, final HttpSession session) {
         User loginUser = (User) session.getAttribute("authInfo");
 
         Board updatedBoard = boardService.update(id, name, boardUpdateDto, loginUser);
@@ -92,7 +93,8 @@ public class BoardController {
      * @param name 카테고리 명
      */
     @GetMapping("/category/{name}/boards/page/{pageNumber}")
-    public ResponseEntity<CollectionModel<EntityModel<BoardDto>>> findAllWithCategory(@PathVariable String name, @PathVariable @Min(0) Integer pageNumber) {
+    public ResponseEntity<CollectionModel<EntityModel<BoardDto>>> findAllWithCategory(
+            @PathVariable final String name, final @PathVariable @Min(0) Integer pageNumber) {
         List<EntityModel<BoardDto>> boards = new ArrayList<>();
         for (Board board : boardService.findAllWithCategory(name, pageNumber)) {
             boards.add(assembler.toModel(getBoardResponseDto(board)));
@@ -107,7 +109,7 @@ public class BoardController {
      * 페이징 처리 (10개 씩)
      */
     @GetMapping("/boards/page/{pageNumber}")
-    public ResponseEntity<CollectionModel<EntityModel<BoardDto>>> findAll(@PathVariable @Min(0) Integer pageNumber) {
+    public ResponseEntity<CollectionModel<EntityModel<BoardDto>>> findAll(@PathVariable @Min(0) final Integer pageNumber) {
         List<EntityModel<BoardDto>> boards = new ArrayList<>();
         for (Board board : boardService.findAll(pageNumber)) {
             boards.add(assembler.toModel(getBoardResponseDto(board)));
@@ -142,8 +144,12 @@ public class BoardController {
 
             return EntityModel.of(boardDto,
                     linkTo(methodOn(BoardController.class).findByIdWithCategory(boardDto.getBoardId(), boardDto.getCategoryName())).withSelfRel()
-                            .andAffordance(afford(methodOn(BoardController.class).update(boardDto.getBoardId(), boardDto.getCategoryName(), null, null)))
-                            .andAffordance(afford(methodOn(BoardController.class).delete(boardDto.getBoardId(), boardDto.getCategoryName(), null))),
+                            .andAffordance(
+                                    afford(methodOn(BoardController.class).update(
+                                            boardDto.getBoardId(), boardDto.getCategoryName(), null, null)))
+                            .andAffordance(
+                                    afford(methodOn(BoardController.class).delete(
+                                            boardDto.getBoardId(), boardDto.getCategoryName(), null))),
                     linkTo(methodOn(BoardController.class).findAll(null)).withRel("boards"));
         }
     }
@@ -151,7 +157,7 @@ public class BoardController {
     /**
      * 응답 dto 생성
      */
-    private BoardResponseDto getBoardResponseDto(Board newBoard) {
+    private BoardResponseDto getBoardResponseDto(final Board newBoard) {
         return new BoardResponseDto(newBoard);
     }
 }
