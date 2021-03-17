@@ -78,7 +78,7 @@ public class CommentService {
     }
 
     public List<Comment> findAll(final Long boardId, final Integer pageNumber) {
-        return commentRepository.findAll(boardId, PageRequest.of(pageNumber, 2)).stream()
+        return commentRepository.findAll(boardId, PageRequest.of(pageNumber, 10)).stream()
                 .collect(Collectors.toList());
     }
 }
