@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-
+import javax.validation.constraints.Min;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,19 +33,18 @@ public class CommentController {
      * 특정 게시글에 달린 모든 답글들 조회
      * @param id 게시글 번호
      */
-    @GetMapping("/boards/{id}/comments")
-    public ResponseEntity<CollectionModel<EntityModel<CommentDto>>> findAll(@PathVariable final Long id) {
+    @GetMapping("/boards/{id}/comments/page/{pageNumber}")
+    public ResponseEntity<CollectionModel<EntityModel<CommentDto>>> findAll(
+            @PathVariable final Long id, @PathVariable @Min(0) final Integer pageNumber) {
         List<EntityModel<CommentDto>> responseComments = new ArrayList<>();
-        List<Comment> commentList = commentService.findAll(id);
+        List<Comment> commentList = commentService.findAll(id, pageNumber);
 
         for (Comment comment : commentList) {
-            CommentResponseDto commentResponseDto = getCommentResponseDto(comment);
-            if (commentResponseDto.getParentId() == null)
-                responseComments.add(EntityModel.of(commentResponseDto));
+            responseComments.add(EntityModel.of(getCommentResponseDto(comment)));
         }
 
         return ResponseEntity.ok(CollectionModel.of(responseComments,
-                linkTo(methodOn(CommentController.class).findAll(id)).withSelfRel()));
+                linkTo(methodOn(CommentController.class).findAll(id, pageNumber)).withSelfRel()));
     }
 
     /**
