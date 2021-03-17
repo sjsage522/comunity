@@ -1,4 +1,4 @@
-package com.example.comunity.repository;
+package com.example.comunity.repository.comment;
 
 import com.example.comunity.domain.Comment;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class CommentRepository {
+public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
 
     private final EntityManager em;
 
@@ -18,19 +18,22 @@ public class CommentRepository {
         return comment;
     }
 
-    public void delete(final Comment comment) {
-        em.remove(comment);
+    public void delete(final Long commentId) {
+        Comment findComment = findCommentById(commentId);
+        em.remove(findComment);
     }
 
     public List<Comment> findAll(final Long boardId) {
         return em.createQuery(
                 "select c from Comment c" +
-                        " where c.board.boardId = :boardId", Comment.class)
+                        " join fetch c.user" +
+                        " where c.board.boardId = :boardId" +
+                        " order by c.commentId desc", Comment.class)
                 .setParameter("boardId", boardId)
                 .getResultList();
     }
 
-    public Comment findById(final Long commentId) {
+    public Comment findCommentById(final Long commentId) {
         return em.find(Comment.class, commentId);
     }
 
