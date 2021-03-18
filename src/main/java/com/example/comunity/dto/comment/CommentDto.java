@@ -14,8 +14,6 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentDto {
 
-    private Long commentId;
-
     @JsonProperty("created_at")
     private LocalDateTime createdDate;
     @JsonProperty("last_modified_at")
