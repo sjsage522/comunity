@@ -99,7 +99,7 @@ public class UserController {
     }
 
     /**
-     * 모든 사용자 조호
+     * 모든 사용자 조회
      */
     @GetMapping("/users")
     public ResponseEntity<CollectionModel<EntityModel<UserDto>>> findAll() {
