@@ -57,7 +57,8 @@ public class UserService {
         findUser.changeName(userUpdateDto.getName());
         findUser.changeNickname(userUpdateDto.getNickName());
         findUser.changePassword(userUpdateDto.getPassword());
-        /* 트랜잭션 커밋시점에 1차캐시의 스냅샷과 db의 데이터와의 비교 (변경 감지) */
+        /* 트랜잭션 커밋시점에 1차캐시의 스냅샷과 영속 상태의 entity 정보와 비교 */
+        /* 변경된 부분을 update 쿼리를 통해(영속성 컨텍스트 SQL 저장소) db 데이터를 수정 */
 
         userUpdateDto.setUserId(id);
 
