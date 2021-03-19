@@ -2,6 +2,7 @@ package com.example.comunity.dto.comment;
 
 import com.example.comunity.domain.Comment;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,6 +16,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonPropertyOrder({"parentId", "commentId", "boardId", "userId", "createdDate", "lastModifiedDate", "content", "children"})
 public class CommentResponseDto extends CommentDto {
 
     @JsonProperty("parent_id")
