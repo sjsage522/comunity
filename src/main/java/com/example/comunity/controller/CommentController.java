@@ -118,7 +118,7 @@ public class CommentController {
         }
 
         List<Comment> children = comment.getChildren();
-        children.sort(Comparator.comparing(Comment::getCommentId).reversed());
+        children.sort(Comparator.comparing(Comment::getCommentId));
 
         for (Comment child : children) {
             CommentResponseDto childDto = getCommentResponseDto(child);

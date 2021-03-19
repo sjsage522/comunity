@@ -28,7 +28,7 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
                 "select c from Comment c" +
                         " join fetch c.user" +
                         " where c.board.boardId = :boardId" +
-                        " order by c.commentId desc", Comment.class)
+                        " order by c.commentId asc", Comment.class)
                 .setParameter("boardId", boardId)
                 .getResultList();
     }

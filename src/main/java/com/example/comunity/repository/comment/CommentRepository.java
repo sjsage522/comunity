@@ -13,7 +13,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long>, Comment
             " join fetch c.user" +
             " where c.board.boardId = :boardId" +
             " and c.parent is null" +
-            " order by c.commentId desc",
+            " order by c.commentId asc",
             countQuery = "select count(c) from Comment c where c.board.boardId = :boardId")
     Page<Comment> findAll(@Param("boardId") final Long boardId, final Pageable pageable);
 }
