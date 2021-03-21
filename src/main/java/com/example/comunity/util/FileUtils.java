@@ -23,8 +23,7 @@ public class FileUtils {
     private final String today = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMdd"));
 
     /* 서버에 첨부파일들을 저장 */
-    private final String uploadPath = Paths.get("/Users", "jun", "Development", "downloads", today).toString();
-
+    private final String uploadPath = System.getenv("FILE_UPLOAD_PATH") + today;
 
     /**
      * @return 서버에 저장될 파일이름 (랜덤 문자열)
@@ -34,7 +33,6 @@ public class FileUtils {
     }
 
     public List<UploadFileDto> uploadFiles(final MultipartFile[] files, final Board board) {
-
         /* 파일이 비어있는 경우 */
         if (files == null || files[0].getSize() < 1) {
             return Collections.emptyList();
