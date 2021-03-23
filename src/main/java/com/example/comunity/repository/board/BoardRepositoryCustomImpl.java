@@ -55,7 +55,6 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
                     "select b from Board b" +
                             " join fetch b.user" +
                             " join fetch b.category c" +
-                            " join fetch b.uploadFiles" +
                             " where b.boardId = :boardId" +
                             " and c.categoryName = :categoryName", Board.class)
                     .setParameter("boardId", boardId)
