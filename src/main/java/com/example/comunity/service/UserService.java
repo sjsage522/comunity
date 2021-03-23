@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Service
@@ -49,9 +50,11 @@ public class UserService {
     }
 
     @Transactional
-    public User update(final String id, final UserUpdateDto userUpdateDto) {
+    public User update(final String id, final UserUpdateDto userUpdateDto, User loginUser) {
         /* 영속상태의 entity */
         User findUser = findById(id);
+
+        if (!loginUser.getUserId().equals(findUser.getUserId())) throw new NoMatchUserInfoException("다른 사용자의 정보를 수정할 수 없습니다.");
 
         /* dirty check */
         findUser.changeName(userUpdateDto.getName());
@@ -66,8 +69,10 @@ public class UserService {
     }
 
     @Transactional
-    public int delete(final String id, final UserDeleteDto userDeleteDto) {
+    public int delete(final String id, final UserDeleteDto userDeleteDto, final User loginUser) {
         User findUser = findById(id);
+
+        if (!loginUser.getUserId().equals(findUser.getUserId())) throw new NoMatchUserInfoException("다른 사용자의 정보를 삭제할 수 없습니다.");
 
         if (findUser.getUserId().equals(userDeleteDto.getUserId()) &&
                 findUser.getPassword().equals(userDeleteDto.getPassword())) {

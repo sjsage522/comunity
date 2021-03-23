@@ -119,8 +119,10 @@ public class UserController {
      * @param userUpdateDto 사용자 정보 수정 dto
      */
     @PatchMapping("/users/{id}")
-    public ResponseEntity<EntityModel<UserDto>> update(@PathVariable final String id, @Valid @RequestBody final UserUpdateDto userUpdateDto) {
-        User updatedUser = userService.update(id, userUpdateDto);
+    public ResponseEntity<EntityModel<UserDto>> update(@PathVariable final String id, @Valid @RequestBody final UserUpdateDto userUpdateDto, final HttpSession session) {
+        User loginUser = (User) session.getAttribute("authInfo");
+
+        User updatedUser = userService.update(id, userUpdateDto, loginUser);
 
         return ResponseEntity
                 .created(linkTo(methodOn(UserController.class).findById(id)).toUri())
@@ -133,7 +135,9 @@ public class UserController {
      */
     @DeleteMapping("/users/{id}")
     public ResponseEntity<EntityModel<UserDto>> delete(@PathVariable final String id, @Valid @RequestBody final UserDeleteDto userDeleteDto, final HttpSession session) {
-        userService.delete(id, userDeleteDto);
+        User loginUser = (User) session.getAttribute("authInfo");
+
+        userService.delete(id, userDeleteDto, loginUser);
 
         session.invalidate();
 
@@ -148,7 +152,7 @@ public class UserController {
 
             return EntityModel.of(userDto,
                     linkTo(methodOn(UserController.class).findById(userDto.getUserId())).withSelfRel()
-                            .andAffordance(afford(methodOn(UserController.class).update(userDto.getUserId(), null)))
+                            .andAffordance(afford(methodOn(UserController.class).update(userDto.getUserId(), null, null)))
                             .andAffordance(afford(methodOn(UserController.class).delete(userDto.getUserId(), null, null))),
                     linkTo(methodOn(UserController.class).findAll()).withRel("users"));
         }
