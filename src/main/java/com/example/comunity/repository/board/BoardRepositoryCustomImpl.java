@@ -66,4 +66,14 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
             return null;
         }
     }
+
+    @Override
+    public List<Board> findAllWithUser(final String userId) {
+        return em.createQuery(
+                "select b from Board b" +
+                        " join fetch b.user" +
+                " where b.user.userId = :userId", Board.class)
+                .setParameter("userId", userId)
+                .getResultList();
+    }
 }
