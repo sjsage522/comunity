@@ -33,6 +33,15 @@ public class BoardRepositoryCustomImpl implements BoardRepositoryCustom {
         em.remove(findBoard);
     }
 
+    @Override
+    public void deleteAllByIds(final List<Long> ids) {
+        em.createQuery(
+                "delete from Board b " +
+                        " where b.boardId in :ids")
+                .setParameter("ids", ids)
+                .executeUpdate();
+    }
+
     /**
      * 게시판 번호로 하나의 게시판 조회
      */

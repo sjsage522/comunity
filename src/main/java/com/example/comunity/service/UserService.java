@@ -1,5 +1,8 @@
 package com.example.comunity.service;
 
+import com.example.comunity.domain.Board;
+import com.example.comunity.domain.Comment;
+import com.example.comunity.domain.UploadFile;
 import com.example.comunity.domain.User;
 import com.example.comunity.dto.user.UserDeleteDto;
 import com.example.comunity.dto.user.UserJoinDto;
@@ -7,13 +10,17 @@ import com.example.comunity.dto.user.UserUpdateDto;
 import com.example.comunity.exception.DuplicateUserIdException;
 import com.example.comunity.exception.DuplicateUserNickNameException;
 import com.example.comunity.exception.NoMatchUserInfoException;
+import com.example.comunity.repository.FileRepository;
 import com.example.comunity.repository.UserRepository;
+import com.example.comunity.repository.board.BoardRepository;
+import com.example.comunity.repository.comment.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -21,6 +28,9 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final BoardRepository boardRepository;
+    private final FileRepository fileRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional
     public User join(final UserJoinDto userJoinDto) {
@@ -73,6 +83,27 @@ public class UserService {
         User findUser = findById(id);
 
         if (!loginUser.getUserId().equals(findUser.getUserId())) throw new NoMatchUserInfoException("다른 사용자의 정보를 삭제할 수 없습니다.");
+
+        List<Board> boards = boardRepository.findAllWithUser(id);
+        List<Long> boardIds = boards.stream()
+                .map(Board::getBoardId)
+                .collect(Collectors.toList());
+
+        for (Long boardId : boardIds) {
+            List<UploadFile> uploadFiles = fileRepository.findAll(boardId);
+            List<Long> fileIds = uploadFiles.stream()
+                    .map(UploadFile::getUploadFileId)
+                    .collect(Collectors.toList());
+            fileRepository.deleteAllByIds(fileIds);
+
+            List<Comment> comments = commentRepository.findAll(boardId);
+            List<Long> commentIds = comments.stream()
+                    .map(Comment::getCommentId)
+                    .collect(Collectors.toList());
+            commentRepository.deleteAllByIds(commentIds);
+        }
+
+        boardRepository.deleteAllByIds(boardIds);
 
         if (findUser.getUserId().equals(userDeleteDto.getUserId()) &&
                 findUser.getPassword().equals(userDeleteDto.getPassword())) {

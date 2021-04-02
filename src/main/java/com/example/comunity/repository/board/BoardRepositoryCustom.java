@@ -14,4 +14,6 @@ public interface BoardRepositoryCustom {
     Board findBoardByIdWithCategory(Long boardId, String categoryName);
 
     public List<Board> findAllWithUser(String userId);
+
+    void deleteAllByIds(final List<Long> ids);
 }
