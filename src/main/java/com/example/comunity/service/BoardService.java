@@ -98,17 +98,7 @@ public class BoardService {
         if (!findUser.getUserId().equals(loginUser.getUserId()))
             throw new NoMatchUserInfoException("다른 사용자의 게시글을 삭제할 수 없습니다.");
 
-        List<UploadFile> uploadFiles = fileRepository.findAll(boardId);
-        List<Long> fileIds = uploadFiles.stream()
-                .map(UploadFile::getUploadFileId)
-                .collect(Collectors.toList());
-        fileRepository.deleteAllByIds(fileIds);
-
-        List<Comment> comments = commentRepository.findAll(boardId);
-        List<Long> commentIds = comments.stream()
-                .map(Comment::getCommentId)
-                .collect(Collectors.toList());
-        commentRepository.deleteAllByIds(commentIds);
+        UserService.deleteRelatedToBoard(boardId, fileRepository, commentRepository);
 
         boardRepository.delete(boardId);
     }

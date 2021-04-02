@@ -90,17 +90,7 @@ public class UserService {
                 .collect(Collectors.toList());
 
         for (Long boardId : boardIds) {
-            List<UploadFile> uploadFiles = fileRepository.findAll(boardId);
-            List<Long> fileIds = uploadFiles.stream()
-                    .map(UploadFile::getUploadFileId)
-                    .collect(Collectors.toList());
-            fileRepository.deleteAllByIds(fileIds);
-
-            List<Comment> comments = commentRepository.findAll(boardId);
-            List<Long> commentIds = comments.stream()
-                    .map(Comment::getCommentId)
-                    .collect(Collectors.toList());
-            commentRepository.deleteAllByIds(commentIds);
+            deleteRelatedToBoard(boardId, fileRepository, commentRepository);
         }
 
         boardRepository.deleteAllByIds(boardIds);
@@ -120,5 +110,19 @@ public class UserService {
 
     public List<User> findAll() {
         return userRepository.findAll();
+    }
+
+    static void deleteRelatedToBoard(Long boardId, FileRepository fileRepository, CommentRepository commentRepository) {
+        List<UploadFile> uploadFiles = fileRepository.findAll(boardId);
+        List<Long> fileIds = uploadFiles.stream()
+                .map(UploadFile::getUploadFileId)
+                .collect(Collectors.toList());
+        fileRepository.deleteAllByIds(fileIds);
+
+        List<Comment> comments = commentRepository.findAll(boardId);
+        List<Long> commentIds = comments.stream()
+                .map(Comment::getCommentId)
+                .collect(Collectors.toList());
+        commentRepository.deleteAllByIds(commentIds);
     }
 }
