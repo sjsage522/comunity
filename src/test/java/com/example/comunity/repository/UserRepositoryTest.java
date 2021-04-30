@@ -35,6 +35,14 @@ class UserRepositoryTest {
 
     @Test
     void delete() {
+
+        User newUser = User.createUser("junseok1234", "junseok", "jun", "1234", "test@gmail.com");
+        User savedUser = userRepository.join(newUser);
+        Assertions.assertThat(savedUser.getUserId()).isEqualTo("junseok1234");
+
+        userRepository.delete("junseok1234");
+        User findUser = userRepository.findUserById("junseok1234"); /* Optional 처리 해줘야함, 서비스 계층 로직 수정 예정 (검증 부분 등..) */
+        Assertions.assertThat(findUser).isNull();
     }
 
     @Test
