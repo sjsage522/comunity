@@ -16,8 +16,13 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.stereotype.Repository;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.*;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = Repository.class))
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -31,11 +36,33 @@ class BoardRepositoryTest {
     BoardRepository boardRepository;
     @Autowired
     CategoryRepository categoryRepository;
+    @Autowired
+    EntityManager em;
 
     @Test
     @DisplayName("테스트 01. 게시글 업로드 테스트")
     void _01_upload() {
 
+        //given
+        User getUesr = getUser("test", "tester", "tester123", "1234", "test@gmail.com");
+        User newUser = userRepository.join(getUesr);
+
+        Category getCategory = getCategory("coding");
+        Category newCategory = categoryRepository.create(getCategory);
+
+        Board getBoard = getBoard(newUser, newCategory, "title", "content");
+
+        //when
+        boardRepository.upload(getBoard);
+
+        em.flush(); /* 영속성 컨텍스트의 SQL 쓰기 지연저장소에 있는 쿼리를 날림 */
+        em.clear(); /* 1차 캐시 클리어 */
+
+        Board findBoard = boardRepository.findBoardById(1L);
+        //then
+        assertThat(findBoard.getUser().getUserId()).isEqualTo("test");              /* lazy loading */
+        assertThat(findBoard.getCategory().getCategoryName()).isEqualTo("coding");  /* lazy loading */
+        assertThat(findBoard.getTitle()).isEqualTo("title");
     }
 
     @Test
@@ -71,7 +98,7 @@ class BoardRepositoryTest {
         List<Board> boards = boardRepository.findAllWithUser(user.getUserId());
 
         //then
-        Assertions.assertThat(boards.size()).isEqualTo(1);
+        assertThat(boards.size()).isEqualTo(1);
     }
 
     /* TODO method naming 수정 필요 */
