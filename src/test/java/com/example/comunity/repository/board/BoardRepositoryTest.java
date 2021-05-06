@@ -5,7 +5,6 @@ import com.example.comunity.domain.Category;
 import com.example.comunity.domain.User;
 import com.example.comunity.repository.CategoryRepository;
 import com.example.comunity.repository.UserRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -15,18 +14,21 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.annotation.DirtiesContext;
 
 import javax.persistence.EntityManager;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = Repository.class))
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestMethodOrder(MethodOrderer.MethodName.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @DisplayName("게시판 레포지토리 Custom")
 class BoardRepositoryTest {
 
@@ -44,8 +46,8 @@ class BoardRepositoryTest {
     void _01_upload() {
 
         //given
-        User getUesr = getUser("test", "tester", "tester123", "1234", "test@gmail.com");
-        User newUser = userRepository.join(getUesr);
+        User getUser = getUser("test", "tester", "tester123", "1234", "test@gmail.com");
+        User newUser = userRepository.join(getUser);
 
         Category getCategory = getCategory("coding");
         Category newCategory = categoryRepository.create(getCategory);
@@ -68,21 +70,109 @@ class BoardRepositoryTest {
     @Test
     @DisplayName("테스트 02. 게시글 삭제 테스트")
     void _02_delete() {
+
+        //given
+        User getUser = getUser("test", "tester", "tester123", "1234", "test@gmail.com");
+        User newUser = userRepository.join(getUser);
+
+        Category getCategory = getCategory("coding");
+        Category newCategory = categoryRepository.create(getCategory);
+
+        Board getBoard = getBoard(newUser, newCategory, "title", "content");
+
+        boardRepository.upload(getBoard);
+
+        em.flush();
+        em.clear();
+
+        //when
+        boardRepository.delete(1L);
+
+        //then
+        assertThat(boardRepository.findBoardById(1L)).isNull();
     }
 
     @Test
     @DisplayName("테스트 03. 모든 게시글 삭제 테스트 (by ids)")
     void _03_deleteAllByIds() {
+
+        //given
+        User getUser = getUser("test", "tester", "tester123", "1234", "test@gmail.com");
+        User newUser = userRepository.join(getUser);
+
+        Category getCategory = getCategory("coding");
+        Category newCategory = categoryRepository.create(getCategory);
+
+        Board getBoard = getBoard(newUser, newCategory, "title", "content");
+
+        boardRepository.upload(getBoard);
+        boardRepository.upload(getBoard);
+        boardRepository.upload(getBoard);
+
+        em.flush();
+        em.clear();
+
+        //when
+        System.out.println(boardRepository.findAll().get(0).getBoardId());
+
+        boardRepository.deleteAllByIds(Arrays.asList(1L, 2L, 3L));
+
+        //then
+        assertThat(boardRepository.findAll().size()).isEqualTo(0);
     }
 
     @Test
     @DisplayName("테스트 04. 게시글 조회 테스트 (by id)")
     void _04_findBoardById() {
+
+        //given
+        User getUser = getUser("test", "tester", "tester123", "1234", "test@gmail.com");
+        User newUser = userRepository.join(getUser);
+
+        Category getCategory = getCategory("coding");
+        Category newCategory = categoryRepository.create(getCategory);
+
+        Board getBoard = getBoard(newUser, newCategory, "title", "content");
+
+        boardRepository.upload(getBoard);
+
+        em.flush();
+        em.clear();
+
+        //when
+        Board findBoard = boardRepository.findBoardById(1L);
+
+        //then
+        assertThat(findBoard.getTitle()).isEqualTo("title");
+        assertThat(findBoard.getUser().getUserId()).isEqualTo("test");                  /* lazy loading */
+        assertThat(findBoard.getCategory().getCategoryName()).isEqualTo("coding");      /* lazy loading */
     }
 
     @Test
     @DisplayName("테스트 05. 게시글 조회 테스트 (by id and category)")
     void _05_findBoardByIdWithCategory() {
+
+        //given
+        User getUser = getUser("test", "tester", "tester123", "1234", "test@gmail.com");
+        User newUser = userRepository.join(getUser);
+
+        Category getCategory = getCategory("coding");
+        Category newCategory = categoryRepository.create(getCategory);
+
+        Board getBoard = getBoard(newUser, newCategory, "title", "content");
+
+        boardRepository.upload(getBoard);
+
+        em.flush();
+        em.clear();
+
+        //when
+        Board findBoard = boardRepository.findBoardByIdWithCategory(1L, "coding");
+
+        //then
+        assertThat(findBoard.getTitle()).isEqualTo("title");
+        assertThat(findBoard.getUser().getUserId()).isEqualTo("test");                  /* lazy loading */
+        assertThat(findBoard.getCategory().getCategoryName()).isEqualTo("coding");      /* lazy loading */
     }
 
 
@@ -93,12 +183,18 @@ class BoardRepositoryTest {
         User user = userRepository.join(getUser("user1", "user", "user", "1234", "user@test.com"));
         Category newCategory = categoryRepository.create(getCategory("coding"));
         boardRepository.upload(getBoard(user, newCategory, "user_title", "user_content"));
+        boardRepository.upload(getBoard(user, newCategory, "user_title", "user_content"));
+        boardRepository.upload(getBoard(user, newCategory, "user_title", "user_content"));
+
+        em.flush();
+        em.clear();
 
         //when
-        List<Board> boards = boardRepository.findAllWithUser(user.getUserId());
+//        List<Board> boards = boardRepository.findAllWithUser(user.getUserId());
+        List<Board> boards = boardRepository.findAll();
 
         //then
-        assertThat(boards.size()).isEqualTo(1);
+        assertThat(boards.size()).isEqualTo(3);
     }
 
     /* TODO method naming 수정 필요 */
@@ -106,12 +202,58 @@ class BoardRepositoryTest {
     @DisplayName("테스트 07. 모든 게시글 조회 테스트 (by category)")
     void _07_findAllWithCategory() {
         //TODO 게시글 페이징 페스트
+
+        //given
+        User user = userRepository.join(getUser("user1", "user", "user", "1234", "user@test.com"));
+        Category newCategory = categoryRepository.create(getCategory("coding"));
+        boardRepository.upload(getBoard(user, newCategory, "user_title", "user_content"));
+        boardRepository.upload(getBoard(user, newCategory, "user_title", "user_content"));
+        boardRepository.upload(getBoard(user, newCategory, "user_title", "user_content"));
+
+        em.flush();
+        em.clear();
+
+        //when
+        List<Board> zeroPage = boardRepository.findAllWithCategory("coding", PageRequest.of(0, 2)) /* 0페이지 -> 2개 */
+                .stream()
+                .collect(Collectors.toList());
+
+        List<Board> onePage = boardRepository.findAllWithCategory("coding", PageRequest.of(1, 2))
+                .stream()
+                .collect(Collectors.toList());
+
+        //then
+        assertThat(boardRepository.findAll().size()).isEqualTo(3); /* 전체 게시글 수 -> 3개 */
+        assertThat(zeroPage.size()).isEqualTo(2);                  /* 0페이지 -> 2개 */
+        assertThat(onePage.size()).isEqualTo(1);                   /* 1페이지 -> 1개 */
     }
 
     @Test
     @DisplayName("테스트 08. 모든 게시글 조회 테스트")
     void _08_findAllByOrderByBoardIdDesc() {
         //TODO 게시글 페이징 테스트
+
+        //given
+        User user = userRepository.join(getUser("user1", "user", "user", "1234", "user@test.com"));
+        Category newCategory = categoryRepository.create(getCategory("coding"));
+        boardRepository.upload(getBoard(user, newCategory, "user_title", "user_content"));
+        boardRepository.upload(getBoard(user, newCategory, "user_title", "user_content"));
+        boardRepository.upload(getBoard(user, newCategory, "user_title", "user_content"));
+        boardRepository.upload(getBoard(user, newCategory, "user_title", "user_content"));
+
+        //when
+        List<Board> zeroPage = boardRepository.findAllByOrderByBoardIdDesc(PageRequest.of(0, 3))
+                .stream()
+                .collect(Collectors.toList());
+
+        List<Board> onePage = boardRepository.findAllByOrderByBoardIdDesc(PageRequest.of(1, 3))
+                .stream()
+                .collect(Collectors.toList());
+
+        //then
+        assertThat(boardRepository.findAll().size()).isEqualTo(4);
+        assertThat(zeroPage.size()).isEqualTo(3);
+        assertThat(onePage.size()).isEqualTo(1);
     }
     /*                            */
 
