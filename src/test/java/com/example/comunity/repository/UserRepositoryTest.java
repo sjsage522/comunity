@@ -12,6 +12,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,30 +27,41 @@ class UserRepositoryTest {
 //    @Qualifier("userRepositoryImpl")
     UserRepository userRepository;
 
+    @Autowired
+    EntityManager em;
+
     @Test
     @DisplayName("테스트 01. 사용자 회원 가입 테스트")
     void _01_join() {
 
+        //given
         User newUser = getUser("junseok1234", "junseok", "jun", "1234", "test@gmail.com");
-        User savedUser = userRepository.join(newUser);
-        System.out.println("newUser = " + newUser);
-        System.out.println("savedUser = " + savedUser);
-        assertThat(savedUser.getUserId()).isEqualTo("junseok1234");
-    }
 
-    private User getUser(String userId, String name, String nickName, String password, String email) {
-        return User.createUser(userId, name, nickName, password, email);
+        //when
+        User savedUser = userRepository.join(newUser);
+
+        em.flush();
+        em.clear();
+
+        //then
+        assertThat(userRepository.findUserById("junseok1234").getNickName()).isEqualTo("jun");
     }
 
     @Test
     @DisplayName("테스트 02. 사용자 삭제 테스트")
     void _02_delete() {
 
+        //given
         User newUser = getUser("junseok1234", "junseok", "jun", "1234", "test@gmail.com");
         User savedUser = userRepository.join(newUser);
-        assertThat(savedUser.getUserId()).isEqualTo("junseok1234");
 
+        //when
         userRepository.delete("junseok1234");
+
+        em.flush();
+        em.clear();
+
+        //then
         User findUser = userRepository.findUserById("junseok1234"); /* Optional 처리 해줘야함, 서비스 계층 로직 수정 예정 (검증 부분 등..) */
         assertThat(findUser).isNull();
     }
@@ -64,6 +76,9 @@ class UserRepositoryTest {
 
         userRepository.join(newUser1);
         userRepository.join(newUser2);
+
+        em.flush();
+        em.clear();
 
         //when
         List<User> users = userRepository.findAll();
@@ -80,6 +95,9 @@ class UserRepositoryTest {
         User newUser = getUser("junseok1234", "junseok", "jun", "1234", "test@gmail.com");
         userRepository.join(newUser);
 
+        em.flush();
+        em.clear();
+
         //when
         User findUser = userRepository.findUserById("junseok1234");
 
@@ -94,6 +112,9 @@ class UserRepositoryTest {
         //given
         User newUser = getUser("junseok1234", "junseok", "jun", "1234", "test@gmail.com");
         userRepository.join(newUser);
+
+        em.flush();
+        em.clear();
 
         //when
         User findUser = userRepository.findUserByNickName("jun");
@@ -110,10 +131,17 @@ class UserRepositoryTest {
         User newUser = getUser("junseok1234", "junseok", "jun", "1234", "test@gmail.com");
         userRepository.join(newUser);
 
+        em.flush();
+        em.clear();
+
         //when
         User findUser = userRepository.findUserByIdWithPassword("junseok1234", "1234");
 
         //then
         assertThat(findUser.getNickName()).isEqualTo("jun");
+    }
+
+    private User getUser(String userId, String name, String nickName, String password, String email) {
+        return User.createUser(userId, name, nickName, password, email);
     }
 }
