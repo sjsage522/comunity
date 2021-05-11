@@ -68,6 +68,30 @@ class CommentRepositoryCustomImplTest {
     @Test
     @DisplayName("테스트 02. 답글 삭제 테스트")
     void _02_delete() {
+        //given
+        User user = getUser("tester1234", "tester", "test", "1234", "test@gmail.com");
+        Category category = getCategory("coding");
+        Board board = getBoard(user, category, "board", "content");
+
+        Comment newComment = Comment.createComment(
+                user,
+                board,
+                "comment..!"
+        );
+
+        userRepository.join(user);
+        categoryRepository.create(category);
+        boardRepository.upload(board);
+        commentRepository.apply(newComment);
+
+        em.flush();
+        em.clear();
+
+        //when
+        commentRepository.delete(2L);
+
+        //then
+        assertThat(commentRepository.findCommentById(2L)).isNull();
     }
 
     @Test
