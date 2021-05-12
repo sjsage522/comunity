@@ -1,5 +1,6 @@
 package com.example.comunity.domain;
 
+import com.example.comunity.dto.user.UserJoinDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -41,7 +42,11 @@ public class User extends BaseTimeEntity {
         this.email = email;
     }
 
-    public static User createUser(final String userId, final String name, final String nickName, final String password, final String email) {
+    public static User from(final UserJoinDto source) {
+        return new User(source.getUserId(), source.getName(), source.getNickName(), source.getPassword(), source.getEmail());
+    }
+
+    public static User of(final String userId, final String name, final String nickName, final String password, final String email) {
         return new User(userId, name, nickName, password, email);
     }
 

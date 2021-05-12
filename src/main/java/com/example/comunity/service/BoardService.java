@@ -46,7 +46,7 @@ public class BoardService {
     public Board upload(final BoardUploadRequest boardUploadRequest, final User loginUser, final MultipartFile[] files) {
         Category findCategory = findCategoryByName(boardUploadRequest.getCategoryName());
 
-        Board newBoard = Board.createBoard(
+        Board newBoard = Board.of(
                 loginUser,
                 findCategory,
                 boardUploadRequest.getTitle(),
@@ -58,7 +58,7 @@ public class BoardService {
 
         List<UploadFile> fileList = new ArrayList<>();
         for (UploadFileDto uploadFileDto : fileDtoList) {
-            fileList.add(UploadFile.createFile(
+            fileList.add(UploadFile.of(
                     newBoard,
                     uploadFileDto.getOriginalFileName(),
                     uploadFileDto.getStoredFileName(),

@@ -18,7 +18,6 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = Repository.class))
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -46,7 +45,7 @@ class CommentRepositoryCustomImplTest {
         Category category = getCategory("coding");
         Board board = getBoard(user, category, "board", "content");
 
-        Comment newComment = Comment.createComment(
+        Comment newComment = Comment.of(
                 user,
                 board,
                 "comment..!"
@@ -73,7 +72,7 @@ class CommentRepositoryCustomImplTest {
         Category category = getCategory("coding");
         Board board = getBoard(user, category, "board", "content");
 
-        Comment newComment = Comment.createComment(
+        Comment newComment = Comment.of(
                 user,
                 board,
                 "comment..!"
@@ -110,14 +109,14 @@ class CommentRepositoryCustomImplTest {
     }
 
     private Category getCategory(String name) {
-        return Category.createCategory(name);
+        return Category.from(name);
     }
 
     private Board getBoard(User newUser, Category category, String title, String content) {
-        return Board.createBoard(newUser, category, title, content);
+        return Board.of(newUser, category, title, content);
     }
 
     private User getUser(String userId, String name, String nickName, String password, String email) {
-        return User.createUser(userId, name, nickName, password, email);
+        return User.of(userId, name, nickName, password, email);
     }
 }

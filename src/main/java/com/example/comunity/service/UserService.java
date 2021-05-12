@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,13 +46,7 @@ public class UserService {
             }
         }
 
-        User newUser = User.createUser(
-                userJoinDto.getUserId(),
-                userJoinDto.getName(),
-                userJoinDto.getNickName(),
-                userJoinDto.getPassword(),
-                userJoinDto.getEmail()
-        );
+        User newUser = User.from(userJoinDto);
 
 
         return userRepository.join(newUser);

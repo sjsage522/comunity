@@ -63,7 +63,7 @@ public class Comment extends BaseTimeEntity {
     }
     //====                                 ====//
 
-    public static Comment createComment(final User user, final Board board, final String content) {
+    public static Comment of(final User user, final Board board, final String content) {
         return new Comment(user, board, content);
     }
 

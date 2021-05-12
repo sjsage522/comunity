@@ -38,26 +38,14 @@ public class LoadDatabase {
 
             @Override
             public void run(final String... args) throws Exception {
-                User newUser = User.createUser("Junseok1234", "junseok", "jun", "1234", "junseok@test.com");
-                log.info("Preloading { userId : [" + userService
-                        .join(
-                                new UserJoinDto(
-                                        newUser.getUserId(),
-                                        newUser.getName(),
-                                        newUser.getNickName(),
-                                        newUser.getPassword(),
-                                        newUser.getEmail()
-                                )
-                        ) + "] } CommandLineRunner...");
-
-                Category newCategory = Category.createCategory("게임");
+                Category newCategory = Category.from("게임");
                 log.info("Preloading { categoryName : [" + categoryService
                         .create(
                                 new CategoryCreateDto(
                                         newCategory.getCategoryName()
                                 )
                         ) + "] } CommandLineRunner...");
-                Category newCategory2 = Category.createCategory("economy");
+                Category newCategory2 = Category.from("economy");
                 log.info("Preloading { categoryName : [" + categoryService
                         .create(
                                 new CategoryCreateDto(

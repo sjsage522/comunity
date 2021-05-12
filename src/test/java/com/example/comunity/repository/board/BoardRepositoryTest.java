@@ -258,14 +258,14 @@ class BoardRepositoryTest {
     /*                            */
 
     private Category getCategory(String name) {
-        return Category.createCategory(name);
+        return Category.from(name);
     }
 
     private Board getBoard(User newUser, Category category, String title, String content) {
-        return Board.createBoard(newUser, category, title, content);
+        return Board.of(newUser, category, title, content);
     }
 
     private User getUser(String userId, String name, String nickName, String password, String email) {
-        return User.createUser(userId, name, nickName, password, email);
+        return User.of(userId, name, nickName, password, email);
     }
 }
