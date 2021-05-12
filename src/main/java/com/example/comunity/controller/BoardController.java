@@ -2,10 +2,9 @@ package com.example.comunity.controller;
 
 import com.example.comunity.domain.Board;
 import com.example.comunity.domain.User;
-import com.example.comunity.dto.board.BoardDto;
-import com.example.comunity.dto.board.BoardResponseDto;
-import com.example.comunity.dto.board.BoardUpdateDto;
-import com.example.comunity.dto.board.BoardUploadDto;
+import com.example.comunity.dto.board.BoardResponse;
+import com.example.comunity.dto.board.BoardUpdateRequest;
+import com.example.comunity.dto.board.BoardUploadRequest;
 import com.example.comunity.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
@@ -33,22 +32,22 @@ public class BoardController {
 
     /**
      * 게시글 작성
-     * @param boardUploadDto 게시글 작성 dto
+     * @param boardUploadRequest 게시글 작성 dto
      * @param files 첨부파일
      * @param session 현재 사용자 세션
      */
     @PostMapping(value = "/boards")
-    public ResponseEntity<EntityModel<BoardDto>> upload(
-            @Valid @RequestPart final BoardUploadDto boardUploadDto,
+    public ResponseEntity<EntityModel<BoardResponse>> upload(
+            @Valid @RequestPart final BoardUploadRequest boardUploadRequest,
             @RequestPart(value = "files", required = false) final MultipartFile[] files,
             final HttpSession session) {
         User loginUser = (User) session.getAttribute("authInfo");
 
-        Board newBoard = boardService.upload(boardUploadDto, loginUser, files);
+        Board newBoard = boardService.upload(boardUploadRequest, loginUser, files);
 
         return ResponseEntity
                 .created(linkTo(methodOn(BoardController.class).findAll(null)).toUri())
-                .body(assembler.toModel(getBoardResponseDto(newBoard)));
+                .body(assembler.toModel(getBoardResponse(newBoard)));
     }
 
     /**
@@ -59,7 +58,7 @@ public class BoardController {
      * @param session 현재 사용자 세션
      */
     @DeleteMapping("/category/{name}/boards/{id}")
-    public ResponseEntity<EntityModel<BoardDto>> delete(@PathVariable final Long id, @PathVariable final String name, final HttpSession session) {
+    public ResponseEntity<EntityModel<BoardResponse>> delete(@PathVariable final Long id, @PathVariable final String name, final HttpSession session) {
         User loginUser = (User) session.getAttribute("authInfo");
 
         boardService.delete(id, name, loginUser);
@@ -71,20 +70,20 @@ public class BoardController {
      * 게시글 수정
      * @param id 게시글 번호
      * @param name 카테고리 이름
-     * @param boardUpdateDto 게시글 변경 dto
+     * @param boardUpdateRequest 게시글 변경 dto
      * @param session 현재 사용자 세션
      */
     @PatchMapping("/category/{name}/boards/{id}")
-    public ResponseEntity<EntityModel<BoardDto>> update(
+    public ResponseEntity<EntityModel<BoardResponse>> update(
             @PathVariable final Long id, @PathVariable final String name,
-            @Valid @RequestBody final BoardUpdateDto boardUpdateDto, final HttpSession session) {
+            @Valid @RequestBody final BoardUpdateRequest boardUpdateRequest, final HttpSession session) {
         User loginUser = (User) session.getAttribute("authInfo");
 
-        Board updatedBoard = boardService.update(id, name, boardUpdateDto, loginUser);
+        Board updatedBoard = boardService.update(id, name, boardUpdateRequest, loginUser);
 
         return ResponseEntity
                 .created(linkTo(methodOn(BoardController.class).findByIdWithCategory(id, name)).toUri())
-                .body(assembler.toModel(getBoardResponseDto(updatedBoard)));
+                .body(assembler.toModel(getBoardResponse(updatedBoard)));
     }
 
     /**
@@ -93,11 +92,11 @@ public class BoardController {
      * @param name 카테고리 명
      */
     @GetMapping("/category/{name}/boards/page/{pageNumber}")
-    public ResponseEntity<CollectionModel<EntityModel<BoardDto>>> findAllWithCategory(
+    public ResponseEntity<CollectionModel<EntityModel<BoardResponse>>> findAllWithCategory(
             @PathVariable final String name, final @PathVariable @Min(0) Integer pageNumber) {
-        List<EntityModel<BoardDto>> boards = new ArrayList<>();
+        List<EntityModel<BoardResponse>> boards = new ArrayList<>();
         for (Board board : boardService.findAllWithCategory(name, pageNumber)) {
-            boards.add(assembler.toModel(getBoardResponseDto(board)));
+            boards.add(assembler.toModel(getBoardResponse(board)));
         }
 
         return ResponseEntity.ok(CollectionModel.of(boards,
@@ -109,10 +108,10 @@ public class BoardController {
      * 페이징 처리 (10개 씩)
      */
     @GetMapping("/boards/page/{pageNumber}")
-    public ResponseEntity<CollectionModel<EntityModel<BoardDto>>> findAll(@PathVariable @Min(0) final Integer pageNumber) {
-        List<EntityModel<BoardDto>> boards = new ArrayList<>();
+    public ResponseEntity<CollectionModel<EntityModel<BoardResponse>>> findAll(@PathVariable @Min(0) final Integer pageNumber) {
+        List<EntityModel<BoardResponse>> boards = new ArrayList<>();
         for (Board board : boardService.findAll(pageNumber)) {
-            boards.add(assembler.toModel(getBoardResponseDto(board)));
+            boards.add(assembler.toModel(getBoardResponse(board)));
         }
 
         return ResponseEntity.ok(CollectionModel.of(boards,
@@ -125,31 +124,31 @@ public class BoardController {
      * @param name 카테고리 이름
      */
     @GetMapping("/category/{name}/boards/{id}")
-    public ResponseEntity<EntityModel<BoardDto>> findByIdWithCategory(@PathVariable final Long id, @PathVariable final String name) {
+    public ResponseEntity<EntityModel<BoardResponse>> findByIdWithCategory(@PathVariable final Long id, @PathVariable final String name) {
         Board findBoard = boardService.findByIdWithCategory(id, name);
 
         return ResponseEntity.
                 created(linkTo(methodOn(BoardController.class).findAllWithCategory(name, null)).toUri())
-                .body(assembler.toModel(getBoardResponseDto(findBoard)));
+                .body(assembler.toModel(getBoardResponse(findBoard)));
     }
 
     /**
      * 리소스 관계 표현
      */
     @Component
-    public static class BoardDtoModelAssembler implements RepresentationModelAssembler<BoardDto, EntityModel<BoardDto>> {
+    public static class BoardDtoModelAssembler implements RepresentationModelAssembler<BoardResponse, EntityModel<BoardResponse>> {
 
         @Override
-        public EntityModel<BoardDto> toModel(final BoardDto boardDto) {
+        public EntityModel<BoardResponse> toModel(final BoardResponse boardResponse) {
 
-            return EntityModel.of(boardDto,
-                    linkTo(methodOn(BoardController.class).findByIdWithCategory(boardDto.getBoardId(), boardDto.getCategoryName())).withSelfRel()
+            return EntityModel.of(boardResponse,
+                    linkTo(methodOn(BoardController.class).findByIdWithCategory(boardResponse.getBoardId(), boardResponse.getCategoryName())).withSelfRel()
                             .andAffordance(
                                     afford(methodOn(BoardController.class).update(
-                                            boardDto.getBoardId(), boardDto.getCategoryName(), null, null)))
+                                            boardResponse.getBoardId(), boardResponse.getCategoryName(), null, null)))
                             .andAffordance(
                                     afford(methodOn(BoardController.class).delete(
-                                            boardDto.getBoardId(), boardDto.getCategoryName(), null))),
+                                            boardResponse.getBoardId(), boardResponse.getCategoryName(), null))),
                     linkTo(methodOn(BoardController.class).findAll(null)).withRel("boards"));
         }
     }
@@ -157,7 +156,7 @@ public class BoardController {
     /**
      * 응답 dto 생성
      */
-    private BoardResponseDto getBoardResponseDto(final Board newBoard) {
-        return new BoardResponseDto(newBoard);
+    private BoardResponse getBoardResponse(final Board newBoard) {
+        return new BoardResponse(newBoard);
     }
 }

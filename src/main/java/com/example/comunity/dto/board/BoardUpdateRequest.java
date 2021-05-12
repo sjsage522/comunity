@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BoardUpdateDto {
+public class BoardUpdateRequest {
 
     @NotBlank(message = "변경할 제목을 입력해주세요.")
     private String title;

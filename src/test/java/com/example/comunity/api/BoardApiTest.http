@@ -5,7 +5,7 @@ Content-Length: 392
 Content-Type: multipart/form-data; boundary=WebKitFormBoundary7MA4YWxkTrZu0gW
 
 --WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="boardUploadDto"
+Content-Disposition: form-data; name="boardUploadRequest"
 Content-Type: application/json
 
 {

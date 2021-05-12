@@ -5,20 +5,17 @@ import com.example.comunity.dto.file.UploadFileDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BoardResponseDto extends BoardDto {
+public class BoardResponse {
 
-    @JsonProperty("board_id")
     private Long boardId;
 
     @JsonProperty("user_id")
@@ -39,7 +36,7 @@ public class BoardResponseDto extends BoardDto {
     @JsonProperty("last_modified_at")
     private LocalDateTime lastModifiedDate;
 
-    public BoardResponseDto(final Board newBoard) {
+    public BoardResponse(final Board newBoard) {
         this.boardId = newBoard.getBoardId();
         this.userId = newBoard.getUser().getUserId();
         this.categoryName = newBoard.getCategory().getCategoryName();

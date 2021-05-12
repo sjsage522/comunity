@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BoardUploadDto {
+public class BoardUploadRequest {
 
     @NotBlank(message = "제목은 필수입니다.")
     private String title;

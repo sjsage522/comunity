@@ -1,8 +1,8 @@
 package com.example.comunity.service;
 
 import com.example.comunity.domain.*;
-import com.example.comunity.dto.board.BoardUpdateDto;
-import com.example.comunity.dto.board.BoardUploadDto;
+import com.example.comunity.dto.board.BoardUpdateRequest;
+import com.example.comunity.dto.board.BoardUploadRequest;
 import com.example.comunity.dto.file.UploadFileDto;
 import com.example.comunity.exception.NoMatchBoardInfoException;
 import com.example.comunity.exception.NoMatchCategoryInfoException;
@@ -43,14 +43,14 @@ public class BoardService {
     }
 
     @Transactional
-    public Board upload(final BoardUploadDto boardUploadDto, final User loginUser, final MultipartFile[] files) {
-        Category findCategory = findCategoryByName(boardUploadDto.getCategoryName());
+    public Board upload(final BoardUploadRequest boardUploadRequest, final User loginUser, final MultipartFile[] files) {
+        Category findCategory = findCategoryByName(boardUploadRequest.getCategoryName());
 
         Board newBoard = Board.createBoard(
                 loginUser,
                 findCategory,
-                boardUploadDto.getTitle(),
-                boardUploadDto.getContent());
+                boardUploadRequest.getTitle(),
+                boardUploadRequest.getContent());
 
         Board uploadedBoard = boardRepository.upload(newBoard);
 
@@ -104,7 +104,7 @@ public class BoardService {
     }
 
     @Transactional
-    public Board update(final Long boardId, final String categoryName, final BoardUpdateDto boardUpdateDto, final User loginUser) {
+    public Board update(final Long boardId, final String categoryName, final BoardUpdateRequest boardUpdateRequest, final User loginUser) {
 
         Board findBoard = boardRepository.findBoardByIdWithCategory(boardId, categoryName);
 
@@ -114,9 +114,9 @@ public class BoardService {
         if (!findUser.getUserId().equals(loginUser.getUserId()))
             throw new NoMatchUserInfoException("다른 사용자의 게시글을 수정할 수 없습니다.");
 
-        Category changedCategory = findCategoryByName(boardUpdateDto.getCategoryName());
+        Category changedCategory = findCategoryByName(boardUpdateRequest.getCategoryName());
 
-        findBoard.changeBoard(boardUpdateDto.getTitle(), boardUpdateDto.getContent(), changedCategory);
+        findBoard.changeBoard(boardUpdateRequest.getTitle(), boardUpdateRequest.getContent(), changedCategory);
 
         return findBoard;
     }
