@@ -1,7 +1,7 @@
 package com.example.comunity.service;
 
 import com.example.comunity.domain.Category;
-import com.example.comunity.dto.category.CategoryCreateDto;
+import com.example.comunity.dto.category.CategoryCreateRequest;
 import com.example.comunity.exception.DuplicateCategoryNameException;
 import com.example.comunity.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +16,9 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Transactional
-    public Category create(final CategoryCreateDto categoryCreateDto) {
+    public Category create(final CategoryCreateRequest categoryCreateRequest) {
 
-        String categoryName = categoryCreateDto.getCategoryName();
+        String categoryName = categoryCreateRequest.getCategoryName();
 
         Category findCategoryByName = categoryRepository.findByName(categoryName);
         if (findCategoryByName != null) {

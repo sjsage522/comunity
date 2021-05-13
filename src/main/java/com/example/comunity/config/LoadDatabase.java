@@ -1,9 +1,7 @@
 package com.example.comunity.config;
 
 import com.example.comunity.domain.Category;
-import com.example.comunity.domain.User;
-import com.example.comunity.dto.category.CategoryCreateDto;
-import com.example.comunity.dto.user.UserJoinDto;
+import com.example.comunity.dto.category.CategoryCreateRequest;
 import com.example.comunity.service.CategoryService;
 import com.example.comunity.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -41,14 +39,14 @@ public class LoadDatabase {
                 Category newCategory = Category.from("게임");
                 log.info("Preloading { categoryName : [" + categoryService
                         .create(
-                                new CategoryCreateDto(
+                                new CategoryCreateRequest(
                                         newCategory.getCategoryName()
                                 )
                         ) + "] } CommandLineRunner...");
                 Category newCategory2 = Category.from("economy");
                 log.info("Preloading { categoryName : [" + categoryService
                         .create(
-                                new CategoryCreateDto(
+                                new CategoryCreateRequest(
                                         newCategory2.getCategoryName()
                                 )
                         ) + "] } CommandLineRunner...");
