@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.stereotype.Repository;
+import org.springframework.test.annotation.DirtiesContext;
 
 import javax.persistence.EntityManager;
 
@@ -17,6 +18,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = Repository.class))
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @TestMethodOrder(MethodOrderer.MethodName.class)
 @DisplayName("카테고리 레포지토리 테스트")
 class CategoryRepositoryTest {
@@ -56,10 +58,10 @@ class CategoryRepositoryTest {
         em.clear();
 
         //when
-        categoryRepository.delete(2L);
+        categoryRepository.delete(1L);
 
         //then
-        assertThat(categoryRepository.findById(2L)).isNull();
+        assertThat(categoryRepository.findById(1L)).isNull();
     }
 
     @Test
@@ -75,7 +77,7 @@ class CategoryRepositoryTest {
         em.clear();
 
         //when
-        Category findCategory = categoryRepository.findById(3L);
+        Category findCategory = categoryRepository.findById(1L);
 
         //then
         assertThat(findCategory.getCategoryName()).isEqualTo("coding");
@@ -101,8 +103,8 @@ class CategoryRepositoryTest {
         //then
         assertThat(categories.size()).isEqualTo(2);
         assertThat(categories.get(0).getCategoryName()).isEqualTo("coding");
-        assertThat(categories.get(0).getCategoryId()).isEqualTo(4L);
+        assertThat(categories.get(0).getCategoryId()).isEqualTo(1L);
         assertThat(categories.get(1).getCategoryName()).isEqualTo("reading");
-        assertThat(categories.get(1).getCategoryId()).isEqualTo(5L);
+        assertThat(categories.get(1).getCategoryId()).isEqualTo(2L);
     }
 }
