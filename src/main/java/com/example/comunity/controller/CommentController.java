@@ -2,10 +2,9 @@ package com.example.comunity.controller;
 
 import com.example.comunity.domain.Comment;
 import com.example.comunity.domain.User;
-import com.example.comunity.dto.comment.CommentApplyDto;
-import com.example.comunity.dto.comment.CommentDto;
-import com.example.comunity.dto.comment.CommentResponseDto;
-import com.example.comunity.dto.comment.CommentUpdateDto;
+import com.example.comunity.dto.comment.CommentApplyRequest;
+import com.example.comunity.dto.comment.CommentResponse;
+import com.example.comunity.dto.comment.CommentUpdateRequest;
 import com.example.comunity.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
@@ -34,9 +33,9 @@ public class CommentController {
      * @param id 게시글 번호
      */
     @GetMapping("/boards/{id}/comments/page/{pageNumber}")
-    public ResponseEntity<CollectionModel<EntityModel<CommentDto>>> findAll(
+    public ResponseEntity<CollectionModel<EntityModel<CommentResponse>>> findAll(
             @PathVariable final Long id, @PathVariable @Min(0) final Integer pageNumber) {
-        List<EntityModel<CommentDto>> responseComments = new ArrayList<>();
+        List<EntityModel<CommentResponse>> responseComments = new ArrayList<>();
         List<Comment> commentList = commentService.findAll(id, pageNumber);
 
         for (Comment comment : commentList) {
@@ -49,23 +48,23 @@ public class CommentController {
 
     /**
      * 특정 게시글에 답글 작성
-     * @param commentApplyDto 답글 작성 dto
+     * @param commentApplyRequest 답글 작성 dto
      * @param id 게시글 번호
      * @param session 현재 사용자 세션
      */
     @PostMapping("/boards/{id}/comments")
-    public ResponseEntity<EntityModel<CommentDto>> apply(
-            @Valid @RequestBody final CommentApplyDto commentApplyDto,
+    public ResponseEntity<EntityModel<CommentResponse>> apply(
+            @Valid @RequestBody final CommentApplyRequest commentApplyRequest,
             @PathVariable final Long id,
             final HttpSession session) {
         User loginUser = (User) session.getAttribute("authInfo");
 
-        CommentResponseDto commentResponseDto = getCommentResponseDto(commentService.apply(loginUser, id, commentApplyDto));
+        CommentResponse commentResponse = getCommentResponseDto(commentService.apply(loginUser, id, commentApplyRequest));
 
         return ResponseEntity
-                .created(linkTo(methodOn(CommentController.class).apply(commentApplyDto, id, session)).toUri())
-                .body(EntityModel.of(commentResponseDto,
-                        linkTo(methodOn(CommentController.class).apply(commentApplyDto, id, session)).withSelfRel()));
+                .created(linkTo(methodOn(CommentController.class).apply(commentApplyRequest, id, session)).toUri())
+                .body(EntityModel.of(commentResponse,
+                        linkTo(methodOn(CommentController.class).apply(commentApplyRequest, id, session)).withSelfRel()));
     }
 
     /**
@@ -74,7 +73,7 @@ public class CommentController {
      * @param session 현재 사용자 세션
      */
     @DeleteMapping("/comments/{id}")
-    public ResponseEntity<EntityModel<CommentDto>> delete(
+    public ResponseEntity<EntityModel<CommentResponse>> delete(
             @PathVariable final Long id,
             final HttpSession session) {
         User loginUser = (User) session.getAttribute("authInfo");
@@ -91,39 +90,39 @@ public class CommentController {
      * @param session 현재 사용자 세션
      */
     @PatchMapping("/comments/{id}")
-    public ResponseEntity<EntityModel<CommentDto>> update(
+    public ResponseEntity<EntityModel<CommentResponse>> update(
             @PathVariable final Long id,
-            @Valid @RequestBody final CommentUpdateDto commentUpdateDto,
+            @Valid @RequestBody final CommentUpdateRequest commentUpdateDto,
             final HttpSession session) {
         User loginUser = (User) session.getAttribute("authInfo");
 
-        CommentResponseDto commentResponseDto = getCommentResponseDto(commentService.update(loginUser, id, commentUpdateDto));
+        CommentResponse commentResponse = getCommentResponseDto(commentService.update(loginUser, id, commentUpdateDto));
 
         return ResponseEntity
                 .created(linkTo(methodOn(CommentController.class).update(id, commentUpdateDto, session)).toUri())
-                .body(EntityModel.of(commentResponseDto,
+                .body(EntityModel.of(commentResponse,
                         linkTo(methodOn(CommentController.class).update(id, commentUpdateDto, session)).withSelfRel()));
     }
 
     /**
      * 계층형 댓글로 나타내기 위한 로직
      */
-    private CommentResponseDto getCommentResponseDto(Comment comment) {
-        CommentResponseDto commentResponseDto = new CommentResponseDto(comment);
+    private CommentResponse getCommentResponseDto(Comment comment) {
+        CommentResponse commentResponse = new CommentResponse(comment);
 
         Comment parent = comment.getParent();
 
         if (parent != null) {
-            commentResponseDto.setParentId(parent.getCommentId());
+            commentResponse.setParentId(parent.getCommentId());
         }
 
         List<Comment> children = comment.getChildren();
         children.sort(Comparator.comparing(Comment::getCommentId));
 
         for (Comment child : children) {
-            CommentResponseDto childDto = getCommentResponseDto(child);
-            commentResponseDto.getChildren().add(childDto);
+            CommentResponse childDto = getCommentResponseDto(child);
+            commentResponse.getChildren().add(childDto);
         }
-        return commentResponseDto;
+        return commentResponse;
     }
 }

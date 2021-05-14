@@ -5,19 +5,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonPropertyOrder({"parentId", "commentId", "boardId", "userId", "createdDate", "lastModifiedDate", "content", "children"})
-public class CommentResponseDto extends CommentDto {
+public class CommentResponse {
 
     @JsonProperty("parent_id")
     private Long parentId;
@@ -33,14 +31,14 @@ public class CommentResponseDto extends CommentDto {
     @JsonProperty("board_id")
     private Long boardId;
 
-    private final List<CommentResponseDto> children = new ArrayList<>();
+    private final List<CommentResponse> children = new ArrayList<>();
 
     @JsonProperty("created_at")
     private LocalDateTime createdDate;
     @JsonProperty("last_modified_at")
     private LocalDateTime lastModifiedDate;
 
-    public CommentResponseDto(final Comment comment) {
+    public CommentResponse(final Comment comment) {
         this.commentId = comment.getCommentId();
         this.content = comment.getContent();
         this.userId = comment.getUser().getUserId();

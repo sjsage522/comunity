@@ -3,8 +3,8 @@ package com.example.comunity.service;
 import com.example.comunity.domain.Board;
 import com.example.comunity.domain.Comment;
 import com.example.comunity.domain.User;
-import com.example.comunity.dto.comment.CommentApplyDto;
-import com.example.comunity.dto.comment.CommentUpdateDto;
+import com.example.comunity.dto.comment.CommentApplyRequest;
+import com.example.comunity.dto.comment.CommentUpdateRequest;
 import com.example.comunity.exception.NoMatchBoardInfoException;
 import com.example.comunity.exception.NoMatchCommentInfoException;
 import com.example.comunity.exception.NoMatchUserInfoException;
@@ -27,15 +27,15 @@ public class CommentService {
     private final BoardRepository boardRepository;
 
     @Transactional
-    public Comment apply(final User loginUser, final Long boardId, final CommentApplyDto commentApplyDto) {
+    public Comment apply(final User loginUser, final Long boardId, final CommentApplyRequest commentApplyRequest) {
 
         Board findBoard = boardRepository.findBoardById(boardId);
 
         if (findBoard == null) throw new NoMatchBoardInfoException("존재하지 않는 게시글입니다.");
 
-        Comment comment = Comment.of(loginUser, findBoard, commentApplyDto.getContent());
+        Comment comment = Comment.of(loginUser, findBoard, commentApplyRequest.getContent());
 
-        Long parentId = commentApplyDto.getParentId();
+        Long parentId = commentApplyRequest.getParentId();
         if (parentId != null) {
             Comment parentComment = commentRepository.findCommentById(parentId);
             if (parentComment == null) throw new NoMatchCommentInfoException("존재하지 않는 답글입니다.");
@@ -59,7 +59,7 @@ public class CommentService {
     }
 
     @Transactional
-    public Comment update(User loginUser, Long id, CommentUpdateDto commentUpdateDto) {
+    public Comment update(User loginUser, Long id, CommentUpdateRequest commentUpdateDto) {
 
         Comment findComment = commentRepository.findCommentById(id);
 
