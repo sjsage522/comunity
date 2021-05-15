@@ -9,11 +9,10 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserResponseDto extends UserDto {
+public class UserResponse {
 
     @JsonProperty("user_id")
     private String userId;
@@ -27,7 +26,7 @@ public class UserResponseDto extends UserDto {
     @JsonProperty("created_at")
     private LocalDateTime createdDate;
 
-    public UserResponseDto(final User newUser) {
+    public UserResponse(final User newUser) {
         this.userId = newUser.getUserId();
         this.nickName = newUser.getNickName();
         this.email = newUser.getEmail();

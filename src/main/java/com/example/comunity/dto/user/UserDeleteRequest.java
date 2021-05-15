@@ -7,11 +7,10 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDeleteDto extends UserDto{
+public class UserDeleteRequest {
 
     @NotBlank(message = "삭제할 사용자의 아이디를 입력해주세요.")
     String userId;

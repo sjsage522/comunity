@@ -7,11 +7,10 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserJoinDto extends UserDto {
+public class UserJoinRequest {
 
     @NotBlank(message = "아이디는 필수입니다.")
     private String userId;

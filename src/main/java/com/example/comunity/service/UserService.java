@@ -4,9 +4,9 @@ import com.example.comunity.domain.Board;
 import com.example.comunity.domain.Comment;
 import com.example.comunity.domain.UploadFile;
 import com.example.comunity.domain.User;
-import com.example.comunity.dto.user.UserDeleteDto;
-import com.example.comunity.dto.user.UserJoinDto;
-import com.example.comunity.dto.user.UserUpdateDto;
+import com.example.comunity.dto.user.UserDeleteRequest;
+import com.example.comunity.dto.user.UserJoinRequest;
+import com.example.comunity.dto.user.UserUpdateRequest;
 import com.example.comunity.exception.DuplicateUserIdException;
 import com.example.comunity.exception.DuplicateUserNickNameException;
 import com.example.comunity.exception.NoMatchUserInfoException;
@@ -32,47 +32,47 @@ public class UserService {
     private final CommentRepository commentRepository;
 
     @Transactional
-    public User join(final UserJoinDto userJoinDto) {
-        User findUserById = userRepository.findUserById(userJoinDto.getUserId());
+    public User join(final UserJoinRequest userJoinRequest) {
+        User findUserById = userRepository.findUserById(userJoinRequest.getUserId());
         if (findUserById != null) {
-            if (findUserById.getUserId().equals(userJoinDto.getUserId())) {
+            if (findUserById.getUserId().equals(userJoinRequest.getUserId())) {
                 throw new DuplicateUserIdException("이미 존재하는 아이디 입니다.");
             }
         }
-        User findUserByNickName = userRepository.findUserByNickName(userJoinDto.getNickName());
+        User findUserByNickName = userRepository.findUserByNickName(userJoinRequest.getNickName());
         if (findUserByNickName != null) {
-            if (findUserByNickName.getNickName().equals(userJoinDto.getNickName())) {
+            if (findUserByNickName.getNickName().equals(userJoinRequest.getNickName())) {
                 throw new DuplicateUserNickNameException("이미 존재하는 별명 입니다.");
             }
         }
 
-        User newUser = User.from(userJoinDto);
+        User newUser = User.from(userJoinRequest);
 
 
         return userRepository.join(newUser);
     }
 
     @Transactional
-    public User update(final String id, final UserUpdateDto userUpdateDto, User loginUser) {
+    public User update(final String id, final UserUpdateRequest userUpdateRequest, User loginUser) {
         /* 영속상태의 entity */
         User findUser = findById(id);
 
         if (!loginUser.getUserId().equals(findUser.getUserId())) throw new NoMatchUserInfoException("다른 사용자의 정보를 수정할 수 없습니다.");
 
         /* dirty check */
-        findUser.changeName(userUpdateDto.getName());
-        findUser.changeNickname(userUpdateDto.getNickName());
-        findUser.changePassword(userUpdateDto.getPassword());
+        findUser.changeName(userUpdateRequest.getName());
+        findUser.changeNickname(userUpdateRequest.getNickName());
+        findUser.changePassword(userUpdateRequest.getPassword());
         /* 트랜잭션 커밋시점에 1차캐시의 스냅샷과 영속 상태의 entity 정보와 비교 */
         /* 변경된 부분을 update 쿼리를 통해(영속성 컨텍스트 SQL 저장소) db 데이터를 수정 */
 
-        userUpdateDto.setUserId(id);
+        userUpdateRequest.setUserId(id);
 
         return findUser;
     }
 
     @Transactional
-    public int delete(final String id, final UserDeleteDto userDeleteDto, final User loginUser) {
+    public int delete(final String id, final UserDeleteRequest userDeleteRequest, final User loginUser) {
         User findUser = findById(id);
 
         if (!loginUser.getUserId().equals(findUser.getUserId())) throw new NoMatchUserInfoException("다른 사용자의 정보를 삭제할 수 없습니다.");
@@ -88,8 +88,8 @@ public class UserService {
 
         boardRepository.deleteAllByIds(boardIds);
 
-        if (findUser.getUserId().equals(userDeleteDto.getUserId()) &&
-                findUser.getPassword().equals(userDeleteDto.getPassword())) {
+        if (findUser.getUserId().equals(userDeleteRequest.getUserId()) &&
+                findUser.getPassword().equals(userDeleteRequest.getPassword())) {
             return userRepository.delete(id);
         }
         return 0;

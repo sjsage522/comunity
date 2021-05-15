@@ -32,39 +32,39 @@ public class UserController {
 
     /**
      * 회원가입
-     * @param userJoinDto 회원가입 dto
+     * @param userJoinRequest 회원가입 dto
      * @throws DuplicateUserIdException 이미 존재하는 id가 있는지 검사
      * @throws DuplicateUserNickNameException 이미 존재하는 별명이 있는지 검사
      */
     @PostMapping("/users")
-    public ResponseEntity<EntityModel<UserDto>> join(@Valid @RequestBody final UserJoinDto userJoinDto)
+    public ResponseEntity<EntityModel<UserResponse>> join(@Valid @RequestBody final UserJoinRequest userJoinRequest)
             throws DuplicateUserIdException, DuplicateUserNickNameException {
 
-        User newUser = userService.join(userJoinDto);
+        User newUser = userService.join(userJoinRequest);
 
         return ResponseEntity
-                .created(linkTo(methodOn(UserController.class).join(userJoinDto)).toUri())
+                .created(linkTo(methodOn(UserController.class).join(userJoinRequest)).toUri())
                 .body(assembler.toModel(getUserResponseDto(newUser)));
     }
 
     /**
      * 로그인
-     * @param userLoginDto 로그인 dto
+     * @param userLoginRequest 로그인 dto
      * @param session 헌재 사용자 세션
      * @throws NoMatchUserInfoException 아이디와 비밀번호가 유효한지 검사
      */
     @PostMapping("/login")
-    public ResponseEntity<EntityModel<UserDto>> login(@Valid @RequestBody final UserLoginDto userLoginDto, final HttpSession session)
+    public ResponseEntity<EntityModel<UserResponse>> login(@Valid @RequestBody final UserLoginRequest userLoginRequest, final HttpSession session)
             throws NoMatchUserInfoException {
-        User loginUser = userAuthService.authenticate(userLoginDto.getUserId(), userLoginDto.getPassword());
+        User loginUser = userAuthService.authenticate(userLoginRequest.getUserId(), userLoginRequest.getPassword());
 
         session.setAttribute("authInfo", loginUser);
 
         return ResponseEntity
-                .created(linkTo(methodOn(UserController.class).findById(userLoginDto.getUserId())).toUri())
+                .created(linkTo(methodOn(UserController.class).findById(userLoginRequest.getUserId())).toUri())
                 .body(EntityModel.of(getUserResponseDto(loginUser),
-                        linkTo(methodOn(UserController.class).login(userLoginDto, session)).withSelfRel(),
-                        linkTo(methodOn(UserController.class).findById(userLoginDto.getUserId())).withRel("id"),
+                        linkTo(methodOn(UserController.class).login(userLoginRequest, session)).withSelfRel(),
+                        linkTo(methodOn(UserController.class).findById(userLoginRequest.getUserId())).withRel("id"),
                         linkTo(methodOn(UserController.class).findAll()).withRel("users")));
     }
 
@@ -73,16 +73,16 @@ public class UserController {
      * @param session 현재 사용자 세션
      */
     @GetMapping("/logout")
-    public ResponseEntity<EntityModel<UserDto>> logout(final HttpSession session) {
+    public ResponseEntity<EntityModel<UserResponse>> logout(final HttpSession session) {
         User loginUser = (User) session.getAttribute("authInfo");
         session.invalidate();
 
-        UserLoginDto userLoginDto = new UserLoginDto(loginUser.getUserId(), loginUser.getNickName());
+        UserLoginRequest userLoginRequest = new UserLoginRequest(loginUser.getUserId(), loginUser.getNickName());
         return ResponseEntity
-                .created(linkTo(methodOn(UserController.class).login(userLoginDto, session)).toUri())
+                .created(linkTo(methodOn(UserController.class).login(userLoginRequest, session)).toUri())
                 .body(EntityModel.of(getUserResponseDto(loginUser),
                         linkTo(methodOn(UserController.class).logout(session)).withSelfRel(),
-                        linkTo(methodOn(UserController.class).login(userLoginDto, session)).withRel("login")));
+                        linkTo(methodOn(UserController.class).login(userLoginRequest, session)).withRel("login")));
     }
 
     /**
@@ -90,7 +90,7 @@ public class UserController {
      * @param id 조회할 아이디
      */
     @GetMapping("/users/{id}")
-    public ResponseEntity<EntityModel<UserDto>> findById(@PathVariable final String id) {
+    public ResponseEntity<EntityModel<UserResponse>> findById(@PathVariable final String id) {
         User findUser = userService.findById(id);
 
         return ResponseEntity
@@ -102,8 +102,8 @@ public class UserController {
      * 모든 사용자 조회
      */
     @GetMapping("/users")
-    public ResponseEntity<CollectionModel<EntityModel<UserDto>>> findAll() {
-        List<EntityModel<UserDto>> users = new ArrayList<>();
+    public ResponseEntity<CollectionModel<EntityModel<UserResponse>>> findAll() {
+        List<EntityModel<UserResponse>> users = new ArrayList<>();
         for (User user : userService.findAll()) {
             users.add(assembler.toModel(getUserResponseDto(user)));
         }
@@ -116,13 +116,13 @@ public class UserController {
     /**
      * 사용자 정보 수정
      * @param id 사용자 아이디
-     * @param userUpdateDto 사용자 정보 수정 dto
+     * @param userUpdateRequest 사용자 정보 수정 dto
      */
     @PatchMapping("/users/{id}")
-    public ResponseEntity<EntityModel<UserDto>> update(@PathVariable final String id, @Valid @RequestBody final UserUpdateDto userUpdateDto, final HttpSession session) {
+    public ResponseEntity<EntityModel<UserResponse>> update(@PathVariable final String id, @Valid @RequestBody final UserUpdateRequest userUpdateRequest, final HttpSession session) {
         User loginUser = (User) session.getAttribute("authInfo");
 
-        User updatedUser = userService.update(id, userUpdateDto, loginUser);
+        User updatedUser = userService.update(id, userUpdateRequest, loginUser);
 
         return ResponseEntity
                 .created(linkTo(methodOn(UserController.class).findById(id)).toUri())
@@ -134,10 +134,10 @@ public class UserController {
      * @return http 204 response
      */
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<EntityModel<UserDto>> delete(@PathVariable final String id, @Valid @RequestBody final UserDeleteDto userDeleteDto, final HttpSession session) {
+    public ResponseEntity<EntityModel<UserResponse>> delete(@PathVariable final String id, @Valid @RequestBody final UserDeleteRequest userDeleteRequest, final HttpSession session) {
         User loginUser = (User) session.getAttribute("authInfo");
 
-        userService.delete(id, userDeleteDto, loginUser);
+        userService.delete(id, userDeleteRequest, loginUser);
 
         session.invalidate();
 
@@ -145,20 +145,20 @@ public class UserController {
     }
 
     @Component
-    public static class UserDtoModelAssembler implements RepresentationModelAssembler<UserDto, EntityModel<UserDto>> {
+    public static class UserDtoModelAssembler implements RepresentationModelAssembler<UserResponse, EntityModel<UserResponse>> {
 
         @Override
-        public EntityModel<UserDto> toModel(final UserDto userDto) {
+        public EntityModel<UserResponse> toModel(final UserResponse userResponse) {
 
-            return EntityModel.of(userDto,
-                    linkTo(methodOn(UserController.class).findById(userDto.getUserId())).withSelfRel()
-                            .andAffordance(afford(methodOn(UserController.class).update(userDto.getUserId(), null, null)))
-                            .andAffordance(afford(methodOn(UserController.class).delete(userDto.getUserId(), null, null))),
+            return EntityModel.of(userResponse,
+                    linkTo(methodOn(UserController.class).findById(userResponse.getUserId())).withSelfRel()
+                            .andAffordance(afford(methodOn(UserController.class).update(userResponse.getUserId(), null, null)))
+                            .andAffordance(afford(methodOn(UserController.class).delete(userResponse.getUserId(), null, null))),
                     linkTo(methodOn(UserController.class).findAll()).withRel("users"));
         }
     }
 
-    private UserResponseDto getUserResponseDto(User newUser) {
-        return new UserResponseDto(newUser);
+    private UserResponse getUserResponseDto(User newUser) {
+        return new UserResponse(newUser);
     }
 }
