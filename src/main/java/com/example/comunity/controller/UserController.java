@@ -44,7 +44,7 @@ public class UserController {
 
         return ResponseEntity
                 .created(linkTo(methodOn(UserController.class).join(userJoinRequest)).toUri())
-                .body(assembler.toModel(getUserResponseDto(newUser)));
+                .body(assembler.toModel(getUserResponse(newUser)));
     }
 
     /**
@@ -62,7 +62,7 @@ public class UserController {
 
         return ResponseEntity
                 .created(linkTo(methodOn(UserController.class).findById(userLoginRequest.getUserId())).toUri())
-                .body(EntityModel.of(getUserResponseDto(loginUser),
+                .body(EntityModel.of(getUserResponse(loginUser),
                         linkTo(methodOn(UserController.class).login(userLoginRequest, session)).withSelfRel(),
                         linkTo(methodOn(UserController.class).findById(userLoginRequest.getUserId())).withRel("id"),
                         linkTo(methodOn(UserController.class).findAll()).withRel("users")));
@@ -80,7 +80,7 @@ public class UserController {
         UserLoginRequest userLoginRequest = new UserLoginRequest(loginUser.getUserId(), loginUser.getNickName());
         return ResponseEntity
                 .created(linkTo(methodOn(UserController.class).login(userLoginRequest, session)).toUri())
-                .body(EntityModel.of(getUserResponseDto(loginUser),
+                .body(EntityModel.of(getUserResponse(loginUser),
                         linkTo(methodOn(UserController.class).logout(session)).withSelfRel(),
                         linkTo(methodOn(UserController.class).login(userLoginRequest, session)).withRel("login")));
     }
@@ -95,7 +95,7 @@ public class UserController {
 
         return ResponseEntity
                 .created(linkTo(methodOn(UserController.class).findAll()).toUri())
-                .body(assembler.toModel(getUserResponseDto(findUser)));
+                .body(assembler.toModel(getUserResponse(findUser)));
     }
 
     /**
@@ -105,7 +105,7 @@ public class UserController {
     public ResponseEntity<CollectionModel<EntityModel<UserResponse>>> findAll() {
         List<EntityModel<UserResponse>> users = new ArrayList<>();
         for (User user : userService.findAll()) {
-            users.add(assembler.toModel(getUserResponseDto(user)));
+            users.add(assembler.toModel(getUserResponse(user)));
         }
 
         return ResponseEntity.ok(CollectionModel.of(users,
@@ -126,7 +126,7 @@ public class UserController {
 
         return ResponseEntity
                 .created(linkTo(methodOn(UserController.class).findById(id)).toUri())
-                .body(assembler.toModel(getUserResponseDto(updatedUser)));
+                .body(assembler.toModel(getUserResponse(updatedUser)));
     }
 
     /**
@@ -158,7 +158,7 @@ public class UserController {
         }
     }
 
-    private UserResponse getUserResponseDto(User newUser) {
+    private UserResponse getUserResponse(User newUser) {
         return new UserResponse(newUser);
     }
 }
