@@ -94,8 +94,8 @@ public class RestExceptionHandler {
         return new ResponseEntity<>(apiError, apiError.getStatus());
     }
 
-    private ApiError getApiError(HttpStatus notFound, String message) {
-        ApiError apiError = new ApiError(notFound);
+    private ApiError getApiError(HttpStatus status, String message) {
+        ApiError apiError = new ApiError(status);
         apiError.setMessage(message);
         return apiError;
     }
