@@ -54,18 +54,7 @@ public class BoardService {
 
         Board uploadedBoard = boardRepository.upload(newBoard);
 
-        List<UploadFileDto> fileDtoList = fileUtils.uploadFiles(files, uploadedBoard);
-
-        List<UploadFile> fileList = new ArrayList<>();
-        for (UploadFileDto uploadFileDto : fileDtoList) {
-            fileList.add(UploadFile.from(
-                    newBoard,
-                    uploadFileDto.getOriginalFileName(),
-                    uploadFileDto.getStoredFileName(),
-                    uploadFileDto.getFileSize(),
-                    uploadFileDto.getFileDownLoadUri(),
-                    uploadFileDto.getFileType()));
-        }
+        List<UploadFile> fileList = fileUtils.uploadFiles(files, uploadedBoard);
 
         if (!CollectionUtils.isEmpty(fileList)) {
             fileRepository.uploadFiles(fileList);
