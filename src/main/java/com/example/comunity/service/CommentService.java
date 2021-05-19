@@ -33,7 +33,7 @@ public class CommentService {
 
         if (findBoard == null) throw new NoMatchBoardInfoException("존재하지 않는 게시글입니다.");
 
-        Comment comment = Comment.of(loginUser, findBoard, commentApplyRequest.getContent());
+        Comment comment = Comment.from(loginUser, findBoard, commentApplyRequest.getContent());
 
         Long parentId = commentApplyRequest.getParentId();
         if (parentId != null) {

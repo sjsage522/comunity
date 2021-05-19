@@ -33,7 +33,7 @@ class CategoryRepositoryTest {
     void _01_create() {
 
         //given
-        Category newCategory = Category.from("coding");
+        Category newCategory = Category.of("coding");
 
         //when
         categoryRepository.create(newCategory);
@@ -50,7 +50,7 @@ class CategoryRepositoryTest {
     void _02_delete() {
 
         //given
-        Category c1 = Category.from("coding");
+        Category c1 = Category.of("coding");
 
         categoryRepository.create(c1);
 
@@ -69,7 +69,7 @@ class CategoryRepositoryTest {
     void _03_findById() {
 
         //given
-        Category newCategory = Category.from("coding");
+        Category newCategory = Category.of("coding");
 
         categoryRepository.create(newCategory);
 
@@ -88,8 +88,8 @@ class CategoryRepositoryTest {
     void _04_findAll() {
 
         //given
-        Category c1 = Category.from("coding");
-        Category c2 = Category.from("reading");
+        Category c1 = Category.of("coding");
+        Category c2 = Category.of("reading");
 
         categoryRepository.create(c1);
         categoryRepository.create(c2);

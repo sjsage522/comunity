@@ -46,7 +46,7 @@ public class User extends BaseTimeEntity {
         return new User(source.getUserId(), source.getName(), source.getNickName(), source.getPassword(), source.getEmail());
     }
 
-    public static User of(final String userId, final String name, final String nickName, final String password, final String email) {
+    public static User from(final String userId, final String name, final String nickName, final String password, final String email) {
         return new User(userId, name, nickName, password, email);
     }
 

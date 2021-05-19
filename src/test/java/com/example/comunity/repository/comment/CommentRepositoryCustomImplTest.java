@@ -47,7 +47,7 @@ class CommentRepositoryCustomImplTest {
         Category category = getCategory("coding");
         Board board = getBoard(user, category, "board", "content");
 
-        Comment newComment = Comment.of(
+        Comment newComment = Comment.from(
                 user,
                 board,
                 "comment..!"
@@ -74,7 +74,7 @@ class CommentRepositoryCustomImplTest {
         Category category = getCategory("coding");
         Board board = getBoard(user, category, "board", "content");
 
-        Comment newComment = Comment.of(
+        Comment newComment = Comment.from(
                 user,
                 board,
                 "comment..!"
@@ -111,14 +111,14 @@ class CommentRepositoryCustomImplTest {
     }
 
     private Category getCategory(String name) {
-        return Category.from(name);
+        return Category.of(name);
     }
 
     private Board getBoard(User newUser, Category category, String title, String content) {
-        return Board.of(newUser, category, title, content);
+        return Board.from(newUser, category, title, content);
     }
 
     private User getUser(String userId, String name, String nickName, String password, String email) {
-        return User.of(userId, name, nickName, password, email);
+        return User.from(userId, name, nickName, password, email);
     }
 }

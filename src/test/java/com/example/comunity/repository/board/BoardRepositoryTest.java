@@ -258,7 +258,7 @@ class BoardRepositoryTest {
     /*                            */
 
     private Category getCategory(String name) {
-        return Category.from(name);
+        return Category.of(name);
     }
 
     private Board getBoard(User newUser, Category category, String title, String content) {

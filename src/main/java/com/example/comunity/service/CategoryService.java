@@ -25,7 +25,7 @@ public class CategoryService {
             throw new DuplicateCategoryNameException("이미 존재하는 카테고리명 입니다.");
         }
 
-        Category newCategory = Category.from(categoryName);
+        Category newCategory = Category.of(categoryName);
         return categoryRepository.create(newCategory);
     }
 }

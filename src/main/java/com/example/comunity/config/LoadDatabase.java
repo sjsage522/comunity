@@ -36,14 +36,14 @@ public class LoadDatabase {
 
             @Override
             public void run(final String... args) throws Exception {
-                Category newCategory = Category.from("게임");
+                Category newCategory = Category.of("게임");
                 log.info("Preloading { categoryName : [" + categoryService
                         .create(
                                 new CategoryCreateRequest(
                                         newCategory.getCategoryName()
                                 )
                         ) + "] } CommandLineRunner...");
-                Category newCategory2 = Category.from("economy");
+                Category newCategory2 = Category.of("economy");
                 log.info("Preloading { categoryName : [" + categoryService
                         .create(
                                 new CategoryCreateRequest(

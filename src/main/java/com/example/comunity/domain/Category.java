@@ -46,7 +46,7 @@ public class Category {
      * 카테고리 생성 메서드
      * @param name 카테고리 이름
      */
-    public static Category from(final String name) {
+    public static Category of(final String name) {
         return new Category(name);
     }
 

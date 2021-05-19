@@ -53,8 +53,8 @@ public class UploadFile extends BaseTimeEntity {
             board.getUploadFiles().add(this);
     }
 
-    public static UploadFile of(final Board board, final String originalFileName, final String storedFileName, final Long fileSize,
-                                final String fileDownLoadUri, final String fileType) {
+    public static UploadFile from(final Board board, final String originalFileName, final String storedFileName, final Long fileSize,
+                                  final String fileDownLoadUri, final String fileType) {
         return new UploadFile(board, originalFileName, storedFileName, fileSize, fileDownLoadUri, fileType);
     }
     /**

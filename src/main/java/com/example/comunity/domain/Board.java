@@ -98,7 +98,7 @@ public class Board extends BaseTimeEntity {
      * @param title 게시판의 제목
      * @param content 게시판 글 내용
      */
-    public static Board of(final User user, final Category category, final String title, final String content) {
+    public static Board from(final User user, final Category category, final String title, final String content) {
         return new Board(user, category, title, content);
     }
 }
