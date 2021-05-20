@@ -17,19 +17,16 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(final InterceptorRegistry registry) {
         registry.addInterceptor(authCheckInterceptor())
-                .addPathPatterns("/*")
-                .addPathPatterns("/*/*")
-                .addPathPatterns("/*/*/*")
-                .addPathPatterns("/*/*/*/*")
+                .addPathPatterns("/**")
                 .excludePathPatterns("/login")  //로그인은 요청을 인터셉트 안함
                 .excludePathPatterns("/users"); //회원가입은 요청을 인터셉트 안함
     }
 
-    @Override
-    public void addCorsMappings(CorsRegistry cr) {
-        cr.addMapping("/**")
-                .allowedOrigins("http://localhost:8000");
-    }
+//    @Override
+//    public void addCorsMappings(CorsRegistry cr) {
+//        cr.addMapping("/**")
+//                .allowedOrigins("http://localhost:8000");
+//    }
 
     @Bean
     public AuthCheckInterceptor authCheckInterceptor() {
