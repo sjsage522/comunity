@@ -9,7 +9,7 @@ import com.example.comunity.exception.NoMatchUserInfoException;
 import com.example.comunity.repository.CategoryRepository;
 import com.example.comunity.repository.FileRepository;
 import com.example.comunity.repository.BoardRepository;
-import com.example.comunity.repository.comment.CommentRepository;
+import com.example.comunity.repository.CommentRepository;
 import com.example.comunity.util.FileUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

@@ -9,7 +9,7 @@ import com.example.comunity.exception.NoMatchBoardInfoException;
 import com.example.comunity.exception.NoMatchCommentInfoException;
 import com.example.comunity.exception.NoMatchUserInfoException;
 import com.example.comunity.repository.BoardRepository;
-import com.example.comunity.repository.comment.CommentRepository;
+import com.example.comunity.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -29,9 +29,8 @@ public class CommentService {
     @Transactional
     public Comment apply(final User loginUser, final Long boardId, final CommentApplyRequest commentApplyRequest) {
 
-        Board findBoard = boardRepository.findById(boardId).orElseThrow(() -> new NoMatchBoardInfoException("존재하지 않는 게시글입니다."));
-//        Board findBoard = boardRepository.findBoardById(boardId);
-//        if (findBoard == null) throw new NoMatchBoardInfoException("존재하지 않는 게시글입니다.");
+        Board findBoard = boardRepository.findById(boardId)
+                .orElseThrow(() -> new NoMatchBoardInfoException("존재하지 않는 게시글입니다."));
 
         Comment comment = Comment.from(loginUser, findBoard, commentApplyRequest.getContent());
 
@@ -40,32 +39,27 @@ public class CommentService {
          */
         Long parentId = commentApplyRequest.getParentId();
         if (parentId != null) {
-            Comment parentComment = commentRepository.findCommentById(parentId);
-            if (parentComment == null) throw new NoMatchCommentInfoException("존재하지 않는 답글입니다.");
+            Comment parentComment = commentRepository.findById(parentId)
+                    .orElseThrow(() -> new NoMatchCommentInfoException("존재하지 않는 답글입니다."));
             parentComment.addChildComment(comment);
         }
 
-        return commentRepository.apply(comment);
-    }
-
-    public Comment findById(final Long id) {
-        return commentRepository.findCommentById(id);
+        return commentRepository.save(comment);
     }
 
     @Transactional
     public void delete(final User loginUser, final Long commentId) {
-        Comment findComment = commentRepository.findCommentById(commentId);
-
+        Comment findComment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new NoMatchCommentInfoException("존재하지 않는 답글입니다."));
         checkValid(loginUser, findComment);
 
-        commentRepository.delete(commentId);
+        commentRepository.delete(findComment);
     }
 
     @Transactional
-    public Comment update(User loginUser, Long id, CommentUpdateRequest commentUpdateDto) {
-
-        Comment findComment = commentRepository.findCommentById(id);
-
+    public Comment update(User loginUser, Long commentId, CommentUpdateRequest commentUpdateDto) {
+        Comment findComment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new NoMatchCommentInfoException("존재하지 않는 답글입니다."));
         checkValid(loginUser, findComment);
 
         findComment.changeContent(commentUpdateDto.getContent());
@@ -74,8 +68,6 @@ public class CommentService {
     }
 
     private void checkValid(User loginUser, Comment findComment) {
-        if (findComment == null) throw new NoMatchCommentInfoException("존재하지 않는 답글입니다.");
-
         if (!findComment.getUser().getUserId().equals(loginUser.getUserId()))
             throw new NoMatchUserInfoException("다른 사용자의 답글을 삭제할 수 없습니다.");
     }

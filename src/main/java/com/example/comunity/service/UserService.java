@@ -13,7 +13,7 @@ import com.example.comunity.exception.NoMatchUserInfoException;
 import com.example.comunity.repository.FileRepository;
 import com.example.comunity.repository.UserRepository;
 import com.example.comunity.repository.BoardRepository;
-import com.example.comunity.repository.comment.CommentRepository;
+import com.example.comunity.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -103,10 +103,10 @@ public class UserService {
                 .collect(Collectors.toList());
         fileRepository.deleteWithIds(fileIds);
 
-        List<Comment> comments = commentRepository.findAll(boardId);
+        List<Comment> comments = commentRepository.findAllByBoard_BoardId(boardId);
         List<Long> commentIds = comments.stream()
                 .map(Comment::getCommentId)
                 .collect(Collectors.toList());
-        commentRepository.deleteAllByIds(commentIds);
+        commentRepository.deleteWithIds(commentIds);
     }
 }
