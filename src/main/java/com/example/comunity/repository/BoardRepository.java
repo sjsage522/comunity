@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,9 +15,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     /**
      * jpql fetch join
-     *
-     * @param pageable .
-     * @EntityGraph 사용 대신, Count 쿼리를 명시적으로 생성
      */
     @Query(value = "select b " +
             "from Board b " +
@@ -27,7 +23,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             "where c.categoryName = :categoryName " +
             "order by b.boardId desc",
             countQuery = "select count(b) from Board b join b.category c where c.categoryName = :categoryName")
-    Page<Board> findAllWithCategory(@Param("categoryName") final String categoryName, final Pageable pageable);
+    Page<Board> findAllWithCategory(final String categoryName, final Pageable pageable);
 
 
     /**
@@ -55,6 +51,9 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             " and c.categoryName = :categoryName")
     Optional<Board> findByBoardIdAndCategoryName(Long boardId, String categoryName);
 
+    /**
+     * 간단한 fetch join 의 경우 @EntityGraph 애노테이션 활용
+     */
     @EntityGraph(attributePaths = {"user"})
     List<Board> findAllByUserId(Long id);
 }
