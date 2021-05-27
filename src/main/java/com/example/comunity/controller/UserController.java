@@ -87,11 +87,11 @@ public class UserController {
 
     /**
      * 특정 사용자 조회
-     * @param id 조회할 아이디
+     * @param userId 조회할 아이디
      */
-    @GetMapping("/users/{id}")
-    public ResponseEntity<EntityModel<UserResponse>> findById(@PathVariable final String id) {
-        User findUser = userService.findById(id);
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<EntityModel<UserResponse>> findById(@PathVariable final String userId) {
+        User findUser = userService.findById(userId);
 
         return ResponseEntity
                 .created(linkTo(methodOn(UserController.class).findAll()).toUri())
@@ -115,17 +115,17 @@ public class UserController {
 
     /**
      * 사용자 정보 수정
-     * @param id 사용자 아이디
+     * @param userId 사용자 아이디
      * @param userUpdateRequest 사용자 정보 수정 dto
      */
-    @PatchMapping("/users/{id}")
-    public ResponseEntity<EntityModel<UserResponse>> update(@PathVariable final String id, @Valid @RequestBody final UserUpdateRequest userUpdateRequest, final HttpSession session) {
+    @PatchMapping("/users/{userId}")
+    public ResponseEntity<EntityModel<UserResponse>> update(@PathVariable final String userId, @Valid @RequestBody final UserUpdateRequest userUpdateRequest, final HttpSession session) {
         User loginUser = (User) session.getAttribute("authInfo");
 
-        User updatedUser = userService.update(id, userUpdateRequest, loginUser);
+        User updatedUser = userService.update(userId, userUpdateRequest, loginUser);
 
         return ResponseEntity
-                .created(linkTo(methodOn(UserController.class).findById(id)).toUri())
+                .created(linkTo(methodOn(UserController.class).findById(userId)).toUri())
                 .body(assembler.toModel(getUserResponse(updatedUser)));
     }
 
@@ -133,11 +133,11 @@ public class UserController {
      * It deletes based upon id then returns an HTTP 204 No Content response.
      * @return http 204 response
      */
-    @DeleteMapping("/users/{id}")
-    public ResponseEntity<EntityModel<UserResponse>> delete(@PathVariable final String id, @Valid @RequestBody final UserDeleteRequest userDeleteRequest, final HttpSession session) {
+    @DeleteMapping("/users/{userId}")
+    public ResponseEntity<EntityModel<UserResponse>> delete(@PathVariable final String userId, @Valid @RequestBody final UserDeleteRequest userDeleteRequest, final HttpSession session) {
         User loginUser = (User) session.getAttribute("authInfo");
 
-        userService.delete(id, userDeleteRequest, loginUser);
+        userService.delete(userId, userDeleteRequest, loginUser);
 
         session.invalidate();
 
