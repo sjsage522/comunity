@@ -31,6 +31,12 @@ public class UserService {
     private final FileRepository fileRepository;
     private final CommentRepository commentRepository;
 
+    /**
+     * 사용자 아이디와 별명은 unique 하기 때문에 먼저 검사 후 등록되어 있지 않은 사용자라면,
+     * User entity 를 생성하고 save
+     * @param userJoinRequest user dto
+     * @return saved user
+     */
     @Transactional
     public User join(final UserJoinRequest userJoinRequest) {
 
@@ -45,9 +51,9 @@ public class UserService {
     }
 
     @Transactional
-    public User update(final String id, final UserUpdateRequest userUpdateRequest, User loginUser) {
+    public User update(final String userId, final UserUpdateRequest userUpdateRequest, User loginUser) {
         /* 영속상태의 entity */
-        User findUser = findById(id);
+        User findUser = findById(userId);
 
         if (!loginUser.getUserId().equals(findUser.getUserId()))
             throw new NoMatchUserInfoException("다른 사용자의 정보를 수정할 수 없습니다.");
@@ -62,6 +68,9 @@ public class UserService {
         return findUser;
     }
 
+    /**
+     * session 으로 부터 얻어온 사용자와 삭제될 사용자가 일치할 경우에만 삭제 진행
+     */
     @Transactional
     public int delete(final String userId, final UserDeleteRequest userDeleteRequest, final User loginUser) {
         User findUser = findById(userId);
@@ -69,17 +78,21 @@ public class UserService {
         if (!loginUser.getUserId().equals(findUser.getUserId()))
             throw new NoMatchUserInfoException("다른 사용자의 정보를 삭제할 수 없습니다.");
 
-        List<Board> boards = boardRepository.findAllByUserId(findUser.getId());
+        List<Board> boards = boardRepository.findAllByUserId(loginUser.getId());
         List<Long> boardIds = boards.stream()
                 .map(Board::getBoardId)
                 .collect(Collectors.toList());
 
-        for (Long boardId : boardIds) {
-            deleteRelatedToBoard(boardId, fileRepository, commentRepository);
-        }
+        for (Long boardId : boardIds) deleteRelatedToBoard(boardId, fileRepository, commentRepository);
 
+        /**
+         * 사용자를 삭제하기 전에 사용자 외래키를 갖는 게시판을 삭제한다.
+         */
         boardRepository.deleteWithIds(boardIds);
 
+        /**
+         * 아이디와 패스워드가 일치한다면 삭제 진행
+         */
         if (findUser.getUserId().equals(userDeleteRequest.getUserId()) &&
                 findUser.getPassword().equals(userDeleteRequest.getPassword())) {
             return userRepository.deleteByUserId(userId);
@@ -96,6 +109,10 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    /**
+     * 특정 게시판에 첨부되어 있는 파일과 답글들을 삭제하는 메소드
+     * 참조무결성 제약조건 때문에 먼저 사용자와 게시판 외래키를 갖고있는 파일과 답글들을 먼저 삭제해야 한다.
+     */
     static void deleteRelatedToBoard(Long boardId, FileRepository fileRepository, CommentRepository commentRepository) {
         List<UploadFile> uploadFiles = fileRepository.findAllByBoard_BoardId(boardId);
         List<Long> fileIds = uploadFiles.stream()
