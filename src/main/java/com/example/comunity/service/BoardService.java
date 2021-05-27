@@ -55,7 +55,7 @@ public class BoardService {
         List<UploadFile> fileList = fileUtils.uploadFiles(files, uploadedBoard);
 
         if (!CollectionUtils.isEmpty(fileList)) {
-            fileRepository.uploadFiles(fileList);
+            fileRepository.saveAll(fileList);
             uploadedBoard.uploadFiles(fileList);
         }
 

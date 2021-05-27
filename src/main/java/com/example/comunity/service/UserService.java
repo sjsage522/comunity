@@ -97,11 +97,11 @@ public class UserService {
     }
 
     static void deleteRelatedToBoard(Long boardId, FileRepository fileRepository, CommentRepository commentRepository) {
-        List<UploadFile> uploadFiles = fileRepository.findAll(boardId);
+        List<UploadFile> uploadFiles = fileRepository.findAllByBoard_BoardId(boardId);
         List<Long> fileIds = uploadFiles.stream()
                 .map(UploadFile::getUploadFileId)
                 .collect(Collectors.toList());
-        fileRepository.deleteAllByIds(fileIds);
+        fileRepository.deleteWithIds(fileIds);
 
         List<Comment> comments = commentRepository.findAll(boardId);
         List<Long> commentIds = comments.stream()

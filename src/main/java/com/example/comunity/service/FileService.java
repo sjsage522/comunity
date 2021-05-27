@@ -15,8 +15,7 @@ public class FileService {
     private final FileRepository fileRepository;
 
     public UploadFile findById(final Long id) {
-        UploadFile findFile = fileRepository.findById(id);
-        if (findFile == null) throw new NoMatchFileInfoException("존재하지 않는 파일입니다.");
-        return findFile;
+        return fileRepository.findById(id)
+                .orElseThrow(() -> new NoMatchFileInfoException("존재하지 않는 파일입니다."));
     }
 }
