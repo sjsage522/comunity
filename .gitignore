@@ -243,5 +243,3 @@ $RECYCLE.BIN/
 # End of https://www.toptal.com/developers/gitignore/api/macos,intellij+all,java,database,windows
 
 # Custom
-*.yml
-gradlew
