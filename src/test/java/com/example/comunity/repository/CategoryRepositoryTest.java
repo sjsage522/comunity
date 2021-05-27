@@ -36,13 +36,13 @@ class CategoryRepositoryTest {
         Category newCategory = Category.of("coding");
 
         //when
-        categoryRepository.create(newCategory);
+        categoryRepository.save(newCategory);
 
         em.flush();
         em.clear();
 
         //then
-        assertThat(categoryRepository.findByName("coding").getCategoryId()).isEqualTo(1L);
+        assertThat(categoryRepository.findByCategoryName("coding").get().getCategoryId()).isEqualTo(1L);
     }
 
     @Test
@@ -52,16 +52,18 @@ class CategoryRepositoryTest {
         //given
         Category c1 = Category.of("coding");
 
-        categoryRepository.create(c1);
+        categoryRepository.save(c1);
 
         em.flush();
         em.clear();
 
+        Category findCategory = categoryRepository.findById(1L).get();
+
         //when
-        categoryRepository.delete(1L);
+        categoryRepository.delete(findCategory);
 
         //then
-        assertThat(categoryRepository.findById(1L)).isNull();
+        assertThat(categoryRepository.findById(1L).isEmpty()).isTrue();
     }
 
     @Test
@@ -71,13 +73,13 @@ class CategoryRepositoryTest {
         //given
         Category newCategory = Category.of("coding");
 
-        categoryRepository.create(newCategory);
+        categoryRepository.save(newCategory);
 
         em.flush();
         em.clear();
 
         //when
-        Category findCategory = categoryRepository.findById(1L);
+        Category findCategory = categoryRepository.findById(1L).get();
 
         //then
         assertThat(findCategory.getCategoryName()).isEqualTo("coding");
@@ -91,8 +93,8 @@ class CategoryRepositoryTest {
         Category c1 = Category.of("coding");
         Category c2 = Category.of("reading");
 
-        categoryRepository.create(c1);
-        categoryRepository.create(c2);
+        categoryRepository.save(c1);
+        categoryRepository.save(c2);
 
         em.flush();
         em.clear();

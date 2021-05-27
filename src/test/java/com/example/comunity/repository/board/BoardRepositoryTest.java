@@ -51,7 +51,7 @@ class BoardRepositoryTest {
         User newUser = userRepository.save(getUser);
 
         Category getCategory = getCategory("coding");
-        Category newCategory = categoryRepository.create(getCategory);
+        Category newCategory = categoryRepository.save(getCategory);
 
         Board getBoard = getBoard(newUser, newCategory, "title", "content");
 
@@ -77,7 +77,7 @@ class BoardRepositoryTest {
         User newUser = userRepository.save(getUser);
 
         Category getCategory = getCategory("coding");
-        Category newCategory = categoryRepository.create(getCategory);
+        Category newCategory = categoryRepository.save(getCategory);
 
         Board getBoard = getBoard(newUser, newCategory, "title", "content");
 
@@ -104,7 +104,7 @@ class BoardRepositoryTest {
         User newUser = userRepository.save(getUser);
 
         Category getCategory = getCategory("coding");
-        Category newCategory = categoryRepository.create(getCategory);
+        Category newCategory = categoryRepository.save(getCategory);
 
         Board getBoard = getBoard(newUser, newCategory, "title", "content");
 
@@ -133,7 +133,7 @@ class BoardRepositoryTest {
         User newUser = userRepository.save(getUser);
 
         Category getCategory = getCategory("coding");
-        Category newCategory = categoryRepository.create(getCategory);
+        Category newCategory = categoryRepository.save(getCategory);
 
         Board getBoard = getBoard(newUser, newCategory, "title", "content");
 
@@ -160,7 +160,7 @@ class BoardRepositoryTest {
         User newUser = userRepository.save(getUser);
 
         Category getCategory = getCategory("coding");
-        Category newCategory = categoryRepository.create(getCategory);
+        Category newCategory = categoryRepository.save(getCategory);
 
         Board getBoard = getBoard(newUser, newCategory, "title", "content");
 
@@ -184,7 +184,7 @@ class BoardRepositoryTest {
     void _06_findAllWithUser() {
         //given
         User user = userRepository.save(getUser("user1", "user", "user", "1234", "user@test.com"));
-        Category newCategory = categoryRepository.create(getCategory("coding"));
+        Category newCategory = categoryRepository.save(getCategory("coding"));
         boardRepository.save(getBoard(user, newCategory, "user_title", "user_content"));
         boardRepository.save(getBoard(user, newCategory, "user_title", "user_content"));
         boardRepository.save(getBoard(user, newCategory, "user_title", "user_content"));
@@ -208,7 +208,7 @@ class BoardRepositoryTest {
 
         //given
         User user = userRepository.save(getUser("user1", "user", "user", "1234", "user@test.com"));
-        Category newCategory = categoryRepository.create(getCategory("coding"));
+        Category newCategory = categoryRepository.save(getCategory("coding"));
         boardRepository.save(getBoard(user, newCategory, "user_title", "user_content"));
         boardRepository.save(getBoard(user, newCategory, "user_title", "user_content"));
         boardRepository.save(getBoard(user, newCategory, "user_title", "user_content"));
@@ -238,7 +238,7 @@ class BoardRepositoryTest {
 
         //given
         User user = userRepository.save(getUser("user1", "user", "user", "1234", "user@test.com"));
-        Category newCategory = categoryRepository.create(getCategory("coding"));
+        Category newCategory = categoryRepository.save(getCategory("coding"));
         boardRepository.save(getBoard(user, newCategory, "user_title", "user_content"));
         boardRepository.save(getBoard(user, newCategory, "user_title", "user_content"));
         boardRepository.save(getBoard(user, newCategory, "user_title", "user_content"));

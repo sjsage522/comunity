@@ -54,7 +54,7 @@ class CommentRepositoryCustomImplTest {
         );
 
         userRepository.save(user);
-        categoryRepository.create(category);
+        categoryRepository.save(category);
         boardRepository.save(board);
 
         //when
@@ -81,7 +81,7 @@ class CommentRepositoryCustomImplTest {
         );
 
         userRepository.save(user);
-        categoryRepository.create(category);
+        categoryRepository.save(category);
         boardRepository.save(board);
         commentRepository.apply(newComment);
 

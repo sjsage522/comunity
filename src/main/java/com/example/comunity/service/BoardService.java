@@ -107,8 +107,7 @@ public class BoardService {
     }
 
     private Category findCategoryByName(final String name) {
-        Category findCategory = categoryRepository.findByName(name);
-        if (findCategory == null) throw new NoMatchCategoryInfoException("존재하지 않는 카테고리명 입니다.");
-        return findCategory;
+        return categoryRepository.findByCategoryName(name)
+                .orElseThrow(() -> new NoMatchCategoryInfoException("존재하지 않는 카테고리명 입니다."));
     }
 }
