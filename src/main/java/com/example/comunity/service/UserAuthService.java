@@ -15,12 +15,7 @@ public class UserAuthService {
     private final UserRepository userRepository;
 
     public User authenticate(final String userId, final String password) {
-        User findUser = userRepository.findUserByIdWithPassword(userId, password);
-
-        if (findUser == null) {
-            throw new NoMatchUserInfoException("아이디 또는 비밀번호가 일치하지 않습니다.");
-        }
-
-        return findUser;
+        return userRepository.findByUserIdAndPassword(userId, password)
+                .orElseThrow(() -> new NoMatchUserInfoException("아이디 또는 비밀번호가 일치하지 않습니다."));
     }
 }

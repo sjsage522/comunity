@@ -48,7 +48,7 @@ class BoardRepositoryTest {
 
         //given
         User getUser = getUser("test", "tester", "tester123", "1234", "test@gmail.com");
-        User newUser = userRepository.join(getUser);
+        User newUser = userRepository.save(getUser);
 
         Category getCategory = getCategory("coding");
         Category newCategory = categoryRepository.create(getCategory);
@@ -74,7 +74,7 @@ class BoardRepositoryTest {
 
         //given
         User getUser = getUser("test", "tester", "tester123", "1234", "test@gmail.com");
-        User newUser = userRepository.join(getUser);
+        User newUser = userRepository.save(getUser);
 
         Category getCategory = getCategory("coding");
         Category newCategory = categoryRepository.create(getCategory);
@@ -101,7 +101,7 @@ class BoardRepositoryTest {
 
         //given
         User getUser = getUser("test", "tester", "tester123", "1234", "test@gmail.com");
-        User newUser = userRepository.join(getUser);
+        User newUser = userRepository.save(getUser);
 
         Category getCategory = getCategory("coding");
         Category newCategory = categoryRepository.create(getCategory);
@@ -130,7 +130,7 @@ class BoardRepositoryTest {
 
         //given
         User getUser = getUser("test", "tester", "tester123", "1234", "test@gmail.com");
-        User newUser = userRepository.join(getUser);
+        User newUser = userRepository.save(getUser);
 
         Category getCategory = getCategory("coding");
         Category newCategory = categoryRepository.create(getCategory);
@@ -157,7 +157,7 @@ class BoardRepositoryTest {
 
         //given
         User getUser = getUser("test", "tester", "tester123", "1234", "test@gmail.com");
-        User newUser = userRepository.join(getUser);
+        User newUser = userRepository.save(getUser);
 
         Category getCategory = getCategory("coding");
         Category newCategory = categoryRepository.create(getCategory);
@@ -183,7 +183,7 @@ class BoardRepositoryTest {
     @DisplayName("테스트 06. 모든 게시글 조회 테스트 (by user)")
     void _06_findAllWithUser() {
         //given
-        User user = userRepository.join(getUser("user1", "user", "user", "1234", "user@test.com"));
+        User user = userRepository.save(getUser("user1", "user", "user", "1234", "user@test.com"));
         Category newCategory = categoryRepository.create(getCategory("coding"));
         boardRepository.save(getBoard(user, newCategory, "user_title", "user_content"));
         boardRepository.save(getBoard(user, newCategory, "user_title", "user_content"));
@@ -207,7 +207,7 @@ class BoardRepositoryTest {
         //TODO 게시글 페이징 페스트
 
         //given
-        User user = userRepository.join(getUser("user1", "user", "user", "1234", "user@test.com"));
+        User user = userRepository.save(getUser("user1", "user", "user", "1234", "user@test.com"));
         Category newCategory = categoryRepository.create(getCategory("coding"));
         boardRepository.save(getBoard(user, newCategory, "user_title", "user_content"));
         boardRepository.save(getBoard(user, newCategory, "user_title", "user_content"));
@@ -237,7 +237,7 @@ class BoardRepositoryTest {
         //TODO 게시글 페이징 테스트
 
         //given
-        User user = userRepository.join(getUser("user1", "user", "user", "1234", "user@test.com"));
+        User user = userRepository.save(getUser("user1", "user", "user", "1234", "user@test.com"));
         Category newCategory = categoryRepository.create(getCategory("coding"));
         boardRepository.save(getBoard(user, newCategory, "user_title", "user_content"));
         boardRepository.save(getBoard(user, newCategory, "user_title", "user_content"));

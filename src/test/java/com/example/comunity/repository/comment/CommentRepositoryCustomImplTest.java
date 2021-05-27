@@ -53,7 +53,7 @@ class CommentRepositoryCustomImplTest {
                 "comment..!"
         );
 
-        userRepository.join(user);
+        userRepository.save(user);
         categoryRepository.create(category);
         boardRepository.save(board);
 
@@ -80,7 +80,7 @@ class CommentRepositoryCustomImplTest {
                 "comment..!"
         );
 
-        userRepository.join(user);
+        userRepository.save(user);
         categoryRepository.create(category);
         boardRepository.save(board);
         commentRepository.apply(newComment);

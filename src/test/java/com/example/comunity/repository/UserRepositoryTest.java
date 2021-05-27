@@ -38,13 +38,13 @@ class UserRepositoryTest {
         User newUser = getUser("junseok1234", "junseok", "jun", "1234", "test@gmail.com");
 
         //when
-        User savedUser = userRepository.join(newUser);
+        User savedUser = userRepository.save(newUser);
 
         em.flush();
         em.clear();
 
         //then
-        assertThat(userRepository.findUserById("junseok1234").getNickName()).isEqualTo("jun");
+        assertThat(userRepository.findByUserId("junseok1234").get().getNickName()).isEqualTo("jun");
     }
 
     @Test
@@ -53,17 +53,15 @@ class UserRepositoryTest {
 
         //given
         User newUser = getUser("junseok1234", "junseok", "jun", "1234", "test@gmail.com");
-        User savedUser = userRepository.join(newUser);
 
         //when
-        userRepository.delete("junseok1234");
+        userRepository.deleteByUserId("junseok1234");
 
         em.flush();
         em.clear();
 
         //then
-        User findUser = userRepository.findUserById("junseok1234"); /* Optional 처리 해줘야함, 서비스 계층 로직 수정 예정 (검증 부분 등..) */
-        assertThat(findUser).isNull();
+        assertThat(userRepository.findByUserId("junseok1234").isEmpty()).isTrue();
     }
 
     @Test
@@ -74,8 +72,8 @@ class UserRepositoryTest {
         User newUser1 = getUser("junseok1234", "junseok", "jun", "1234", "test@gmail.com");
         User newUser2 = getUser("tester", "hong", "test", "1234", "hong@gmail.com");
 
-        userRepository.join(newUser1);
-        userRepository.join(newUser2);
+        userRepository.save(newUser1);
+        userRepository.save(newUser2);
 
         em.flush();
         em.clear();
@@ -93,13 +91,13 @@ class UserRepositoryTest {
 
         //given
         User newUser = getUser("junseok1234", "junseok", "jun", "1234", "test@gmail.com");
-        userRepository.join(newUser);
+        userRepository.save(newUser);
 
         em.flush();
         em.clear();
 
         //when
-        User findUser = userRepository.findUserById("junseok1234");
+        User findUser = userRepository.findByUserId("junseok1234").get();
 
         //then
         assertThat(findUser.getEmail()).isEqualTo("test@gmail.com");
@@ -111,13 +109,13 @@ class UserRepositoryTest {
 
         //given
         User newUser = getUser("junseok1234", "junseok", "jun", "1234", "test@gmail.com");
-        userRepository.join(newUser);
+        userRepository.save(newUser);
 
         em.flush();
         em.clear();
 
         //when
-        User findUser = userRepository.findUserByNickName("jun");
+        User findUser = userRepository.findByNickName("jun").get();
 
         //then
         assertThat(findUser.getUserId()).isEqualTo("junseok1234");
@@ -129,13 +127,13 @@ class UserRepositoryTest {
 
         //given
         User newUser = getUser("junseok1234", "junseok", "jun", "1234", "test@gmail.com");
-        userRepository.join(newUser);
+        userRepository.save(newUser);
 
         em.flush();
         em.clear();
 
         //when
-        User findUser = userRepository.findUserByIdWithPassword("junseok1234", "1234");
+        User findUser = userRepository.findByUserIdAndPassword("junseok1234", "1234").get();
 
         //then
         assertThat(findUser.getNickName()).isEqualTo("jun");

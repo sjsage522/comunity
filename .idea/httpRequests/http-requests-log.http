@@ -8,6 +8,144 @@ Content-Type: application/json
 
 ###
 
+PATCH http://localhost:8080/category/게임/boards/1
+Content-Type: application/json
+
+{
+  "title": "changed title",
+  "content": "changed content",
+  "categoryName": "economy"
+}
+
+<> 2021-05-27T165352.201.json
+
+###
+
+POST http://localhost:8080/boards
+Host: localhost:8080
+Content-Type: multipart/form-data; boundary=WebKitFormBoundary7MA4YWxkTrZu0gW
+
+--WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="boardUploadRequest"
+Content-Type: application/json
+
+{
+  "title": "title",
+  "content": "content files...",
+  "categoryName": "게임"
+}
+--WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="files"; filename="me.jpeg"
+Content-Type: multipart/form-data
+
+< /Users/jun/Postman/files/me.jpeg
+--WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+<> 2021-05-27T165346.201.json
+
+###
+
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+  "userId": "testId",
+  "password": "testPassword"
+}
+
+<> 2021-05-27T165341.201.json
+
+###
+
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+  "userId": "testId",
+  "name": "testName",
+  "nickName": "testNickName",
+  "password": "testPassword",
+  "email": "test@example.com"
+}
+
+<> 2021-05-27T165339.201.json
+
+###
+
+DELETE http://localhost:8080/users/testId
+Content-Type: application/json
+
+{
+  "userId": "testId",
+  "password": "testPassword"
+}
+
+###
+
+PATCH http://localhost:8080/users/testId
+Content-Type: application/json
+
+{
+  "name": "testName",
+  "nickName": "changed_testNickName",
+  "password": "testPassword"
+}
+
+<> 2021-05-27T165331.201.json
+
+###
+
+GET http://localhost:8080/users
+Accept: application/json
+
+<> 2021-05-27T165329.200.json
+
+###
+
+GET http://localhost:8080/users/testId
+Accept: application/json
+
+<> 2021-05-27T165327.201.json
+
+###
+
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+  "userId": "testId",
+  "password": "testPassword"
+}
+
+<> 2021-05-27T165324.201.json
+
+###
+
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+  "userId": "testId",
+  "name": "testName",
+  "nickName": "testNickName",
+  "password": "testPassword",
+  "email": "test@example.com"
+}
+
+<> 2021-05-27T165323.201.json
+
+###
+
+DELETE http://localhost:8080/users/testId
+Content-Type: application/json
+
+{
+  "userId": "testId",
+  "password": "testPassword"
+}
+
+###
+
 GET http://localhost:8080/boards/page/0
 Accept: application/json
 
@@ -558,148 +696,6 @@ Content-Type: application/json
 }
 
 <> 2021-05-27T153600.201.json
-
-###
-
-POST http://localhost:8080/users
-Content-Type: application/json
-
-{
-  "userId": "testId",
-  "name": "testName",
-  "nickName": "testNickName",
-  "password": "testPassword",
-  "email": "test@example.com"
-}
-
-<> 2021-05-27T153559.201.json
-
-###
-
-DELETE http://localhost:8080/users/testId
-Content-Type: application/json
-
-{
-  "userId": "testId",
-  "password": "testPassword"
-}
-
-<> 2021-05-27T153122.500.json
-
-###
-
-POST http://localhost:8080/boards
-Host: localhost:8080
-Content-Type: multipart/form-data; boundary=WebKitFormBoundary7MA4YWxkTrZu0gW
-
---WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="boardUploadRequest"
-Content-Type: application/json
-
-{
-  "title": "title",
-  "content": "content files...",
-  "categoryName": "게임"
-}
---WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="files"; filename="me.jpeg"
-Content-Type: multipart/form-data
-
-< /Users/jun/Postman/files/me.jpeg
---WebKitFormBoundary7MA4YWxkTrZu0gW--
-
-<> 2021-05-27T153117.201.json
-
-###
-
-DELETE http://localhost:8080/category/게임/boards/1
-Accept: application/json
-
-<> 2021-05-27T153113.404.json
-
-###
-
-GET http://localhost:8080/boards/page/0
-Accept: application/json
-
-<> 2021-05-27T153105.200.json
-
-###
-
-POST http://localhost:8080/login
-Content-Type: application/json
-
-{
-  "userId": "testId",
-  "password": "testPassword"
-}
-
-<> 2021-05-27T153059.201.json
-
-###
-
-POST http://localhost:8080/users
-Content-Type: application/json
-
-{
-  "userId": "testId",
-  "name": "testName",
-  "nickName": "testNickName",
-  "password": "testPassword",
-  "email": "test@example.com"
-}
-
-<> 2021-05-27T153058.201.json
-
-###
-
-DELETE http://localhost:8080/users/testId
-Content-Type: application/json
-
-{
-  "userId": "testId",
-  "password": "testPassword"
-}
-
-<> 2021-05-27T152224.500.json
-
-###
-
-GET http://localhost:8080/boards/page/0
-Accept: application/json
-
-<> 2021-05-27T152214.200.json
-
-###
-
-POST http://localhost:8080/boards
-Host: localhost:8080
-Content-Type: multipart/form-data; boundary=WebKitFormBoundary7MA4YWxkTrZu0gW
-
---WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="boardUploadRequest"
-Content-Type: application/json
-
-{
-  "title": "title",
-  "content": "content files...",
-  "categoryName": "게임"
-}
---WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="files"; filename="me.jpeg"
-Content-Type: multipart/form-data
-
-< /Users/jun/Postman/files/me.jpeg
---WebKitFormBoundary7MA4YWxkTrZu0gW--
-
-<> 2021-05-27T152209.201.json
-
-###
-
-GET http://localhost:8080/users/testId
-Accept: application/json
-
-<> 2021-05-27T152203.201.json
 
 ###
 

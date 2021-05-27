@@ -33,23 +33,15 @@ public class UserService {
 
     @Transactional
     public User join(final UserJoinRequest userJoinRequest) {
-        User findUserById = userRepository.findUserById(userJoinRequest.getUserId());
-        if (findUserById != null) {
-            if (findUserById.getUserId().equals(userJoinRequest.getUserId())) {
-                throw new DuplicateUserIdException("이미 존재하는 아이디 입니다.");
-            }
-        }
-        User findUserByNickName = userRepository.findUserByNickName(userJoinRequest.getNickName());
-        if (findUserByNickName != null) {
-            if (findUserByNickName.getNickName().equals(userJoinRequest.getNickName())) {
-                throw new DuplicateUserNickNameException("이미 존재하는 별명 입니다.");
-            }
-        }
+
+        userRepository.findByUserIdOrNickName(userJoinRequest.getUserId(), userJoinRequest.getNickName())
+                .ifPresent(user -> {
+                    if (user.getUserId() != null) throw new DuplicateUserIdException("이미 존재하는 아이디 입니다.");
+                    else throw new DuplicateUserNickNameException("이미 존재하는 별명 입니다.");
+                });
 
         User newUser = User.from(userJoinRequest);
-
-
-        return userRepository.join(newUser);
+        return userRepository.save(newUser);
     }
 
     @Transactional
@@ -57,7 +49,8 @@ public class UserService {
         /* 영속상태의 entity */
         User findUser = findById(id);
 
-        if (!loginUser.getUserId().equals(findUser.getUserId())) throw new NoMatchUserInfoException("다른 사용자의 정보를 수정할 수 없습니다.");
+        if (!loginUser.getUserId().equals(findUser.getUserId()))
+            throw new NoMatchUserInfoException("다른 사용자의 정보를 수정할 수 없습니다.");
 
         /* dirty check */
         findUser.changeName(userUpdateRequest.getName());
@@ -73,7 +66,8 @@ public class UserService {
     public int delete(final String userId, final UserDeleteRequest userDeleteRequest, final User loginUser) {
         User findUser = findById(userId);
 
-        if (!loginUser.getUserId().equals(findUser.getUserId())) throw new NoMatchUserInfoException("다른 사용자의 정보를 삭제할 수 없습니다.");
+        if (!loginUser.getUserId().equals(findUser.getUserId()))
+            throw new NoMatchUserInfoException("다른 사용자의 정보를 삭제할 수 없습니다.");
 
         List<Board> boards = boardRepository.findAllByUserId(findUser.getId());
         List<Long> boardIds = boards.stream()
@@ -85,19 +79,17 @@ public class UserService {
         }
 
         boardRepository.deleteWithIds(boardIds);
-//        boardRepository.deleteAllByIds(boardIds);
 
         if (findUser.getUserId().equals(userDeleteRequest.getUserId()) &&
                 findUser.getPassword().equals(userDeleteRequest.getPassword())) {
-            return userRepository.delete(userId);
+            return userRepository.deleteByUserId(userId);
         }
         return 0;
     }
 
     public User findById(final String userId) {
-        User findUser = userRepository.findUserById(userId);
-        if (findUser == null) throw new NoMatchUserInfoException("존재하지 않는 사용자 입니다.");
-        return findUser;
+        return userRepository.findByUserId(userId)
+                .orElseThrow(() -> new NoMatchUserInfoException("존재하지 않는 사용자 입니다."));
     }
 
     public List<User> findAll() {
