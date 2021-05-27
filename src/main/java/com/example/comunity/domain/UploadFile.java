@@ -57,7 +57,4 @@ public class UploadFile extends BaseTimeEntity {
                                   final String fileDownLoadUri, final String fileType) {
         return new UploadFile(board, originalFileName, storedFileName, fileSize, fileDownLoadUri, fileType);
     }
-    /**
-     * 변경을 위한 추가 메서드 (첨부파일 정보 수정)
-     */
 }
