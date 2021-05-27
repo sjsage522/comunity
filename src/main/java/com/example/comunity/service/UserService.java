@@ -36,7 +36,7 @@ public class UserService {
 
         userRepository.findByUserIdOrNickName(userJoinRequest.getUserId(), userJoinRequest.getNickName())
                 .ifPresent(user -> {
-                    if (user.getUserId() != null) throw new DuplicateUserIdException("이미 존재하는 아이디 입니다.");
+                    if (user.getUserId().equals(userJoinRequest.getUserId())) throw new DuplicateUserIdException("이미 존재하는 아이디 입니다.");
                     else throw new DuplicateUserNickNameException("이미 존재하는 별명 입니다.");
                 });
 
