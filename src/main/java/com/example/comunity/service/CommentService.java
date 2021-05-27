@@ -8,7 +8,7 @@ import com.example.comunity.dto.comment.CommentUpdateRequest;
 import com.example.comunity.exception.NoMatchBoardInfoException;
 import com.example.comunity.exception.NoMatchCommentInfoException;
 import com.example.comunity.exception.NoMatchUserInfoException;
-import com.example.comunity.repository.board.BoardRepository;
+import com.example.comunity.repository.BoardRepository;
 import com.example.comunity.repository.comment.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -29,12 +29,15 @@ public class CommentService {
     @Transactional
     public Comment apply(final User loginUser, final Long boardId, final CommentApplyRequest commentApplyRequest) {
 
-        Board findBoard = boardRepository.findBoardById(boardId);
-
-        if (findBoard == null) throw new NoMatchBoardInfoException("존재하지 않는 게시글입니다.");
+        Board findBoard = boardRepository.findById(boardId).orElseThrow(() -> new NoMatchBoardInfoException("존재하지 않는 게시글입니다."));
+//        Board findBoard = boardRepository.findBoardById(boardId);
+//        if (findBoard == null) throw new NoMatchBoardInfoException("존재하지 않는 게시글입니다.");
 
         Comment comment = Comment.from(loginUser, findBoard, commentApplyRequest.getContent());
 
+        /**
+         * 대댓글 작성 부분
+         */
         Long parentId = commentApplyRequest.getParentId();
         if (parentId != null) {
             Comment parentComment = commentRepository.findCommentById(parentId);

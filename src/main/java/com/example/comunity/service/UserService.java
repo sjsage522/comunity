@@ -12,7 +12,7 @@ import com.example.comunity.exception.DuplicateUserNickNameException;
 import com.example.comunity.exception.NoMatchUserInfoException;
 import com.example.comunity.repository.FileRepository;
 import com.example.comunity.repository.UserRepository;
-import com.example.comunity.repository.board.BoardRepository;
+import com.example.comunity.repository.BoardRepository;
 import com.example.comunity.repository.comment.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -70,12 +70,12 @@ public class UserService {
     }
 
     @Transactional
-    public int delete(final String id, final UserDeleteRequest userDeleteRequest, final User loginUser) {
-        User findUser = findById(id);
+    public int delete(final String userId, final UserDeleteRequest userDeleteRequest, final User loginUser) {
+        User findUser = findById(userId);
 
         if (!loginUser.getUserId().equals(findUser.getUserId())) throw new NoMatchUserInfoException("다른 사용자의 정보를 삭제할 수 없습니다.");
 
-        List<Board> boards = boardRepository.findAllWithUser(id);
+        List<Board> boards = boardRepository.findAllByUserId(findUser.getId());
         List<Long> boardIds = boards.stream()
                 .map(Board::getBoardId)
                 .collect(Collectors.toList());
@@ -84,11 +84,12 @@ public class UserService {
             deleteRelatedToBoard(boardId, fileRepository, commentRepository);
         }
 
-        boardRepository.deleteAllByIds(boardIds);
+        boardRepository.deleteWithIds(boardIds);
+//        boardRepository.deleteAllByIds(boardIds);
 
         if (findUser.getUserId().equals(userDeleteRequest.getUserId()) &&
                 findUser.getPassword().equals(userDeleteRequest.getPassword())) {
-            return userRepository.delete(id);
+            return userRepository.delete(userId);
         }
         return 0;
     }

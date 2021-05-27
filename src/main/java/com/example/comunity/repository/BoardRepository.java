@@ -1,15 +1,18 @@
-package com.example.comunity.repository.board;
+package com.example.comunity.repository;
 
 import com.example.comunity.domain.Board;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface BoardRepository extends JpaRepository<Board, Long>, BoardRepositoryCustom {
+public interface BoardRepository extends JpaRepository<Board, Long> {
 
     /**
      * jpql fetch join
@@ -40,4 +43,18 @@ public interface BoardRepository extends JpaRepository<Board, Long>, BoardReposi
             "order by b.boardId desc",
             countQuery = "select count(b) from Board b")
     Page<Board> findAllByOrderByBoardIdDesc(final Pageable pageable);
+
+    @Modifying
+    @Query("delete from Board b where b.boardId in :ids")
+    void deleteWithIds(List<Long> ids);
+
+    @Query("select b from Board b" +
+            " join fetch b.user" +
+            " join fetch b.category c" +
+            " where b.boardId = :boardId" +
+            " and c.categoryName = :categoryName")
+    Optional<Board> findByBoardIdAndCategoryName(Long boardId, String categoryName);
+
+    @EntityGraph(attributePaths = {"user"})
+    List<Board> findAllByUserId(Long id);
 }

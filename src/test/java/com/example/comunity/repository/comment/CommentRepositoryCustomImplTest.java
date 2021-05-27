@@ -6,7 +6,7 @@ import com.example.comunity.domain.Comment;
 import com.example.comunity.domain.User;
 import com.example.comunity.repository.CategoryRepository;
 import com.example.comunity.repository.UserRepository;
-import com.example.comunity.repository.board.BoardRepository;
+import com.example.comunity.repository.BoardRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -55,7 +55,7 @@ class CommentRepositoryCustomImplTest {
 
         userRepository.join(user);
         categoryRepository.create(category);
-        boardRepository.upload(board);
+        boardRepository.save(board);
 
         //when
         commentRepository.apply(newComment);
@@ -82,7 +82,7 @@ class CommentRepositoryCustomImplTest {
 
         userRepository.join(user);
         categoryRepository.create(category);
-        boardRepository.upload(board);
+        boardRepository.save(board);
         commentRepository.apply(newComment);
 
         em.flush();

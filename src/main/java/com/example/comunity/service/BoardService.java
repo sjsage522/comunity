@@ -3,13 +3,12 @@ package com.example.comunity.service;
 import com.example.comunity.domain.*;
 import com.example.comunity.dto.board.BoardUpdateRequest;
 import com.example.comunity.dto.board.BoardUploadRequest;
-import com.example.comunity.dto.file.UploadFileDto;
 import com.example.comunity.exception.NoMatchBoardInfoException;
 import com.example.comunity.exception.NoMatchCategoryInfoException;
 import com.example.comunity.exception.NoMatchUserInfoException;
 import com.example.comunity.repository.CategoryRepository;
 import com.example.comunity.repository.FileRepository;
-import com.example.comunity.repository.board.BoardRepository;
+import com.example.comunity.repository.BoardRepository;
 import com.example.comunity.repository.comment.CommentRepository;
 import com.example.comunity.util.FileUtils;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,7 +50,7 @@ public class BoardService {
                 boardUploadRequest.getTitle(),
                 boardUploadRequest.getContent());
 
-        Board uploadedBoard = boardRepository.upload(newBoard);
+        Board uploadedBoard = boardRepository.save(newBoard);
 
         List<UploadFile> fileList = fileUtils.uploadFiles(files, uploadedBoard);
 
@@ -72,16 +70,15 @@ public class BoardService {
     }
 
     public Board findByIdWithCategory(final Long id, final String name) {
-        Board findBoard = boardRepository.findBoardByIdWithCategory(id, name);
-        if (findBoard == null) throw new NoMatchBoardInfoException("존재하지 않는 게시글 입니다.");
-        return findBoard;
+        return boardRepository.findByBoardIdAndCategoryName(id, name)
+                .orElseThrow(() -> new NoMatchBoardInfoException("존재하지 않는 게시글 입니다."));
     }
 
     @Transactional
     public void delete(final Long boardId, final String categoryName, final User loginUser) {
 
-        Board findBoard = boardRepository.findBoardByIdWithCategory(boardId, categoryName);
-        if (findBoard == null) throw new NoMatchBoardInfoException("존재하지 않는 게시글 입니다.");
+        Board findBoard = boardRepository.findByBoardIdAndCategoryName(boardId, categoryName)
+                .orElseThrow(() -> new NoMatchBoardInfoException("존재하지 않는 게시글 입니다."));
 
         User findUser = findBoard.getUser();
         if (!findUser.getUserId().equals(loginUser.getUserId()))
@@ -89,15 +86,14 @@ public class BoardService {
 
         UserService.deleteRelatedToBoard(boardId, fileRepository, commentRepository);
 
-        boardRepository.delete(boardId);
+        boardRepository.delete(findBoard);
     }
 
     @Transactional
     public Board update(final Long boardId, final String categoryName, final BoardUpdateRequest boardUpdateRequest, final User loginUser) {
 
-        Board findBoard = boardRepository.findBoardByIdWithCategory(boardId, categoryName);
-
-        if (findBoard == null) throw new NoMatchBoardInfoException("존재하지 않는 게시글 입니다.");
+        Board findBoard = boardRepository.findByBoardIdAndCategoryName(boardId, categoryName)
+                .orElseThrow(() -> new NoMatchBoardInfoException("존재하지 않는 게시글 입니다."));
 
         User findUser = findBoard.getUser();
         if (!findUser.getUserId().equals(loginUser.getUserId()))

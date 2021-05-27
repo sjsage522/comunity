@@ -3,6 +3,7 @@ package com.example.comunity.repository.board;
 import com.example.comunity.domain.Board;
 import com.example.comunity.domain.Category;
 import com.example.comunity.domain.User;
+import com.example.comunity.repository.BoardRepository;
 import com.example.comunity.repository.CategoryRepository;
 import com.example.comunity.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -55,12 +56,12 @@ class BoardRepositoryTest {
         Board getBoard = getBoard(newUser, newCategory, "title", "content");
 
         //when
-        boardRepository.upload(getBoard);
+        boardRepository.save(getBoard);
 
         em.flush(); /* 영속성 컨텍스트의 SQL 쓰기 지연저장소에 있는 쿼리를 날림 */
         em.clear(); /* 1차 캐시 클리어 */
 
-        Board findBoard = boardRepository.findBoardById(1L);
+        Board findBoard = boardRepository.findById(1L).get();
         //then
         assertThat(findBoard.getUser().getUserId()).isEqualTo("test");              /* lazy loading */
         assertThat(findBoard.getCategory().getCategoryName()).isEqualTo("coding");  /* lazy loading */
@@ -80,16 +81,18 @@ class BoardRepositoryTest {
 
         Board getBoard = getBoard(newUser, newCategory, "title", "content");
 
-        boardRepository.upload(getBoard);
+        boardRepository.save(getBoard);
 
         em.flush();
         em.clear();
 
+        Board findBoard = boardRepository.findById(1L).get();
+
         //when
-        boardRepository.delete(1L);
+        boardRepository.delete(findBoard);
 
         //then
-        assertThat(boardRepository.findBoardById(1L)).isNull();
+        assertThat(boardRepository.findById(1L).isEmpty()).isTrue();
     }
 
     @Test
@@ -105,9 +108,9 @@ class BoardRepositoryTest {
 
         Board getBoard = getBoard(newUser, newCategory, "title", "content");
 
-        boardRepository.upload(getBoard);
-        boardRepository.upload(getBoard);
-        boardRepository.upload(getBoard);
+        boardRepository.save(getBoard);
+        boardRepository.save(getBoard);
+        boardRepository.save(getBoard);
 
         em.flush();
         em.clear();
@@ -115,7 +118,7 @@ class BoardRepositoryTest {
         //when
         System.out.println(boardRepository.findAll().get(0).getBoardId());
 
-        boardRepository.deleteAllByIds(Arrays.asList(1L, 2L, 3L));
+        boardRepository.deleteWithIds(Arrays.asList(1L, 2L, 3L));
 
         //then
         assertThat(boardRepository.findAll().size()).isEqualTo(0);
@@ -134,13 +137,13 @@ class BoardRepositoryTest {
 
         Board getBoard = getBoard(newUser, newCategory, "title", "content");
 
-        boardRepository.upload(getBoard);
+        boardRepository.save(getBoard);
 
         em.flush();
         em.clear();
 
         //when
-        Board findBoard = boardRepository.findBoardById(1L);
+        Board findBoard = boardRepository.findById(1L).get();
 
         //then
         assertThat(findBoard.getTitle()).isEqualTo("title");
@@ -161,13 +164,13 @@ class BoardRepositoryTest {
 
         Board getBoard = getBoard(newUser, newCategory, "title", "content");
 
-        boardRepository.upload(getBoard);
+        boardRepository.save(getBoard);
 
         em.flush();
         em.clear();
 
         //when
-        Board findBoard = boardRepository.findBoardByIdWithCategory(1L, "coding");
+        Board findBoard = boardRepository.findByBoardIdAndCategoryName(1L, "coding").get();
 
         //then
         assertThat(findBoard.getTitle()).isEqualTo("title");
@@ -182,9 +185,9 @@ class BoardRepositoryTest {
         //given
         User user = userRepository.join(getUser("user1", "user", "user", "1234", "user@test.com"));
         Category newCategory = categoryRepository.create(getCategory("coding"));
-        boardRepository.upload(getBoard(user, newCategory, "user_title", "user_content"));
-        boardRepository.upload(getBoard(user, newCategory, "user_title", "user_content"));
-        boardRepository.upload(getBoard(user, newCategory, "user_title", "user_content"));
+        boardRepository.save(getBoard(user, newCategory, "user_title", "user_content"));
+        boardRepository.save(getBoard(user, newCategory, "user_title", "user_content"));
+        boardRepository.save(getBoard(user, newCategory, "user_title", "user_content"));
 
         em.flush();
         em.clear();
@@ -206,9 +209,9 @@ class BoardRepositoryTest {
         //given
         User user = userRepository.join(getUser("user1", "user", "user", "1234", "user@test.com"));
         Category newCategory = categoryRepository.create(getCategory("coding"));
-        boardRepository.upload(getBoard(user, newCategory, "user_title", "user_content"));
-        boardRepository.upload(getBoard(user, newCategory, "user_title", "user_content"));
-        boardRepository.upload(getBoard(user, newCategory, "user_title", "user_content"));
+        boardRepository.save(getBoard(user, newCategory, "user_title", "user_content"));
+        boardRepository.save(getBoard(user, newCategory, "user_title", "user_content"));
+        boardRepository.save(getBoard(user, newCategory, "user_title", "user_content"));
 
         em.flush();
         em.clear();
@@ -236,10 +239,10 @@ class BoardRepositoryTest {
         //given
         User user = userRepository.join(getUser("user1", "user", "user", "1234", "user@test.com"));
         Category newCategory = categoryRepository.create(getCategory("coding"));
-        boardRepository.upload(getBoard(user, newCategory, "user_title", "user_content"));
-        boardRepository.upload(getBoard(user, newCategory, "user_title", "user_content"));
-        boardRepository.upload(getBoard(user, newCategory, "user_title", "user_content"));
-        boardRepository.upload(getBoard(user, newCategory, "user_title", "user_content"));
+        boardRepository.save(getBoard(user, newCategory, "user_title", "user_content"));
+        boardRepository.save(getBoard(user, newCategory, "user_title", "user_content"));
+        boardRepository.save(getBoard(user, newCategory, "user_title", "user_content"));
+        boardRepository.save(getBoard(user, newCategory, "user_title", "user_content"));
 
         //when
         List<Board> zeroPage = boardRepository.findAllByOrderByBoardIdDesc(PageRequest.of(0, 3))
