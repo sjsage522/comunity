@@ -113,10 +113,17 @@ public class CommentController {
         Comment parent = comment.getParent();
 
         if (parent != null) {
+            /**
+             * 자식 댓글들은 자신의 부모를 설정
+             */
             commentResponse.setParentId(parent.getCommentId());
         }
 
         List<Comment> children = comment.getChildren();
+
+        /**
+         * 각 부모 댓글에 대한 답글들을 오름차순으로 정렬
+         */
         children.sort(Comparator.comparing(Comment::getCommentId));
 
         for (Comment child : children) {

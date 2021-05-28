@@ -50,10 +50,17 @@ public class BoardService {
                 boardUploadRequest.getTitle(),
                 boardUploadRequest.getContent());
 
+        /**
+         * 새로운 게시글 생성
+         */
         Board uploadedBoard = boardRepository.save(newBoard);
 
         List<UploadFile> fileList = fileUtils.uploadFiles(files, uploadedBoard);
 
+        /**
+         * 게시글에 첨부파일을 업로드 했을 경우,
+         * 첨부파일 생성
+         */
         if (!CollectionUtils.isEmpty(fileList)) {
             fileRepository.saveAll(fileList);
             uploadedBoard.uploadFiles(fileList);
@@ -84,6 +91,9 @@ public class BoardService {
         if (!findUser.getUserId().equals(loginUser.getUserId()))
             throw new NoMatchUserInfoException("다른 사용자의 게시글을 삭제할 수 없습니다.");
 
+        /**
+         * 게시글을 삭제하기 전에 먼저 연관된 첨부파일과 댓글들을 삭제해야 한다. (참조 무결성)
+         */
         UserService.deleteRelatedToBoard(boardId, fileRepository, commentRepository);
 
         boardRepository.delete(findBoard);
@@ -92,15 +102,24 @@ public class BoardService {
     @Transactional
     public Board update(final Long boardId, final String categoryName, final BoardUpdateRequest boardUpdateRequest, final User loginUser) {
 
+        /**
+         * 수정하고자 하는 게시글을 찾는다.
+         */
         Board findBoard = boardRepository.findByBoardIdAndCategoryName(boardId, categoryName)
                 .orElseThrow(() -> new NoMatchBoardInfoException("존재하지 않는 게시글 입니다."));
 
+        /**
+         * 다른 사용자는 게시글을 수정할 수 없도록 처리
+         * loginUser -> 세션에서 꺼내온 사용자 정보
+         */
         User findUser = findBoard.getUser();
         if (!findUser.getUserId().equals(loginUser.getUserId()))
             throw new NoMatchUserInfoException("다른 사용자의 게시글을 수정할 수 없습니다.");
 
+        /**
+         * 영속성 컨텍스트의 dirty check
+         */
         Category changedCategory = findCategoryByName(boardUpdateRequest.getCategoryName());
-
         findBoard.changeBoard(boardUpdateRequest.getTitle(), boardUpdateRequest.getContent(), changedCategory);
 
         return findBoard;

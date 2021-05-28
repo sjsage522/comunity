@@ -29,6 +29,9 @@ public class CommentService {
     @Transactional
     public Comment apply(final User loginUser, final Long boardId, final CommentApplyRequest commentApplyRequest) {
 
+        /**
+         * 존재하는 게시글에만 답글을 달 수 있음
+         */
         Board findBoard = boardRepository.findById(boardId)
                 .orElseThrow(() -> new NoMatchBoardInfoException("존재하지 않는 게시글입니다."));
 
