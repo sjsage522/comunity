@@ -35,8 +35,6 @@ public class Board extends BaseTimeEntity {
     private String title;
     private String content;
 
-//    private String boardUri;
-
     @OneToMany(mappedBy = "board")
     private final List<UploadFile> uploadFiles = new ArrayList<>();
 
