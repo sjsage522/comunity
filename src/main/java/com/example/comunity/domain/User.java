@@ -3,6 +3,8 @@ package com.example.comunity.domain;
 import com.example.comunity.dto.user.UserJoinRequest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.persistence.*;
 
@@ -18,7 +20,8 @@ import static lombok.AccessLevel.PROTECTED;
 )
 public class User extends BaseTimeEntity {
 
-    @Id @GeneratedValue(
+    @Id
+    @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
             generator = "user_sequence_generator"
     )
@@ -38,8 +41,15 @@ public class User extends BaseTimeEntity {
         this.userId = userId;
         this.name = name;
         this.nickName = nickName;
-        this.password = password;
+        this.password = passwordEncoding(password);
         this.email = email;
+    }
+
+    /**
+     * 패스워드 인코딩
+     */
+    private String passwordEncoding(String password) {
+        return Base64.encodeBase64String(DigestUtils.sha512(password));
     }
 
     public static User from(final UserJoinRequest source) {
@@ -62,6 +72,6 @@ public class User extends BaseTimeEntity {
     }
 
     public void changePassword(final String password) {
-        this.password = password;
+        this.password = passwordEncoding(password);
     }
 }

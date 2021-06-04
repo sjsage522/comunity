@@ -36,7 +36,7 @@ public class UserController {
      * @throws DuplicateUserIdException 이미 존재하는 id가 있는지 검사
      * @throws DuplicateUserNickNameException 이미 존재하는 별명이 있는지 검사
      */
-    @PostMapping("/users")
+    @PostMapping("/join")
     public ResponseEntity<EntityModel<UserResponse>> join(@Valid @RequestBody final UserJoinRequest userJoinRequest)
             throws DuplicateUserIdException, DuplicateUserNickNameException {
 
