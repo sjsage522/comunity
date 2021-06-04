@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -15,7 +17,16 @@ public class UserAuthService {
     private final UserRepository userRepository;
 
     public User authenticate(final String userId, final String password) {
-        return userRepository.findByUserIdAndPassword(userId, password)
-                .orElseThrow(() -> new NoMatchUserInfoException("아이디 또는 비밀번호가 일치하지 않습니다."));
+
+        return findByUserId(userId)
+                .map(user -> {
+                    user.login(password);
+                    return user;
+                })
+                .orElseThrow(() -> new NoMatchUserInfoException("아이디가 일치하지 않습니다."));
+    }
+
+    public Optional<User> findByUserId(String userId) {
+        return userRepository.findByUserId(userId);
     }
 }

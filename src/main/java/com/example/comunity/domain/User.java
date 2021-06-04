@@ -1,6 +1,7 @@
 package com.example.comunity.domain;
 
 import com.example.comunity.dto.user.UserJoinRequest;
+import com.example.comunity.exception.NoMatchUserInfoException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.commons.codec.binary.Base64;
@@ -73,5 +74,11 @@ public class User extends BaseTimeEntity {
 
     public void changePassword(final String password) {
         this.password = passwordEncoding(password);
+    }
+
+    public void login(String password) {
+        if (password.isBlank() || !passwordEncoding(password).equals(this.password)) {
+            throw new NoMatchUserInfoException("비밀번호가 일치하지 않습니다.");
+        }
     }
 }
