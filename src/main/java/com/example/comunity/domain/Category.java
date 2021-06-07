@@ -27,19 +27,8 @@ public class Category {
     @Column(unique = true)
     private String categoryName;
 
-    @OneToMany(mappedBy = "category")
-    private final List<Board> boards = new ArrayList<>();
-
     private Category(final String categoryName) {
         this.categoryName = categoryName;
-    }
-
-    /**
-     * 게시판과 카테고리간의 연관관계 편의 메서드
-     * @param board 특정 카테고리에 포함시킬 게시판
-     */
-    public void addBoard(final Board board) {
-        if (!board.getCategory().boards.contains(board)) board.changeCategory(this);
     }
 
     /**

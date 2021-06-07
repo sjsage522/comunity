@@ -58,17 +58,8 @@ public class Board extends BaseTimeEntity {
         }
     }
 
-    /* 변경 메서드 */
-    /**
-     * 게시판과 카테고리간의 연관관계 편의 메서드
-     * @param category 해당 게시판이 포함되는 카테고리
-     */
     public void changeCategory(final Category category) {
         this.category = category;
-
-        List<Board> boards = category.getBoards();
-        if (!boards.contains(this))
-            category.getBoards().add(this);
     }
 
     public void changeTitle(final String title) {
@@ -78,7 +69,6 @@ public class Board extends BaseTimeEntity {
     public void changeContent(final String content) {
         this.content = content;
     }
-    /*          */
 
     /**
      * 변경을 위한 추가 메서드 (게시판 정보 수정)
