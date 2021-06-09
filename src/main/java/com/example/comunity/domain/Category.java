@@ -28,6 +28,7 @@ public class Category {
     private String categoryName;
 
     private Category(final String categoryName) {
+        if (categoryName == null || categoryName.isBlank()) throw new IllegalArgumentException("유효하지 않은 카테고리명 입니다.");
         this.categoryName = categoryName;
     }
 

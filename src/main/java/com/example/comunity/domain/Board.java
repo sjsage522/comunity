@@ -5,7 +5,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static javax.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
@@ -42,6 +44,7 @@ public class Board extends BaseTimeEntity {
     private final List<Comment> comments = new ArrayList<>();
 
     private Board(final User user, final Category category, final String title, final String content) {
+        if (!(isValidObjects(user, category) && isValidStrings(title, content))) throw new IllegalArgumentException("유효하지 않은 매개변수 형식 입니다.");
         this.user = user;
         this.category = category;
         this.title = title;
@@ -74,6 +77,7 @@ public class Board extends BaseTimeEntity {
      * 변경을 위한 추가 메서드 (게시판 정보 수정)
      */
     public void changeBoard(final String title, final String content, final Category changedCategory) {
+        if (!(isValidObjects(changedCategory) && isValidStrings(title, content))) throw new IllegalArgumentException("유효하지 않은 매개변수 형식 입니다.");
         this.changeTitle(title);
         this.changeContent(content);
         this.changeCategory(changedCategory);
@@ -88,5 +92,13 @@ public class Board extends BaseTimeEntity {
      */
     public static Board from(final User user, final Category category, final String title, final String content) {
         return new Board(user, category, title, content);
+    }
+
+    private boolean isValidObjects(Object... objects) {
+        return Arrays.stream(objects).noneMatch(Objects::isNull);
+    }
+
+    private boolean isValidStrings(String... strings) {
+        return Arrays.stream(strings).noneMatch(string -> string == null || string.isBlank());
     }
 }
