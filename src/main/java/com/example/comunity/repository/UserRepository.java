@@ -14,6 +14,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByNickName(String nickName);
 
     Optional<User> findByUserIdOrNickName(String userId, String nickName);
-
-    Optional<User> findByUserIdAndPassword(String userId, String password);
 }
