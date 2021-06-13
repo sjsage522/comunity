@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -43,6 +45,7 @@ public class Comment extends BaseTimeEntity {
     private final List<Comment> children = new ArrayList<>();
 
     public Comment(final User user, final Board board, final String content) {
+        if (!(isValidObjects(user, board) && isValidStrings(content))) throw new IllegalArgumentException("유효하지 않은 매개변수 형식 입니다.");
         this.user = user;
         this.board = board;
         this.content = content;
@@ -72,5 +75,13 @@ public class Comment extends BaseTimeEntity {
      */
     public void changeContent(final String content) {
         this.content = content;
+    }
+
+    private boolean isValidObjects(Object... objects) {
+        return Arrays.stream(objects).noneMatch(Objects::isNull);
+    }
+
+    private boolean isValidStrings(String... strings) {
+        return Arrays.stream(strings).noneMatch(string -> string == null || string.isBlank());
     }
 }
