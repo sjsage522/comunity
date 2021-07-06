@@ -46,3 +46,7 @@ Content-Type: application/json
   "content": "changed content",
   "categoryName": "economy"
 }
+
+###
+GET http://localhost:8080/download/1
+Accept: image/jpeg

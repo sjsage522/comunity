@@ -121,24 +121,6 @@ class UserRepositoryTest {
         assertThat(findUser.getUserId()).isEqualTo("junseok1234");
     }
 
-    @Test
-    @DisplayName("테스트 06. 사용자 조회 테스트 (by userId and password)")
-    void _06_findUserByIdWithPassword() {
-
-        //given
-        User newUser = getUser("junseok1234", "junseok", "jun", "1234", "test@gmail.com");
-        userRepository.save(newUser);
-
-        em.flush();
-        em.clear();
-
-        //when
-        User findUser = userRepository.findByUserIdAndPassword("junseok1234", "1234").get();
-
-        //then
-        assertThat(findUser.getNickName()).isEqualTo("jun");
-    }
-
     private User getUser(String userId, String name, String nickName, String password, String email) {
         return User.from(userId, name, nickName, password, email);
     }
