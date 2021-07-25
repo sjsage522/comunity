@@ -1,23 +1,36 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/comunity
-    username: jun
-    password: 2457
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:h2:mem:dev
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+    initialization-mode: always
 
   jpa:
     hibernate:
       ddl-auto: create
     properties:
       hibernate:
+        jdbc:
+          batch_size: 500
+        default_batch_fetch_size: 500
         format_sql: true
-        default_batch_fetch_size: 1000
+        use_sql_comments: true
 
   servlet:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
 
+  web:
+    resources:
+      add-mappings: false
+
 logging:
   level:
     org.hibernate.SQL: debug
+
+server:
+  error:
+    whitelabel:
+      enabled: false
