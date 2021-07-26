@@ -1,6 +1,7 @@
 package com.example.comunity.controller;
 
 import com.example.comunity.domain.User;
+import com.example.comunity.dto.api.ApiResult;
 import com.example.comunity.dto.user.*;
 import com.example.comunity.exception.DuplicateUserIdException;
 import com.example.comunity.exception.DuplicateUserNickNameException;
@@ -8,27 +9,24 @@ import com.example.comunity.exception.NoMatchUserInfoException;
 import com.example.comunity.service.UserAuthService;
 import com.example.comunity.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.ArrayList;
+import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+import static com.example.comunity.dto.api.ApiResult.succeed;
 
 @RestController
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
     private final UserAuthService userAuthService;
-    private final UserDtoModelAssembler assembler;
 
     /**
      * 회원가입
@@ -37,14 +35,14 @@ public class UserController {
      * @throws DuplicateUserNickNameException 이미 존재하는 별명이 있는지 검사
      */
     @PostMapping("/join")
-    public ResponseEntity<EntityModel<UserResponse>> join(@Valid @RequestBody final UserJoinRequest userJoinRequest)
+    public ResponseEntity<ApiResult<UserResponse>> join(@Valid @RequestBody final UserJoinRequest userJoinRequest)
             throws DuplicateUserIdException, DuplicateUserNickNameException {
 
         User newUser = userService.join(userJoinRequest);
 
         return ResponseEntity
-                .created(linkTo(methodOn(UserController.class).join(userJoinRequest)).toUri())
-                .body(assembler.toModel(getUserResponse(newUser)));
+                .created(URI.create("/users/" + newUser.getUserId()))
+                .body(succeed(getUserResponse(newUser)));
     }
 
     /**
@@ -54,18 +52,14 @@ public class UserController {
      * @throws NoMatchUserInfoException 아이디와 비밀번호가 유효한지 검사
      */
     @PostMapping("/login")
-    public ResponseEntity<EntityModel<UserResponse>> login(@Valid @RequestBody final UserLoginRequest userLoginRequest, final HttpSession session)
+    public ResponseEntity<ApiResult<UserResponse>> login(@Valid @RequestBody final UserLoginRequest userLoginRequest, final HttpSession session)
             throws NoMatchUserInfoException {
-        User loginUser = userAuthService.authenticate(userLoginRequest.getUserId(), userLoginRequest.getPassword());
 
+        User loginUser = userAuthService.authenticate(userLoginRequest.getUserId(), userLoginRequest.getPassword());
         session.setAttribute("authInfo", loginUser);
 
         return ResponseEntity
-                .created(linkTo(methodOn(UserController.class).findById(userLoginRequest.getUserId())).toUri())
-                .body(EntityModel.of(getUserResponse(loginUser),
-                        linkTo(methodOn(UserController.class).login(userLoginRequest, session)).withSelfRel(),
-                        linkTo(methodOn(UserController.class).findById(userLoginRequest.getUserId())).withRel("id"),
-                        linkTo(methodOn(UserController.class).findAll()).withRel("users")));
+                .ok(succeed(getUserResponse(loginUser)));
     }
 
     /**
@@ -73,16 +67,11 @@ public class UserController {
      * @param session 현재 사용자 세션
      */
     @GetMapping("/logout")
-    public ResponseEntity<EntityModel<UserResponse>> logout(final HttpSession session) {
-        User loginUser = (User) session.getAttribute("authInfo");
-        session.invalidate();
+    public ResponseEntity<ApiResult<String>> logout(final HttpSession session) {
 
-        UserLoginRequest userLoginRequest = new UserLoginRequest(loginUser.getUserId(), loginUser.getNickName());
+        session.invalidate();
         return ResponseEntity
-                .created(linkTo(methodOn(UserController.class).login(userLoginRequest, session)).toUri())
-                .body(EntityModel.of(getUserResponse(loginUser),
-                        linkTo(methodOn(UserController.class).logout(session)).withSelfRel(),
-                        linkTo(methodOn(UserController.class).login(userLoginRequest, session)).withRel("login")));
+                .ok(succeed("logout succeed"));
     }
 
     /**
@@ -90,27 +79,27 @@ public class UserController {
      * @param userId 조회할 아이디
      */
     @GetMapping("/users/{userId}")
-    public ResponseEntity<EntityModel<UserResponse>> findById(@PathVariable final String userId) {
-        User findUser = userService.findById(userId);
+    public ResponseEntity<ApiResult<UserResponse>> findById(@PathVariable final String userId) {
 
+        User findUser = userService.findById(userId);
         return ResponseEntity
-                .created(linkTo(methodOn(UserController.class).findAll()).toUri())
-                .body(assembler.toModel(getUserResponse(findUser)));
+                .ok(succeed(getUserResponse(findUser)));
     }
 
     /**
      * 모든 사용자 조회
      */
     @GetMapping("/users")
-    public ResponseEntity<CollectionModel<EntityModel<UserResponse>>> findAll() {
-        List<EntityModel<UserResponse>> users = new ArrayList<>();
-        for (User user : userService.findAll()) {
-            users.add(assembler.toModel(getUserResponse(user)));
-        }
+    public ResponseEntity<ApiResult<List<UserResponse>>> findAll() {
 
-        return ResponseEntity.ok(CollectionModel.of(users,
-                linkTo(methodOn(UserController.class).findAll()).withSelfRel()
-                        .andAffordance(afford(methodOn(UserController.class).join(null)))));
+        List<UserResponse> userResponseList = userService
+                .findAll()
+                .stream()
+                .map(this::getUserResponse)
+                .collect(Collectors.toList());
+
+        return ResponseEntity
+                .ok(succeed(userResponseList));
     }
 
     /**
@@ -119,14 +108,13 @@ public class UserController {
      * @param userUpdateRequest 사용자 정보 수정 dto
      */
     @PatchMapping("/users/{userId}")
-    public ResponseEntity<EntityModel<UserResponse>> update(@PathVariable final String userId, @Valid @RequestBody final UserUpdateRequest userUpdateRequest, final HttpSession session) {
-        User loginUser = (User) session.getAttribute("authInfo");
+    public ResponseEntity<ApiResult<UserResponse>> update(@PathVariable final String userId, @Valid @RequestBody final UserUpdateRequest userUpdateRequest, final HttpSession session) {
 
+        User loginUser = (User) session.getAttribute("authInfo");
         User updatedUser = userService.update(userId, userUpdateRequest, loginUser);
 
         return ResponseEntity
-                .created(linkTo(methodOn(UserController.class).findById(userId)).toUri())
-                .body(assembler.toModel(getUserResponse(updatedUser)));
+                .ok(succeed(getUserResponse(updatedUser)));
     }
 
     /**
@@ -134,28 +122,14 @@ public class UserController {
      * @return http 204 response
      */
     @DeleteMapping("/users/{userId}")
-    public ResponseEntity<EntityModel<UserResponse>> delete(@PathVariable final String userId, @Valid @RequestBody final UserDeleteRequest userDeleteRequest, final HttpSession session) {
+    public ResponseEntity<ApiResult<String>> delete(@PathVariable final String userId, @Valid @RequestBody final UserDeleteRequest userDeleteRequest, final HttpSession session) {
+
         User loginUser = (User) session.getAttribute("authInfo");
-
         userService.delete(userId, userDeleteRequest, loginUser);
-
         session.invalidate();
 
-        return ResponseEntity.noContent().build();
-    }
-
-    @Component
-    public static class UserDtoModelAssembler implements RepresentationModelAssembler<UserResponse, EntityModel<UserResponse>> {
-
-        @Override
-        public EntityModel<UserResponse> toModel(final UserResponse userResponse) {
-
-            return EntityModel.of(userResponse,
-                    linkTo(methodOn(UserController.class).findById(userResponse.getUserId())).withSelfRel()
-                            .andAffordance(afford(methodOn(UserController.class).update(userResponse.getUserId(), null, null)))
-                            .andAffordance(afford(methodOn(UserController.class).delete(userResponse.getUserId(), null, null))),
-                    linkTo(methodOn(UserController.class).findAll()).withRel("users"));
-        }
+        return ResponseEntity
+                .ok(succeed(loginUser.getUserId() + ": user is deleted successfully"));
     }
 
     private UserResponse getUserResponse(User newUser) {

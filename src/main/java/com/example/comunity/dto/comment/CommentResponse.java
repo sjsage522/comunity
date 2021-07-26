@@ -3,17 +3,15 @@ package com.example.comunity.dto.comment;
 import com.example.comunity.domain.Comment;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
 @JsonPropertyOrder({"parentId", "commentId", "boardId", "userId", "createdDate", "lastModifiedDate", "content", "children"})
 public class CommentResponse {
 

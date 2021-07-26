@@ -2,33 +2,31 @@ package com.example.comunity.controller;
 
 import com.example.comunity.domain.Board;
 import com.example.comunity.domain.User;
+import com.example.comunity.dto.api.ApiResult;
 import com.example.comunity.dto.board.BoardResponse;
 import com.example.comunity.dto.board.BoardUpdateRequest;
 import com.example.comunity.dto.board.BoardUploadRequest;
 import com.example.comunity.service.BoardService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.util.ArrayList;
+import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+import static com.example.comunity.dto.api.ApiResult.succeed;
 
 @RestController
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class BoardController {
 
     private final BoardService boardService;
-    private final BoardDtoModelAssembler assembler;
 
     /**
      * 게시글 작성
@@ -37,7 +35,7 @@ public class BoardController {
      * @param session 현재 사용자 세션
      */
     @PostMapping(value = "/boards")
-    public ResponseEntity<EntityModel<BoardResponse>> upload(
+    public ResponseEntity<ApiResult<BoardResponse>> upload(
             @Valid @RequestPart final BoardUploadRequest boardUploadRequest,
             @RequestPart(value = "files", required = false) final MultipartFile[] files,
             final HttpSession session) {
@@ -46,8 +44,8 @@ public class BoardController {
         Board newBoard = boardService.upload(boardUploadRequest, loginUser, files);
 
         return ResponseEntity
-                .created(linkTo(methodOn(BoardController.class).findAll(null)).toUri())
-                .body(assembler.toModel(getBoardResponse(newBoard)));
+                .created(URI.create("/boards/" + newBoard.getBoardId()))
+                .body(succeed(getBoardResponse(newBoard)));
     }
 
     /**
@@ -58,7 +56,7 @@ public class BoardController {
      * @param session 현재 사용자 세션
      */
     @DeleteMapping("/category/{name}/boards/{id}")
-    public ResponseEntity<EntityModel<BoardResponse>> delete(
+    public ResponseEntity<ApiResult<String>> delete(
             @PathVariable final Long id,
             @PathVariable final String name,
             final HttpSession session) {
@@ -66,7 +64,8 @@ public class BoardController {
         User loginUser = getCurrentUser(session);
         boardService.delete(id, name, loginUser);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity
+                .ok(succeed("board is deleted successfully"));
     }
 
     /**
@@ -77,7 +76,7 @@ public class BoardController {
      * @param session 현재 사용자 세션
      */
     @PatchMapping("/category/{name}/boards/{id}")
-    public ResponseEntity<EntityModel<BoardResponse>> update(
+    public ResponseEntity<ApiResult<BoardResponse>> update(
             @PathVariable final Long id,
             @PathVariable final String name,
             @Valid @RequestBody final BoardUpdateRequest boardUpdateRequest,
@@ -87,8 +86,7 @@ public class BoardController {
         Board updatedBoard = boardService.update(id, name, boardUpdateRequest, loginUser);
 
         return ResponseEntity
-                .created(linkTo(methodOn(BoardController.class).findByIdWithCategory(id, name)).toUri())
-                .body(assembler.toModel(getBoardResponse(updatedBoard)));
+                .ok(succeed(getBoardResponse(updatedBoard)));
     }
 
     /**
@@ -97,17 +95,18 @@ public class BoardController {
      * @param name 카테고리 명
      */
     @GetMapping("/category/{name}/boards/page/{pageNumber}")
-    public ResponseEntity<CollectionModel<EntityModel<BoardResponse>>> findAllWithCategory(
+    public ResponseEntity<ApiResult<List<BoardResponse>>> findAllWithCategory(
             @PathVariable final String name,
             final @PathVariable @Min(0) Integer pageNumber) {
 
-        List<EntityModel<BoardResponse>> boards = new ArrayList<>();
-        for (Board board : boardService.findAllWithCategory(name, pageNumber)) {
-            boards.add(assembler.toModel(getBoardResponse(board)));
-        }
+        List<BoardResponse> boardResponseList = boardService
+                .findAllWithCategory(name, pageNumber)
+                .stream()
+                .map(this::getBoardResponse)
+                .collect(Collectors.toList());
 
-        return ResponseEntity.ok(CollectionModel.of(boards,
-                linkTo(methodOn(BoardController.class).findAll(pageNumber)).withSelfRel()));
+        return ResponseEntity
+                .ok(succeed(boardResponseList));
     }
 
     /**
@@ -115,16 +114,17 @@ public class BoardController {
      * 페이징 처리 (10개 씩)
      */
     @GetMapping("/boards/page/{pageNumber}")
-    public ResponseEntity<CollectionModel<EntityModel<BoardResponse>>> findAll(
+    public ResponseEntity<ApiResult<List<BoardResponse>>> findAll(
             @PathVariable @Min(0) final Integer pageNumber) {
 
-        List<EntityModel<BoardResponse>> boards = new ArrayList<>();
-        for (Board board : boardService.findAll(pageNumber)) {
-            boards.add(assembler.toModel(getBoardResponse(board)));
-        }
+        List<BoardResponse> boardResponseList = boardService
+                .findAll(pageNumber)
+                .stream()
+                .map(this::getBoardResponse)
+                .collect(Collectors.toList());
 
-        return ResponseEntity.ok(CollectionModel.of(boards,
-                linkTo(methodOn(BoardController.class).findAll(pageNumber)).withSelfRel()));
+        return ResponseEntity
+                .ok(succeed(boardResponseList));
     }
 
     /**
@@ -133,35 +133,14 @@ public class BoardController {
      * @param name 카테고리 이름
      */
     @GetMapping("/category/{name}/boards/{id}")
-    public ResponseEntity<EntityModel<BoardResponse>> findByIdWithCategory(
+    public ResponseEntity<ApiResult<BoardResponse>> findByIdWithCategory(
             @PathVariable final Long id,
             @PathVariable final String name) {
 
         Board findBoard = boardService.findByIdWithCategory(id, name);
-        return ResponseEntity.
-                created(linkTo(methodOn(BoardController.class).findAllWithCategory(name, null)).toUri())
-                .body(assembler.toModel(getBoardResponse(findBoard)));
-    }
 
-    /**
-     * 리소스 관계 표현
-     */
-    @Component
-    public static class BoardDtoModelAssembler implements RepresentationModelAssembler<BoardResponse, EntityModel<BoardResponse>> {
-
-        @Override
-        public EntityModel<BoardResponse> toModel(final BoardResponse boardResponse) {
-
-            return EntityModel.of(boardResponse,
-                    linkTo(methodOn(BoardController.class).findByIdWithCategory(boardResponse.getBoardId(), boardResponse.getCategoryName())).withSelfRel()
-                            .andAffordance(
-                                    afford(methodOn(BoardController.class).update(
-                                            boardResponse.getBoardId(), boardResponse.getCategoryName(), null, null)))
-                            .andAffordance(
-                                    afford(methodOn(BoardController.class).delete(
-                                            boardResponse.getBoardId(), boardResponse.getCategoryName(), null))),
-                    linkTo(methodOn(BoardController.class).findAll(null)).withRel("boards"));
-        }
+        return ResponseEntity
+                .ok(succeed(getBoardResponse(findBoard)));
     }
 
     /**

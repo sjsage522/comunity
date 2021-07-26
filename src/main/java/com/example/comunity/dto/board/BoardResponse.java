@@ -3,17 +3,13 @@ package com.example.comunity.dto.board;
 import com.example.comunity.domain.Board;
 import com.example.comunity.dto.file.UploadFileDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
 public class BoardResponse {
 
     private Long boardId;

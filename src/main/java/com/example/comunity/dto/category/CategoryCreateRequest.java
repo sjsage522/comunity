@@ -1,14 +1,10 @@
 package com.example.comunity.dto.category;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
 import javax.validation.constraints.NotBlank;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
 public class CategoryCreateRequest {
 
     @NotBlank(message = "카테고리 이름을 설정해야 합니다.")

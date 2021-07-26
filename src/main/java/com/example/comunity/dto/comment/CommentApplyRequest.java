@@ -1,16 +1,10 @@
 package com.example.comunity.dto.comment;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 
-
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
 public class CommentApplyRequest {
 
     private Long parentId;

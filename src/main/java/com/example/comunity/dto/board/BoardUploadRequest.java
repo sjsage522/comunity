@@ -1,14 +1,10 @@
 package com.example.comunity.dto.board;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
 import javax.validation.constraints.NotBlank;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
 public class BoardUploadRequest {
 
     @NotBlank(message = "제목은 필수입니다.")

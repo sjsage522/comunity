@@ -2,27 +2,27 @@ package com.example.comunity.controller;
 
 import com.example.comunity.domain.Comment;
 import com.example.comunity.domain.User;
+import com.example.comunity.dto.api.ApiResult;
 import com.example.comunity.dto.comment.CommentApplyRequest;
 import com.example.comunity.dto.comment.CommentResponse;
 import com.example.comunity.dto.comment.CommentUpdateRequest;
 import com.example.comunity.service.CommentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.util.ArrayList;
+import java.net.URI;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static com.example.comunity.dto.api.ApiResult.succeed;
 
 @RestController
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class CommentController {
 
@@ -33,17 +33,17 @@ public class CommentController {
      * @param id 게시글 번호
      */
     @GetMapping("/boards/{id}/comments/page/{pageNumber}")
-    public ResponseEntity<CollectionModel<EntityModel<CommentResponse>>> findAll(
+    public ResponseEntity<ApiResult<List<CommentResponse>>> findAll(
             @PathVariable final Long id, @PathVariable @Min(0) final Integer pageNumber) {
-        List<EntityModel<CommentResponse>> responseComments = new ArrayList<>();
-        List<Comment> commentList = commentService.findAll(id, pageNumber);
 
-        for (Comment comment : commentList) {
-            responseComments.add(EntityModel.of(getCommentResponseDto(comment)));
-        }
+        List<CommentResponse> commentResponseList = commentService
+                .findAll(id, pageNumber)
+                .stream()
+                .map(this::getCommentResponseDto)
+                .collect(Collectors.toList());
 
-        return ResponseEntity.ok(CollectionModel.of(responseComments,
-                linkTo(methodOn(CommentController.class).findAll(id, pageNumber)).withSelfRel()));
+        return ResponseEntity
+                .ok(succeed(commentResponseList));
     }
 
     /**
@@ -53,18 +53,17 @@ public class CommentController {
      * @param session 현재 사용자 세션
      */
     @PostMapping("/boards/{id}/comments")
-    public ResponseEntity<EntityModel<CommentResponse>> apply(
+    public ResponseEntity<ApiResult<CommentResponse>> apply(
             @Valid @RequestBody final CommentApplyRequest commentApplyRequest,
             @PathVariable final Long id,
             final HttpSession session) {
-        User loginUser = (User) session.getAttribute("authInfo");
 
-        CommentResponse commentResponse = getCommentResponseDto(commentService.apply(loginUser, id, commentApplyRequest));
+        User loginUser = (User) session.getAttribute("authInfo");
+        Comment newComment = commentService.apply(loginUser, id, commentApplyRequest);
 
         return ResponseEntity
-                .created(linkTo(methodOn(CommentController.class).apply(commentApplyRequest, id, session)).toUri())
-                .body(EntityModel.of(commentResponse,
-                        linkTo(methodOn(CommentController.class).apply(commentApplyRequest, id, session)).withSelfRel()));
+                .created(URI.create("/comments/" + newComment.getCommentId()))
+                .body(succeed(getCommentResponseDto(newComment)));
     }
 
     /**
@@ -73,14 +72,15 @@ public class CommentController {
      * @param session 현재 사용자 세션
      */
     @DeleteMapping("/comments/{id}")
-    public ResponseEntity<EntityModel<CommentResponse>> delete(
+    public ResponseEntity<ApiResult<String>> delete(
             @PathVariable final Long id,
             final HttpSession session) {
-        User loginUser = (User) session.getAttribute("authInfo");
 
+        User loginUser = (User) session.getAttribute("authInfo");
         commentService.delete(loginUser, id);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity
+                .ok(succeed("comment is deleted successfully"));
     }
 
     /**
@@ -90,18 +90,16 @@ public class CommentController {
      * @param session 현재 사용자 세션
      */
     @PatchMapping("/comments/{id}")
-    public ResponseEntity<EntityModel<CommentResponse>> update(
+    public ResponseEntity<ApiResult<CommentResponse>> update(
             @PathVariable final Long id,
             @Valid @RequestBody final CommentUpdateRequest commentUpdateDto,
             final HttpSession session) {
-        User loginUser = (User) session.getAttribute("authInfo");
 
-        CommentResponse commentResponse = getCommentResponseDto(commentService.update(loginUser, id, commentUpdateDto));
+        User loginUser = (User) session.getAttribute("authInfo");
+        Comment updateComment = commentService.update(loginUser, id, commentUpdateDto);
 
         return ResponseEntity
-                .created(linkTo(methodOn(CommentController.class).update(id, commentUpdateDto, session)).toUri())
-                .body(EntityModel.of(commentResponse,
-                        linkTo(methodOn(CommentController.class).update(id, commentUpdateDto, session)).withSelfRel()));
+                .ok(succeed(getCommentResponseDto(updateComment)));
     }
 
     /**

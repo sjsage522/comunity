@@ -1,15 +1,10 @@
 package com.example.comunity.dto.board;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
 public class BoardUpdateRequest {
 
     @NotBlank(message = "변경할 제목을 입력해주세요.")

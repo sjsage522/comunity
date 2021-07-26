@@ -1,15 +1,10 @@
 package com.example.comunity.dto.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
 public class UserUpdateRequest {
 
     @NotBlank(message = "변경할 이름을 입력해 주세요.")

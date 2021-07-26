@@ -1,13 +1,9 @@
 package com.example.comunity.dto.file;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UploadFileDto {
 
