@@ -55,12 +55,10 @@ public class BoardService {
          */
         Board uploadedBoard = boardRepository.save(newBoard);
 
-        List<UploadFile> fileList = fileUtils.uploadFiles(files, uploadedBoard);
-
         /**
-         * 게시글에 첨부파일을 업로드 했을 경우,
-         * 첨부파일 생성
+         * files 가 null 이 아니라면, 파일을 디스크에 저장
          */
+        List<UploadFile> fileList = fileUtils.uploadFiles(files, uploadedBoard);
         if (!CollectionUtils.isEmpty(fileList)) {
             fileRepository.saveAll(fileList);
             uploadedBoard.uploadFiles(fileList);
@@ -78,14 +76,14 @@ public class BoardService {
 
     public Board findByIdWithCategory(final Long id, final String name) {
         return boardRepository.findByBoardIdAndCategoryName(id, name)
-                .orElseThrow(() -> new NoMatchBoardInfoException("존재하지 않는 게시글 입니다."));
+                .orElseThrow(NoMatchBoardInfoException::new);
     }
 
     @Transactional
     public void delete(final Long boardId, final String categoryName, final User loginUser) {
 
         Board findBoard = boardRepository.findByBoardIdAndCategoryName(boardId, categoryName)
-                .orElseThrow(() -> new NoMatchBoardInfoException("존재하지 않는 게시글 입니다."));
+                .orElseThrow(NoMatchBoardInfoException::new);
 
         User findUser = findBoard.getUser();
         if (!findUser.getUserId().equals(loginUser.getUserId()))
@@ -106,7 +104,7 @@ public class BoardService {
          * 수정하고자 하는 게시글을 찾는다.
          */
         Board findBoard = boardRepository.findByBoardIdAndCategoryName(boardId, categoryName)
-                .orElseThrow(() -> new NoMatchBoardInfoException("존재하지 않는 게시글 입니다."));
+                .orElseThrow(NoMatchBoardInfoException::new);
 
         /**
          * 다른 사용자는 게시글을 수정할 수 없도록 처리
@@ -127,6 +125,6 @@ public class BoardService {
 
     private Category findCategoryByName(final String name) {
         return categoryRepository.findByCategoryName(name)
-                .orElseThrow(() -> new NoMatchCategoryInfoException("존재하지 않는 카테고리명 입니다."));
+                .orElseThrow(NoMatchCategoryInfoException::new);
     }
 }

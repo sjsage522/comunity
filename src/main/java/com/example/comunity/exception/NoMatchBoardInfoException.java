@@ -1,19 +1,10 @@
 package com.example.comunity.exception;
 
-public class NoMatchBoardInfoException extends RuntimeException {
+import com.example.comunity.dto.api.ErrorCode;
+
+public class NoMatchBoardInfoException extends BusinessException {
 
     public NoMatchBoardInfoException() {
-    }
-
-    public NoMatchBoardInfoException(String message) {
-        super(message);
-    }
-
-    public NoMatchBoardInfoException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public NoMatchBoardInfoException(Throwable cause) {
-        super(cause);
+        super(ErrorCode.NOMATCH_BOARD_INFO);
     }
 }

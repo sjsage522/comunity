@@ -266,6 +266,6 @@ class BoardRepositoryTest {
     }
 
     private User getUser(String userId, String name, String nickName, String password, String email) {
-        return User.from(userId, name, nickName, password, email);
+        return User.of(userId, name, nickName, password, email);
     }
 }

@@ -1,19 +1,10 @@
 package com.example.comunity.exception;
 
-public class DuplicateUserIdException extends RuntimeException {
+import com.example.comunity.dto.api.ErrorCode;
+
+public class DuplicateUserIdException extends BusinessException {
 
     public DuplicateUserIdException() {
-    }
-
-    public DuplicateUserIdException(final String message) {
-        super(message);
-    }
-
-    public DuplicateUserIdException(final String message, final Throwable cause) {
-        super(message, cause);
-    }
-
-    public DuplicateUserIdException(final Throwable cause) {
-        super(cause);
+        super(ErrorCode.DUPLICATE_USER_ID);
     }
 }

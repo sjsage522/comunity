@@ -16,6 +16,6 @@ public class FileService {
 
     public UploadFile findById(final Long id) {
         return fileRepository.findById(id)
-                .orElseThrow(() -> new NoMatchFileInfoException("존재하지 않는 파일입니다."));
+                .orElseThrow(NoMatchFileInfoException::new);
     }
 }

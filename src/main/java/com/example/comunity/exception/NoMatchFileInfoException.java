@@ -1,19 +1,10 @@
 package com.example.comunity.exception;
 
-public class NoMatchFileInfoException extends RuntimeException {
+import com.example.comunity.dto.api.ErrorCode;
+
+public class NoMatchFileInfoException extends BusinessException {
 
     public NoMatchFileInfoException() {
-    }
-
-    public NoMatchFileInfoException(String message) {
-        super(message);
-    }
-
-    public NoMatchFileInfoException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public NoMatchFileInfoException(Throwable cause) {
-        super(cause);
+        super(ErrorCode.NOMATCH_FILE_INFO);
     }
 }

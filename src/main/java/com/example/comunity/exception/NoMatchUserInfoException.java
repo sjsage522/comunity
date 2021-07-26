@@ -1,19 +1,14 @@
 package com.example.comunity.exception;
 
-public class NoMatchUserInfoException extends RuntimeException {
+import com.example.comunity.dto.api.ErrorCode;
+
+public class NoMatchUserInfoException extends BusinessException {
 
     public NoMatchUserInfoException() {
+        super(ErrorCode.NOMATCH_USER_INFO);
     }
 
-    public NoMatchUserInfoException(final String message) {
-        super(message);
-    }
-
-    public NoMatchUserInfoException(final String message, final Throwable cause) {
-        super(message, cause);
-    }
-
-    public NoMatchUserInfoException(final Throwable cause) {
-        super(cause);
+    public NoMatchUserInfoException(String message) {
+        super(message, ErrorCode.NOMATCH_USER_INFO);
     }
 }

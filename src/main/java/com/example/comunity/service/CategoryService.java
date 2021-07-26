@@ -15,6 +15,7 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
+    //TODO 관리자전용으로 수정해야함 (현재 컨트롤러 미구현임)
     @Transactional
     public Category create(final CategoryCreateRequest categoryCreateRequest) {
 
@@ -22,7 +23,7 @@ public class CategoryService {
 
         categoryRepository.findByCategoryName(categoryName)
                 .ifPresent(category -> {
-                    throw new DuplicateCategoryNameException("이미 존재하는 카테고리명 입니다.");
+                    throw new DuplicateCategoryNameException();
                 });
 
         Category newCategory = Category.of(categoryName);

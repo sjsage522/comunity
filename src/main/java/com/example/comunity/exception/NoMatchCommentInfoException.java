@@ -1,19 +1,10 @@
 package com.example.comunity.exception;
 
-public class NoMatchCommentInfoException extends RuntimeException {
+import com.example.comunity.dto.api.ErrorCode;
+
+public class NoMatchCommentInfoException extends BusinessException {
 
     public NoMatchCommentInfoException() {
-    }
-
-    public NoMatchCommentInfoException(String message) {
-        super(message);
-    }
-
-    public NoMatchCommentInfoException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public NoMatchCommentInfoException(Throwable cause) {
-        super(cause);
+        super(ErrorCode.NOMATCH_COMMENT_INFO);
     }
 }

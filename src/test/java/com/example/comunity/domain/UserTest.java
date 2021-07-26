@@ -19,7 +19,7 @@ class UserTest {
     @DisplayName("01. 사용자 생성 테스트")
     void _01_create_user_test() {
 
-        user = User.from(
+        user = User.of(
                 "testId",
                 "tester",
                 "TT",

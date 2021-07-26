@@ -1,19 +1,10 @@
 package com.example.comunity.exception;
 
-public class NoMatchCategoryInfoException extends RuntimeException {
+import com.example.comunity.dto.api.ErrorCode;
+
+public class NoMatchCategoryInfoException extends BusinessException {
 
     public NoMatchCategoryInfoException() {
-    }
-
-    public NoMatchCategoryInfoException(String message) {
-        super(message);
-    }
-
-    public NoMatchCategoryInfoException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public NoMatchCategoryInfoException(Throwable cause) {
-        super(cause);
+        super(ErrorCode.NOMATCH_CATEGORY_INFO);
     }
 }

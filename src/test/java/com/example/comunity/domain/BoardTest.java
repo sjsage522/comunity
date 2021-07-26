@@ -2,7 +2,6 @@ package com.example.comunity.domain;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +17,7 @@ class BoardTest {
 
     @BeforeAll
     static void init() {
-        user = User.from("testId", "tester", "tester", "1234", "tester@gmail.com");
+        user = User.of("testId", "tester", "tester", "1234", "tester@gmail.com");
         category = Category.of("reading");
     }
 

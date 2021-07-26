@@ -41,8 +41,8 @@ public class BoardController {
             @Valid @RequestPart final BoardUploadRequest boardUploadRequest,
             @RequestPart(value = "files", required = false) final MultipartFile[] files,
             final HttpSession session) {
-        User loginUser = (User) session.getAttribute("authInfo");
 
+        User loginUser = getCurrentUser(session);
         Board newBoard = boardService.upload(boardUploadRequest, loginUser, files);
 
         return ResponseEntity
@@ -58,9 +58,12 @@ public class BoardController {
      * @param session 현재 사용자 세션
      */
     @DeleteMapping("/category/{name}/boards/{id}")
-    public ResponseEntity<EntityModel<BoardResponse>> delete(@PathVariable final Long id, @PathVariable final String name, final HttpSession session) {
-        User loginUser = (User) session.getAttribute("authInfo");
+    public ResponseEntity<EntityModel<BoardResponse>> delete(
+            @PathVariable final Long id,
+            @PathVariable final String name,
+            final HttpSession session) {
 
+        User loginUser = getCurrentUser(session);
         boardService.delete(id, name, loginUser);
 
         return ResponseEntity.noContent().build();
@@ -75,10 +78,12 @@ public class BoardController {
      */
     @PatchMapping("/category/{name}/boards/{id}")
     public ResponseEntity<EntityModel<BoardResponse>> update(
-            @PathVariable final Long id, @PathVariable final String name,
-            @Valid @RequestBody final BoardUpdateRequest boardUpdateRequest, final HttpSession session) {
-        User loginUser = (User) session.getAttribute("authInfo");
+            @PathVariable final Long id,
+            @PathVariable final String name,
+            @Valid @RequestBody final BoardUpdateRequest boardUpdateRequest,
+            final HttpSession session) {
 
+        User loginUser = getCurrentUser(session);
         Board updatedBoard = boardService.update(id, name, boardUpdateRequest, loginUser);
 
         return ResponseEntity
@@ -93,7 +98,9 @@ public class BoardController {
      */
     @GetMapping("/category/{name}/boards/page/{pageNumber}")
     public ResponseEntity<CollectionModel<EntityModel<BoardResponse>>> findAllWithCategory(
-            @PathVariable final String name, final @PathVariable @Min(0) Integer pageNumber) {
+            @PathVariable final String name,
+            final @PathVariable @Min(0) Integer pageNumber) {
+
         List<EntityModel<BoardResponse>> boards = new ArrayList<>();
         for (Board board : boardService.findAllWithCategory(name, pageNumber)) {
             boards.add(assembler.toModel(getBoardResponse(board)));
@@ -108,7 +115,9 @@ public class BoardController {
      * 페이징 처리 (10개 씩)
      */
     @GetMapping("/boards/page/{pageNumber}")
-    public ResponseEntity<CollectionModel<EntityModel<BoardResponse>>> findAll(@PathVariable @Min(0) final Integer pageNumber) {
+    public ResponseEntity<CollectionModel<EntityModel<BoardResponse>>> findAll(
+            @PathVariable @Min(0) final Integer pageNumber) {
+
         List<EntityModel<BoardResponse>> boards = new ArrayList<>();
         for (Board board : boardService.findAll(pageNumber)) {
             boards.add(assembler.toModel(getBoardResponse(board)));
@@ -124,9 +133,11 @@ public class BoardController {
      * @param name 카테고리 이름
      */
     @GetMapping("/category/{name}/boards/{id}")
-    public ResponseEntity<EntityModel<BoardResponse>> findByIdWithCategory(@PathVariable final Long id, @PathVariable final String name) {
-        Board findBoard = boardService.findByIdWithCategory(id, name);
+    public ResponseEntity<EntityModel<BoardResponse>> findByIdWithCategory(
+            @PathVariable final Long id,
+            @PathVariable final String name) {
 
+        Board findBoard = boardService.findByIdWithCategory(id, name);
         return ResponseEntity.
                 created(linkTo(methodOn(BoardController.class).findAllWithCategory(name, null)).toUri())
                 .body(assembler.toModel(getBoardResponse(findBoard)));
@@ -158,5 +169,14 @@ public class BoardController {
      */
     private BoardResponse getBoardResponse(final Board newBoard) {
         return new BoardResponse(newBoard);
+    }
+
+    /**
+     * 현재 세션에 저장되어 있는 사용자 객체를 반환하는 메서드
+     * @param session server session
+     * @return currentUser
+     */
+    private User getCurrentUser(HttpSession session) {
+        return (User) session.getAttribute("authInfo");
     }
 }

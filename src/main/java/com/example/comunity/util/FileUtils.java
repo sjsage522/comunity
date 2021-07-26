@@ -2,7 +2,6 @@ package com.example.comunity.util;
 
 import com.example.comunity.domain.Board;
 import com.example.comunity.domain.UploadFile;
-import com.example.comunity.dto.file.UploadFileDto;
 import com.example.comunity.exception.UploadFileException;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Component;
@@ -10,7 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;

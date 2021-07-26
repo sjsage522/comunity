@@ -42,8 +42,8 @@ public class UserService {
 
         userRepository.findByUserIdOrNickName(userJoinRequest.getUserId(), userJoinRequest.getNickName())
                 .ifPresent(user -> {
-                    if (user.getUserId().equals(userJoinRequest.getUserId())) throw new DuplicateUserIdException("이미 존재하는 아이디 입니다.");
-                    else throw new DuplicateUserNickNameException("이미 존재하는 별명 입니다.");
+                    if (user.getUserId().equals(userJoinRequest.getUserId())) throw new DuplicateUserIdException();
+                    else throw new DuplicateUserNickNameException();
                 });
 
         User newUser = User.from(userJoinRequest);
@@ -102,7 +102,7 @@ public class UserService {
 
     public User findById(final String userId) {
         return userRepository.findByUserId(userId)
-                .orElseThrow(() -> new NoMatchUserInfoException("존재하지 않는 사용자 입니다."));
+                .orElseThrow(NoMatchUserInfoException::new);
     }
 
     public List<User> findAll() {
