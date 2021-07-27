@@ -15,6 +15,7 @@ import static javax.persistence.FetchType.LAZY;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "comment")
 @SequenceGenerator(
         name = "comment_sequence_generator",
         sequenceName = "comment_sequence"
@@ -25,7 +26,9 @@ public class Comment extends BaseTimeEntity {
             strategy = GenerationType.SEQUENCE,
             generator = "comment_sequence_generator"
     )
-    private Long commentId;
+    private Long id;
+
+    private String content;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
@@ -34,8 +37,6 @@ public class Comment extends BaseTimeEntity {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
-
-    private String content;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "parent_id")
@@ -66,7 +67,7 @@ public class Comment extends BaseTimeEntity {
     }
     //====                                 ====//
 
-    public static Comment from(final User user, final Board board, final String content) {
+    public static Comment of(final User user, final Board board, final String content) {
         return new Comment(user, board, content);
     }
 
@@ -88,9 +89,9 @@ public class Comment extends BaseTimeEntity {
     @Override
     public String toString() {
         return "Comment{" +
-                "commentId=" + commentId +
+                "commentId=" + id +
                 ", user=" + user.getUserId() +
-                ", board=" + board.getBoardId() +
+                ", board=" + board.getId() +
                 ", content='" + content + '\'' +
                 '}';
     }

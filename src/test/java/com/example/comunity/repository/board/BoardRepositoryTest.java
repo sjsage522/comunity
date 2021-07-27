@@ -113,7 +113,7 @@ class BoardRepositoryTest {
         em.clear();
 
         //when
-        System.out.println(boardRepository.findAll().get(0).getBoardId());
+        System.out.println(boardRepository.findAll().get(0).getId());
 
         boardRepository.deleteWithIds(Arrays.asList(1L, 2L, 3L));
 
@@ -214,11 +214,11 @@ class BoardRepositoryTest {
         em.clear();
 
         //when
-        List<Board> zeroPage = boardRepository.findAllWithCategory("coding", PageRequest.of(0, 2)) /* 0페이지 -> 2개 */
+        List<Board> zeroPage = boardRepository.findAllByCategoryNameWithPaging("coding", PageRequest.of(0, 2)) /* 0페이지 -> 2개 */
                 .stream()
                 .collect(Collectors.toList());
 
-        List<Board> onePage = boardRepository.findAllWithCategory("coding", PageRequest.of(1, 2))
+        List<Board> onePage = boardRepository.findAllByCategoryNameWithPaging("coding", PageRequest.of(1, 2))
                 .stream()
                 .collect(Collectors.toList());
 
@@ -242,11 +242,11 @@ class BoardRepositoryTest {
         boardRepository.save(getBoard(user, newCategory, "user_title", "user_content"));
 
         //when
-        List<Board> zeroPage = boardRepository.findAllByOrderByBoardIdDesc(PageRequest.of(0, 3))
+        List<Board> zeroPage = boardRepository.findAllWithPaging(PageRequest.of(0, 3))
                 .stream()
                 .collect(Collectors.toList());
 
-        List<Board> onePage = boardRepository.findAllByOrderByBoardIdDesc(PageRequest.of(1, 3))
+        List<Board> onePage = boardRepository.findAllWithPaging(PageRequest.of(1, 3))
                 .stream()
                 .collect(Collectors.toList());
 

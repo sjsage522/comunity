@@ -37,10 +37,10 @@ public class CommentResponse {
     private LocalDateTime lastModifiedDate;
 
     public CommentResponse(final Comment comment) {
-        this.commentId = comment.getCommentId();
+        this.commentId = comment.getId();
         this.content = comment.getContent();
         this.userId = comment.getUser().getUserId();
-        this.boardId = comment.getBoard().getBoardId();
+        this.boardId = comment.getBoard().getId();
         this.createdDate = comment.getCreatedDate();
         this.lastModifiedDate = comment.getLastModifiedDate();
     }

@@ -13,19 +13,15 @@ import java.util.List;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @Query(value = "select c from Comment c" +
-            " join fetch c.user" +
-            " where c.board.boardId = :boardId" +
-            " and c.parent is null" +
-            " order by c.commentId asc",
-            countQuery = "select count(c) from Comment c where c.board.boardId = :boardId")
-    Page<Comment> findAll(final Long boardId, final Pageable pageable);
-
-
+            " where c.parent is null" +
+            " and c.board.id = :boardId" +
+            " order by c.id asc")
     @EntityGraph(attributePaths = {"user"})
-    @Query("select c from Comment c order by c.commentId asc")
-    List<Comment> findAllByBoard_BoardId(Long boardId);
+    Page<Comment> findAllByBoardIdIfParentIsNullWithPaging(final Long boardId, final Pageable pageable);
+
+    List<Comment> findAllByBoardId(Long boardId);
 
     @Modifying
-    @Query("delete from Comment c where c.commentId in :ids")
+    @Query("delete from Comment c where c.id in :ids")
     void deleteWithIds(List<Long> ids);
 }

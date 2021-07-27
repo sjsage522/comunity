@@ -5,6 +5,8 @@ import com.example.comunity.dto.api.ErrorCode;
 import com.example.comunity.dto.api.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpMediaTypeException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.ServletRequestBindingException;
@@ -18,6 +20,37 @@ import static org.springframework.http.HttpStatus.valueOf;
 @RestControllerAdvice
 @Slf4j
 public class RestExceptionHandler {
+
+    @ExceptionHandler(HttpMediaTypeException.class)
+    protected ResponseEntity<ApiResult<ErrorResponse>> handleHttpMediaTypeException(
+            final HttpMediaTypeException ex) {
+        log.error("HttpMediaTypeException", ex);
+
+        final ErrorResponse response = ErrorResponse.from(
+                ErrorCode.UNSUPPORTED_MEDIA_TYPE
+        );
+
+        return ResponseEntity
+                .status(response.getStatus())
+                .body(failed(response));
+    }
+
+    /**
+     * HTTP 요청 BODY 형식 불일치
+     */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    protected ResponseEntity<ApiResult<ErrorResponse>> handleHttpMessageNotReadableException(
+            final HttpMessageNotReadableException ex) {
+        log.error("HttpMessageNotReadableException", ex);
+
+        final ErrorResponse response = ErrorResponse.from(
+                ErrorCode.INCORRECT_HTTP_BODY_FORMAT
+        );
+
+        return ResponseEntity
+                .status(response.getStatus())
+                .body(failed(response));
+    }
 
     /**
      * 잘못된 매개변수 요청
@@ -112,7 +145,8 @@ public class RestExceptionHandler {
             final BusinessException ex) {
         log.error("handleBusinessException", ex);
 
-        final ErrorResponse response = ErrorResponse.from(ex.getErrorCode());
+        final ErrorResponse response = ErrorResponse.of(
+                ex.getMessage(), ex.getErrorCode());
 
         return ResponseEntity
                 .status(response.getStatus())
@@ -127,8 +161,8 @@ public class RestExceptionHandler {
             final Exception ex) {
         log.error("handleException", ex);
 
-        final ErrorResponse response = ErrorResponse.from(
-                ErrorCode.INTERNAL_SERVER_ERROR
+        final ErrorResponse response = ErrorResponse.of(
+                ex.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR
         );
 
         return ResponseEntity

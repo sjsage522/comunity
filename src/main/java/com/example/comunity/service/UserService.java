@@ -4,7 +4,6 @@ import com.example.comunity.domain.Board;
 import com.example.comunity.domain.Comment;
 import com.example.comunity.domain.UploadFile;
 import com.example.comunity.domain.User;
-import com.example.comunity.dto.user.UserDeleteRequest;
 import com.example.comunity.dto.user.UserJoinRequest;
 import com.example.comunity.dto.user.UserUpdateRequest;
 import com.example.comunity.exception.DuplicateUserIdException;
@@ -22,7 +21,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class UserService {
 
@@ -34,6 +32,7 @@ public class UserService {
     /**
      * 사용자 아이디와 별명은 unique 하기 때문에 먼저 검사 후 등록되어 있지 않은 사용자라면,
      * User entity 를 생성하고 save
+     *
      * @param userJoinRequest user dto
      * @return savedUser
      */
@@ -58,8 +57,7 @@ public class UserService {
         /* 영속상태의 entity */
         User findUser = findById(userId);
 
-        if (!loginUser.getUserId().equals(findUser.getUserId()))
-            throw new NoMatchUserInfoException("다른 사용자의 정보를 수정할 수 없습니다.");
+        compareUser(loginUser, findUser, "다른 사용자의 정보를 수정할 수 없습니다.");
 
         /* dirty check */
         findUser.changeName(userUpdateRequest.getName());
@@ -75,58 +73,60 @@ public class UserService {
      * session 으로 부터 얻어온 사용자와 삭제될 사용자가 일치할 경우에만 삭제 진행
      */
     @Transactional
-    public int delete(
+    public void delete(
             final String userId,
-            final UserDeleteRequest userDeleteRequest,
             final User loginUser) {
         User findUser = findById(userId);
+        compareUser(loginUser, findUser, "다른 사용자의 정보를 삭제할 수 없습니다.");
 
-        if (!loginUser.getUserId().equals(findUser.getUserId()))
-            throw new NoMatchUserInfoException("다른 사용자의 정보를 삭제할 수 없습니다.");
-
-        List<Board> boards = boardRepository.findAllByUserId(loginUser.getId());
-        List<Long> boardIds = boards.stream()
-                .map(Board::getBoardId)
-                .collect(Collectors.toList());
-
-        for (Long boardId : boardIds) deleteRelatedToBoard(boardId, fileRepository, commentRepository);
-
-        // 사용자를 삭제하기 전에 사용자 외래키를 갖는 게시판을 삭제한다.
-        boardRepository.deleteWithIds(boardIds);
-
-        // 아이디와 패스워드가 일치한다면 삭제 진행
-        // TODO : 인코딩된 패스워드 비교처리 (현재 정상작동 안됨)
-        if (findUser.getUserId().equals(userDeleteRequest.getUserId()) &&
-                findUser.getPassword().equals(userDeleteRequest.getPassword())) {
-            return userRepository.deleteByUserId(userId);
-        }
-        return 0;
+        deleteBoards(userId);
+        userRepository.delete(findUser);
     }
 
+    @Transactional(readOnly = true)
     public User findById(
             final String userId) {
         return userRepository.findByUserId(userId)
                 .orElseThrow(NoMatchUserInfoException::new);
     }
 
+    @Transactional(readOnly = true)
     public List<User> findAll() {
         return userRepository.findAll();
     }
 
-    // 특정 게시판에 첨부되어 있는 파일과 답글들을 삭제하는 메소드
-    // 참조무결성 제약조건 때문에 먼저 사용자와 게시판 외래키를 갖고있는 파일과 답글들을 먼저 삭제해야 한다.
-    // TODO : 메소드 분리할 것
-    static void deleteRelatedToBoard(Long boardId, FileRepository fileRepository, CommentRepository commentRepository) {
-        List<UploadFile> uploadFiles = fileRepository.findAllByBoard_BoardId(boardId);
-        List<Long> fileIds = uploadFiles.stream()
-                .map(UploadFile::getUploadFileId)
-                .collect(Collectors.toList());
-        fileRepository.deleteWithIds(fileIds);
+    private void compareUser(User loginUser, User findUser, String errorMessage) {
+        if (!loginUser.getUserId().equals(findUser.getUserId()))
+            throw new NoMatchUserInfoException(errorMessage);
+    }
 
-        List<Comment> comments = commentRepository.findAllByBoard_BoardId(boardId);
-        List<Long> commentIds = comments.stream()
-                .map(Comment::getCommentId)
+    private void deleteBoards(String userId) {
+        List<Long> boardIds = boardRepository.findAllByUser_UserId(userId)
+                .stream()
+                .map(Board::getId)
+                .collect(Collectors.toList());
+
+        for (Long boardId : boardIds) {
+            deleteComments(boardId);
+            deleteFiles(boardId);
+        }
+
+        boardRepository.deleteWithIds(boardIds);
+    }
+
+    private void deleteComments(Long boardId) {
+        List<Long> commentIds = commentRepository.findAllByBoardId(boardId)
+                .stream()
+                .map(Comment::getId)
                 .collect(Collectors.toList());
         commentRepository.deleteWithIds(commentIds);
+    }
+
+    private void deleteFiles(Long boardId) {
+        List<Long> fileIds = fileRepository.findAllByBoardId(boardId)
+                .stream()
+                .map(UploadFile::getId)
+                .collect(Collectors.toList());
+        fileRepository.deleteWithIds(fileIds);
     }
 }

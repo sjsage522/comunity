@@ -33,7 +33,7 @@ public class BoardResponse {
     private LocalDateTime lastModifiedDate;
 
     public BoardResponse(final Board newBoard) {
-        this.boardId = newBoard.getBoardId();
+        this.boardId = newBoard.getId();
         this.userId = newBoard.getUser().getUserId();
         this.categoryName = newBoard.getCategory().getCategoryName();
         this.title = newBoard.getTitle();
@@ -41,7 +41,7 @@ public class BoardResponse {
         this.uploadFileDtoList = newBoard.getUploadFiles()
                 .stream()
                 .map(f -> new UploadFileDto(
-                        f.getUploadFileId(),
+                        f.getId(),
                         f.getOriginalFileName(),
                         f.getFileSize()
                 )).collect(Collectors.toList());

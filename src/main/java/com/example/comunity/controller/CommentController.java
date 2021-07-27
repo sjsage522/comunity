@@ -29,7 +29,7 @@ public class CommentController {
     private final CommentService commentService;
 
     /**
-     * 특정 게시글에 달린 모든 답글들 조회
+     * 게시글 내 모든 답글 페이지조회
      *
      * @param boardId 게시글 아이디
      * @param page    게시글 페이지 번호
@@ -65,7 +65,7 @@ public class CommentController {
         final Comment newComment = commentService.apply(loginUser, boardId, commentApplyRequest);
 
         return ResponseEntity
-                .created(URI.create("/comments/" + newComment.getCommentId()))
+                .created(URI.create("/comments/" + newComment.getId()))
                 .body(succeed(getCommentResponseDto(newComment)));
     }
 
@@ -114,12 +114,12 @@ public class CommentController {
         final Comment parent = comment.getParent();
 
         // 자식 댓글들은 자신의 부모를 설정
-        if (parent != null) commentResponse.setParentId(parent.getCommentId());
+        if (parent != null) commentResponse.setParentId(parent.getId());
 
         final List<Comment> children = comment.getChildren();
 
         // 각 부모 댓글에 대한 답글들을 오름차순으로 정렬
-        children.sort(Comparator.comparing(Comment::getCommentId));
+        children.sort(Comparator.comparing(Comment::getId));
 
         for (Comment child : children) {
             final CommentResponse childDto = getCommentResponseDto(child);

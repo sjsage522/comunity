@@ -48,7 +48,7 @@ class CommentRepositoryTest {
         Category category = getCategory("coding");
         Board board = getBoard(user, category, "board", "content");
 
-        Comment newComment = Comment.from(
+        Comment newComment = Comment.of(
                 user,
                 board,
                 "comment..!"
@@ -75,7 +75,7 @@ class CommentRepositoryTest {
         Category category = getCategory("coding");
         Board board = getBoard(user, category, "board", "content");
 
-        Comment newComment = Comment.from(
+        Comment newComment = Comment.of(
                 user,
                 board,
                 "comment..!"

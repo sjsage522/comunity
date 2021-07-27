@@ -10,6 +10,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
+@Table(name = "category")
 @SequenceGenerator(
         name = "category_sequence_generator",
         sequenceName = "category_sequence"
@@ -20,7 +21,7 @@ public class Category {
             strategy = GenerationType.SEQUENCE,
             generator = "category_sequence_generator"
     )
-    private Long categoryId;
+    private Long id;
 
     @Column(unique = true)
     private String categoryName;
@@ -46,7 +47,7 @@ public class Category {
     @Override
     public String toString() {
         return "Category{" +
-                "categoryId=" + categoryId +
+                "categoryId=" + id +
                 ", categoryName='" + categoryName + '\'' +
                 '}';
     }

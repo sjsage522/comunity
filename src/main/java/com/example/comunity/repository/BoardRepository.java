@@ -19,11 +19,11 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     @Query(value = "select b " +
             "from Board b " +
             "join fetch b.category c " +
-            "join fetch b.user u " +
             "where c.categoryName = :categoryName " +
-            "order by b.boardId desc",
+            "order by b.id desc",
             countQuery = "select count(b) from Board b join b.category c where c.categoryName = :categoryName")
-    Page<Board> findAllWithCategory(final String categoryName, final Pageable pageable);
+    @EntityGraph(attributePaths = {"user"})
+    Page<Board> findAllByCategoryNameWithPaging(final String categoryName, final Pageable pageable);
 
 
     /**
@@ -34,26 +34,25 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
      */
     @Query(value = "select b " +
             "from Board b " +
-            "join fetch b.category c " +
-            "join fetch b.user u " +
-            "order by b.boardId desc",
+            "order by b.id desc",
             countQuery = "select count(b) from Board b")
-    Page<Board> findAllByOrderByBoardIdDesc(final Pageable pageable);
+    @EntityGraph(attributePaths = {"user", "category"})
+    Page<Board> findAllWithPaging(final Pageable pageable);
 
     @Modifying
-    @Query("delete from Board b where b.boardId in :ids")
+    @Query("delete from Board b where b.id in :ids")
     void deleteWithIds(List<Long> ids);
 
     @Query("select b from Board b" +
-            " join fetch b.user" +
             " join fetch b.category c" +
-            " where b.boardId = :boardId" +
+            " where b.id = :boardId" +
             " and c.categoryName = :categoryName")
+    @EntityGraph(attributePaths = {"user"})
     Optional<Board> findByBoardIdAndCategoryName(Long boardId, String categoryName);
 
     /**
      * 간단한 fetch join 의 경우 @EntityGraph 애노테이션 활용
      */
     @EntityGraph(attributePaths = {"user"})
-    List<Board> findAllByUserId(Long id);
+    List<Board> findAllByUser_UserId(String userId);
 }

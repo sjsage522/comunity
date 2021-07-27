@@ -42,7 +42,7 @@ class CategoryRepositoryTest {
         em.clear();
 
         //then
-        assertThat(categoryRepository.findByCategoryName("coding").get().getCategoryId()).isEqualTo(1L);
+        assertThat(categoryRepository.findByCategoryName("coding").get().getId()).isEqualTo(1L);
     }
 
     @Test
@@ -105,8 +105,8 @@ class CategoryRepositoryTest {
         //then
         assertThat(categories.size()).isEqualTo(2);
         assertThat(categories.get(0).getCategoryName()).isEqualTo("coding");
-        assertThat(categories.get(0).getCategoryId()).isEqualTo(1L);
+        assertThat(categories.get(0).getId()).isEqualTo(1L);
         assertThat(categories.get(1).getCategoryName()).isEqualTo("reading");
-        assertThat(categories.get(1).getCategoryId()).isEqualTo(2L);
+        assertThat(categories.get(1).getId()).isEqualTo(2L);
     }
 }

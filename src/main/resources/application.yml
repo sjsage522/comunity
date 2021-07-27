@@ -1,24 +1,17 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:dev
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
+    url: jdbc:postgresql://localhost:5432/comunity
+    username: jun
+    password: 2457
+    driver-class-name: org.postgresql.Driver
     initialization-mode: always
-
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
 
   jpa:
     hibernate:
       ddl-auto: create
     properties:
       hibernate:
-        jdbc:
-          batch_size: 500
-        default_batch_fetch_size: 500
+        default_batch_fetch_size: 1000
         format_sql: true
         use_sql_comments: true
 

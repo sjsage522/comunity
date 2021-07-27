@@ -25,7 +25,7 @@ class CommentTest {
     @DisplayName("도메인 생성 테스트")
     void create_comment_test() {
 
-        Comment valid = Comment.from(user, board, "test_content");
+        Comment valid = Comment.of(user, board, "test_content");
 
         assertAll(
                 () -> {
@@ -33,10 +33,10 @@ class CommentTest {
                     assertThat(board.getTitle()).isEqualTo("test_title");
                     assertThat(valid.getContent()).isEqualTo("test_content");
                 },
-                () -> assertThrows(IllegalArgumentException.class, () -> Comment.from(null, board, "test_content")),
-                () -> assertThrows(IllegalArgumentException.class, () -> Comment.from(user, null, "test_content")),
-                () -> assertThrows(IllegalArgumentException.class, () -> Comment.from(user, board, "")),
-                () -> assertThrows(IllegalArgumentException.class, () -> Comment.from(user, board, null))
+                () -> assertThrows(IllegalArgumentException.class, () -> Comment.of(null, board, "test_content")),
+                () -> assertThrows(IllegalArgumentException.class, () -> Comment.of(user, null, "test_content")),
+                () -> assertThrows(IllegalArgumentException.class, () -> Comment.of(user, board, "")),
+                () -> assertThrows(IllegalArgumentException.class, () -> Comment.of(user, board, null))
         );
     }
 }

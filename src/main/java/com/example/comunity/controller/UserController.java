@@ -68,6 +68,7 @@ public class UserController {
     @PostMapping("/logout")
     public ResponseEntity<ApiResult<String>> logout(
             final HttpSession session) {
+        log.info("logout user = {}", session.getAttribute("authInfo"));
         session.invalidate();
 
         return ResponseEntity
@@ -75,7 +76,7 @@ public class UserController {
     }
 
     /**
-     * 특정 사용자 조회
+     * 사용자 단건 조회
      *
      * @param userId 조회할 아이디
      */
@@ -125,17 +126,15 @@ public class UserController {
     /**
      * 사용자 정보 삭제
      *
-     * @param userId            사용자 아이디
-     * @param userDeleteRequest 사용자 삭제 정보 dto
-     * @param session           서버 세션
+     * @param userId  사용자 아이디
+     * @param session 서버 세션
      */
     @DeleteMapping("/users/{userId}")
     public ResponseEntity<ApiResult<String>> delete(
             final @PathVariable String userId,
-            final @Valid @RequestBody UserDeleteRequest userDeleteRequest,
             final HttpSession session) {
         final User loginUser = (User) session.getAttribute("authInfo");
-        userService.delete(userId, userDeleteRequest, loginUser);
+        userService.delete(userId, loginUser);
 
         session.invalidate();
 

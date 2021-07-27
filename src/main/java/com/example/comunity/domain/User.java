@@ -14,7 +14,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-@Table(name = "Users")
+@Table(name = "users")
 @SequenceGenerator(
         name = "user_sequence_generator",
         sequenceName = "user_sequence"

@@ -15,6 +15,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
+@Table(name = "board")
 @SequenceGenerator(
         name = "board_sequence_generator",
         sequenceName = "board_sequence"
@@ -25,7 +26,13 @@ public class Board extends BaseTimeEntity {
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
             generator = "board_sequence_generator")
-    private Long boardId;
+    private Long id;
+
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "content")
+    private String content;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
@@ -35,14 +42,8 @@ public class Board extends BaseTimeEntity {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    private String title;
-    private String content;
-
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
     private final List<UploadFile> uploadFiles = new ArrayList<>();
-
-    @OneToMany(mappedBy = "board")
-    private final List<Comment> comments = new ArrayList<>();
 
     private Board(final User user, final Category category, final String title, final String content) {
         if (!(isValidObjects(user, category) && isValidStrings(title, content)))
@@ -108,13 +109,12 @@ public class Board extends BaseTimeEntity {
     @Override
     public String toString() {
         return "Board{" +
-                "boardId=" + boardId +
+                "boardId=" + id +
                 ", user=" + user.getUserId() +
                 ", category=" + category.getCategoryName() +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", uploadFiles(size)=" + uploadFiles.size() +
-                ", comments=" + comments +
                 '}';
     }
 }

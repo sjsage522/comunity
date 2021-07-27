@@ -45,7 +45,7 @@ public class BoardController {
         final Board newBoard = boardService.upload(boardUploadRequest, loginUser, files);
 
         return ResponseEntity
-                .created(URI.create("/boards/" + newBoard.getBoardId()))
+                .created(URI.create("/boards/" + newBoard.getId()))
                 .body(succeed(getBoardResponse(newBoard)));
     }
 
@@ -136,7 +136,7 @@ public class BoardController {
     /**
      * 특정 카테고리에 포함된 게시글 단건 조회
      *
-     * @param boardId      게시글 번호
+     * @param boardId      게시글 아이디
      * @param categoryName 카테고리 이름
      */
     @GetMapping("/boards/{boardId}/category/{categoryName}")
@@ -149,6 +149,11 @@ public class BoardController {
                 .ok(succeed(getBoardResponse(findBoard)));
     }
 
+    /**
+     * 게시글 단건 조회
+     *
+     * @param boardId 조회할 게시글 아이디
+     */
     @GetMapping("/boards/{boardId}")
     public ResponseEntity<ApiResult<BoardResponse>> findById(
             final @PathVariable Long boardId) {

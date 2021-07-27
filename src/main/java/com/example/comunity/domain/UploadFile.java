@@ -11,6 +11,7 @@ import static javax.persistence.FetchType.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "upload_file")
 @SequenceGenerator(
         name = "upload_file_sequence_generator",
         sequenceName = "upload_file_sequence"
@@ -21,7 +22,7 @@ public class UploadFile extends BaseTimeEntity {
             strategy = GenerationType.SEQUENCE,
             generator = "upload_file_sequence_generator"
     )
-    private Long uploadFileId;
+    private Long id;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "board_id")
@@ -61,7 +62,7 @@ public class UploadFile extends BaseTimeEntity {
     @Override
     public String toString() {
         return "UploadFile{" +
-                "uploadFileId=" + uploadFileId +
+                "uploadFileId=" + id +
                 ", board=" + board.getTitle() +
                 ", originalFileName='" + originalFileName + '\'' +
                 ", storedFileName='" + storedFileName + '\'' +
