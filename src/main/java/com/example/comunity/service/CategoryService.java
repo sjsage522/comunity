@@ -17,8 +17,8 @@ public class CategoryService {
 
     //TODO 관리자전용으로 수정해야함 (현재 컨트롤러 미구현임)
     @Transactional
-    public Category create(final CategoryCreateRequest categoryCreateRequest) {
-
+    public Category create(
+            final CategoryCreateRequest categoryCreateRequest) {
         String categoryName = categoryCreateRequest.getCategoryName();
 
         categoryRepository.findByCategoryName(categoryName)

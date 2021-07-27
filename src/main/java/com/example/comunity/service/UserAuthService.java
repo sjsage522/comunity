@@ -16,8 +16,9 @@ public class UserAuthService {
 
     private final UserRepository userRepository;
 
-    public User authenticate(final String userId, final String password) {
-
+    public User authenticate(
+            final String userId,
+            final String password) {
         return findByUserId(userId)
                 .map(user -> {
                     user.login(password);
