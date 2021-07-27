@@ -14,6 +14,8 @@ public enum ErrorCode {
     NOMATCH_FILE_INFO(400, "존재하지 않는 파일 입니다."),
     NOMATCH_USER_INFO(400, "존재하지 않는 사용자 입니다."),
     INCORRECT_FORMAT(400, "잘못된 형식입니다."),
+    INCORRECT_SERVLET_REQUEST(400, "잘못된 서블릿 요청입니다."),
+    ILLEGAL_ARGUMENT(400, "잘못된 매개변수입니다."),
 
     HANDLER_NOT_FOUND(404, "요청 주소가 잘못되었습니다."),
 

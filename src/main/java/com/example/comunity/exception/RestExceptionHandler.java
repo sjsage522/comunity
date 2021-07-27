@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
@@ -17,6 +18,40 @@ import static org.springframework.http.HttpStatus.valueOf;
 @RestControllerAdvice
 @Slf4j
 public class RestExceptionHandler {
+
+    /**
+     * 잘못된 매개변수 요청
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    protected ResponseEntity<ApiResult<ErrorResponse>> handleIllegalArgumentException(
+            final IllegalArgumentException ex) {
+        log.error("IllegalArgumentException", ex);
+
+        final ErrorResponse response = ErrorResponse.of(
+                ex.getMessage(), ErrorCode.ILLEGAL_ARGUMENT
+        );
+
+        return ResponseEntity
+                .status(response.getStatus())
+                .body(failed(response));
+    }
+
+    /**
+     * servlet request binding 실패
+     */
+    @ExceptionHandler(ServletRequestBindingException.class)
+    protected ResponseEntity<ApiResult<ErrorResponse>> handleServletRequestBindingException(
+            final ServletRequestBindingException ex) {
+        log.error("ServletRequestBindingException", ex);
+
+        final ErrorResponse response = ErrorResponse.of(
+                ex.getMessage(), ErrorCode.INCORRECT_SERVLET_REQUEST
+        );
+
+        return ResponseEntity
+                .status(response.getStatus())
+                .body(failed(response));
+    }
 
     /**
      * 지원하지 않는 HTTP METHOD 요청한 경우

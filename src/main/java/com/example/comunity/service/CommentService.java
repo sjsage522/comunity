@@ -27,19 +27,17 @@ public class CommentService {
     private final BoardRepository boardRepository;
 
     @Transactional
-    public Comment apply(final User loginUser, final Long boardId, final CommentApplyRequest commentApplyRequest) {
-
-        /**
-         * 존재하는 게시글에만 답글을 달 수 있음
-         */
+    public Comment apply(
+            final User loginUser,
+            final Long boardId,
+            final CommentApplyRequest commentApplyRequest) {
+        // 존재하는 게시글에만 답글을 달 수 있음
         Board findBoard = boardRepository.findById(boardId)
                 .orElseThrow(NoMatchBoardInfoException::new);
 
         Comment comment = Comment.from(loginUser, findBoard, commentApplyRequest.getContent());
 
-        /**
-         * 대댓글 작성 부분
-         */
+        // 대댓글 작성 부분
         Long parentId = commentApplyRequest.getParentId();
         if (parentId != null) {
             Comment parentComment = commentRepository.findById(parentId)
@@ -51,7 +49,9 @@ public class CommentService {
     }
 
     @Transactional
-    public void delete(final User loginUser, final Long commentId) {
+    public void delete(
+            final User loginUser,
+            final Long commentId) {
         Comment findComment = commentRepository.findById(commentId)
                 .orElseThrow(NoMatchCommentInfoException::new);
         checkValid(loginUser, findComment);
@@ -60,7 +60,10 @@ public class CommentService {
     }
 
     @Transactional
-    public Comment update(User loginUser, Long commentId, CommentUpdateRequest commentUpdateDto) {
+    public Comment update(
+            User loginUser,
+            Long commentId,
+            CommentUpdateRequest commentUpdateDto) {
         Comment findComment = commentRepository.findById(commentId)
                 .orElseThrow(NoMatchCommentInfoException::new);
         checkValid(loginUser, findComment);
@@ -70,13 +73,18 @@ public class CommentService {
         return findComment;
     }
 
-    private void checkValid(User loginUser, Comment findComment) {
+    private void checkValid(
+            User loginUser,
+            Comment findComment) {
         if (!findComment.getUser().getUserId().equals(loginUser.getUserId()))
             throw new NoMatchUserInfoException("다른 사용자의 답글을 삭제할 수 없습니다.");
     }
 
-    public List<Comment> findAll(final Long boardId, final Integer pageNumber) {
-        return commentRepository.findAll(boardId, PageRequest.of(pageNumber, 10)).stream()
+    public List<Comment> findAll(
+            final Long boardId,
+            final int page) {
+        return commentRepository.findAll(boardId, PageRequest.of(page, 10))
+                .stream()
                 .collect(Collectors.toList());
     }
 }

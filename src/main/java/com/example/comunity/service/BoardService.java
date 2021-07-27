@@ -33,15 +33,18 @@ public class BoardService {
     private final CommentRepository commentRepository;
     private final FileUtils fileUtils;
 
-    public List<Board> findAll(final Integer pageNumber) {
-
+    public List<Board> findAll(
+            final int page) {
         /* 10개씩 페이징 */
-        Page<Board> boards = boardRepository.findAllByOrderByBoardIdDesc(PageRequest.of(pageNumber, 10));
+        Page<Board> boards = boardRepository.findAllByOrderByBoardIdDesc(PageRequest.of(page, 10));
         return boards.stream().collect(Collectors.toList());
     }
 
     @Transactional
-    public Board upload(final BoardUploadRequest boardUploadRequest, final User loginUser, final MultipartFile[] files) {
+    public Board upload(
+            final BoardUploadRequest boardUploadRequest,
+            final User loginUser,
+            final MultipartFile[] files) {
         Category findCategory = findCategoryByName(boardUploadRequest.getCategoryName());
 
         Board newBoard = Board.from(
@@ -50,14 +53,10 @@ public class BoardService {
                 boardUploadRequest.getTitle(),
                 boardUploadRequest.getContent());
 
-        /**
-         * 새로운 게시글 생성
-         */
+        // 새로운 게시글 생성
         Board uploadedBoard = boardRepository.save(newBoard);
 
-        /**
-         * files 가 null 이 아니라면, 파일을 디스크에 저장
-         */
+        // files 가 null 이 아니라면, 파일을 디스크에 저장
         List<UploadFile> fileList = fileUtils.uploadFiles(files, uploadedBoard);
         if (!CollectionUtils.isEmpty(fileList)) {
             fileRepository.saveAll(fileList);
@@ -67,21 +66,32 @@ public class BoardService {
         return uploadedBoard;
     }
 
-    public List<Board> findAllWithCategory(final String name, final Integer pageNumber) {
-
+    public List<Board> findAllWithCategory(
+            final String name,
+            final int page) {
         /* 10개씩 페이징 */
-        Page<Board> boards = boardRepository.findAllWithCategory(name, PageRequest.of(pageNumber, 10));
+        Page<Board> boards = boardRepository.findAllWithCategory(name, PageRequest.of(page, 10));
         return boards.stream().collect(Collectors.toList());
     }
 
-    public Board findByIdWithCategory(final Long id, final String name) {
-        return boardRepository.findByBoardIdAndCategoryName(id, name)
+    public Board findByIdWithCategory(
+            final Long boardId,
+            final String categoryName) {
+        return boardRepository.findByBoardIdAndCategoryName(boardId, categoryName)
+                .orElseThrow(NoMatchBoardInfoException::new);
+    }
+
+    public Board findById(
+            final Long boardId) {
+        return boardRepository.findById(boardId)
                 .orElseThrow(NoMatchBoardInfoException::new);
     }
 
     @Transactional
-    public void delete(final Long boardId, final String categoryName, final User loginUser) {
-
+    public void delete(
+            final Long boardId,
+            final String categoryName,
+            final User loginUser) {
         Board findBoard = boardRepository.findByBoardIdAndCategoryName(boardId, categoryName)
                 .orElseThrow(NoMatchBoardInfoException::new);
 
@@ -89,34 +99,29 @@ public class BoardService {
         if (!findUser.getUserId().equals(loginUser.getUserId()))
             throw new NoMatchUserInfoException("다른 사용자의 게시글을 삭제할 수 없습니다.");
 
-        /**
-         * 게시글을 삭제하기 전에 먼저 연관된 첨부파일과 댓글들을 삭제해야 한다. (참조 무결성)
-         */
+        // 게시글을 삭제하기 전에 먼저 연관된 첨부파일과 댓글들을 삭제해야 한다. (참조 무결성)
         UserService.deleteRelatedToBoard(boardId, fileRepository, commentRepository);
 
         boardRepository.delete(findBoard);
     }
 
     @Transactional
-    public Board update(final Long boardId, final String categoryName, final BoardUpdateRequest boardUpdateRequest, final User loginUser) {
-
-        /**
-         * 수정하고자 하는 게시글을 찾는다.
-         */
+    public Board update(
+            final Long boardId,
+            final String categoryName,
+            final BoardUpdateRequest boardUpdateRequest,
+            final User loginUser) {
+        // 수정하고자 하는 게시글을 찾는다.
         Board findBoard = boardRepository.findByBoardIdAndCategoryName(boardId, categoryName)
                 .orElseThrow(NoMatchBoardInfoException::new);
 
-        /**
-         * 다른 사용자는 게시글을 수정할 수 없도록 처리
-         * loginUser -> 세션에서 꺼내온 사용자 정보
-         */
+        // 다른 사용자는 게시글을 수정할 수 없도록 처리
+        // loginUser -> 세션에서 꺼내온 사용자 정보
         User findUser = findBoard.getUser();
         if (!findUser.getUserId().equals(loginUser.getUserId()))
             throw new NoMatchUserInfoException("다른 사용자의 게시글을 수정할 수 없습니다.");
 
-        /**
-         * 영속성 컨텍스트의 dirty check
-         */
+        // 영속성 컨텍스트의 dirty check
         Category changedCategory = findCategoryByName(boardUpdateRequest.getCategoryName());
         findBoard.changeBoard(boardUpdateRequest.getTitle(), boardUpdateRequest.getContent(), changedCategory);
 

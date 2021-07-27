@@ -24,17 +24,24 @@ public class FileController {
 
     private final FileService fileService;
 
+    /**
+     * 파일 다운로드 api
+     *
+     * @param fileId   다운로드할 파일 아이디
+     * @param response 파일 응답 dto
+     */
     @GetMapping("/download/{fileId}")
-    public void fileDownload(@PathVariable("fileId") final Long fileId,
-                                                 final HttpServletResponse response) {
-        UploadFile findFile = fileService.findById(fileId);
+    public void fileDownload(
+            final @PathVariable("fileId") Long fileId,
+            final HttpServletResponse response) {
+        final UploadFile findFile = fileService.findById(fileId);
 
-        String uploadPath = Paths.get(findFile.getFileDownloadUri()).toString();
-        String fileName = findFile.getOriginalFileName();
+        final String uploadPath = Paths.get(findFile.getFileDownloadUri()).toString();
+        final String fileName = findFile.getOriginalFileName();
 
-        File file = new File(uploadPath, findFile.getStoredFileName());
+        final File file = new File(uploadPath, findFile.getStoredFileName());
         try {
-            byte[] data = FileUtils.readFileToByteArray(file);
+            final byte[] data = FileUtils.readFileToByteArray(file);
             response.setContentType("application/octet-stream");
             response.setContentLength(data.length);
             response.setHeader("Content-Transfer-Encoding", "binary");

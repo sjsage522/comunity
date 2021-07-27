@@ -30,14 +30,17 @@ public class CommentController {
 
     /**
      * 특정 게시글에 달린 모든 답글들 조회
-     * @param id 게시글 번호
+     *
+     * @param boardId 게시글 아이디
+     * @param page    게시글 페이지 번호
      */
-    @GetMapping("/boards/{id}/comments/page/{pageNumber}")
+    @GetMapping("/comments/boards/{boardId}")
     public ResponseEntity<ApiResult<List<CommentResponse>>> findAll(
-            @PathVariable final Long id, @PathVariable @Min(0) final Integer pageNumber) {
+            final @PathVariable Long boardId,
+            final @RequestParam @Min(0) int page) {
 
         List<CommentResponse> commentResponseList = commentService
-                .findAll(id, pageNumber)
+                .findAll(boardId, page)
                 .stream()
                 .map(this::getCommentResponseDto)
                 .collect(Collectors.toList());
@@ -48,18 +51,18 @@ public class CommentController {
 
     /**
      * 특정 게시글에 답글 작성
+     *
      * @param commentApplyRequest 답글 작성 dto
-     * @param id 게시글 번호
-     * @param session 현재 사용자 세션
+     * @param boardId             게시글 아이디
+     * @param session             서버 세션
      */
-    @PostMapping("/boards/{id}/comments")
-    public ResponseEntity<ApiResult<CommentResponse>> apply(
-            @Valid @RequestBody final CommentApplyRequest commentApplyRequest,
-            @PathVariable final Long id,
+    @PostMapping("/comments/boards/{boardId}")
+    public ResponseEntity<ApiResult<CommentResponse>> applyComment(
+            final @Valid @RequestBody CommentApplyRequest commentApplyRequest,
+            final @PathVariable Long boardId,
             final HttpSession session) {
-
-        User loginUser = (User) session.getAttribute("authInfo");
-        Comment newComment = commentService.apply(loginUser, id, commentApplyRequest);
+        final User loginUser = (User) session.getAttribute("authInfo");
+        final Comment newComment = commentService.apply(loginUser, boardId, commentApplyRequest);
 
         return ResponseEntity
                 .created(URI.create("/comments/" + newComment.getCommentId()))
@@ -68,16 +71,16 @@ public class CommentController {
 
     /**
      * 답글 삭제, 부모 답글 삭제 시 연관된 자식 답글들 모두 삭제
-     * @param id 답글 번호
-     * @param session 현재 사용자 세션
+     *
+     * @param commentId 답글 아이디
+     * @param session   서버 세션
      */
-    @DeleteMapping("/comments/{id}")
-    public ResponseEntity<ApiResult<String>> delete(
-            @PathVariable final Long id,
+    @DeleteMapping("/comments/{commentId}")
+    public ResponseEntity<ApiResult<String>> deleteComment(
+            final @PathVariable Long commentId,
             final HttpSession session) {
-
-        User loginUser = (User) session.getAttribute("authInfo");
-        commentService.delete(loginUser, id);
+        final User loginUser = (User) session.getAttribute("authInfo");
+        commentService.delete(loginUser, commentId);
 
         return ResponseEntity
                 .ok(succeed("comment is deleted successfully"));
@@ -85,18 +88,18 @@ public class CommentController {
 
     /**
      * 답글 내용 수정
-     * @param id 답글 번호
+     *
+     * @param commentId        답글 아이디
      * @param commentUpdateDto 답글 수정 dto
-     * @param session 현재 사용자 세션
+     * @param session          서버 세션
      */
-    @PatchMapping("/comments/{id}")
+    @PatchMapping("/comments/{commentId}")
     public ResponseEntity<ApiResult<CommentResponse>> update(
-            @PathVariable final Long id,
-            @Valid @RequestBody final CommentUpdateRequest commentUpdateDto,
+            final @PathVariable Long commentId,
+            final @Valid @RequestBody CommentUpdateRequest commentUpdateDto,
             final HttpSession session) {
-
-        User loginUser = (User) session.getAttribute("authInfo");
-        Comment updateComment = commentService.update(loginUser, id, commentUpdateDto);
+        final User loginUser = (User) session.getAttribute("authInfo");
+        final Comment updateComment = commentService.update(loginUser, commentId, commentUpdateDto);
 
         return ResponseEntity
                 .ok(succeed(getCommentResponseDto(updateComment)));
@@ -106,26 +109,20 @@ public class CommentController {
      * 계층형 댓글로 나타내기 위한 로직
      */
     private CommentResponse getCommentResponseDto(Comment comment) {
-        CommentResponse commentResponse = new CommentResponse(comment);
+        final CommentResponse commentResponse = new CommentResponse(comment);
 
-        Comment parent = comment.getParent();
+        final Comment parent = comment.getParent();
 
-        if (parent != null) {
-            /**
-             * 자식 댓글들은 자신의 부모를 설정
-             */
-            commentResponse.setParentId(parent.getCommentId());
-        }
+        // 자식 댓글들은 자신의 부모를 설정
+        if (parent != null) commentResponse.setParentId(parent.getCommentId());
 
-        List<Comment> children = comment.getChildren();
+        final List<Comment> children = comment.getChildren();
 
-        /**
-         * 각 부모 댓글에 대한 답글들을 오름차순으로 정렬
-         */
+        // 각 부모 댓글에 대한 답글들을 오름차순으로 정렬
         children.sort(Comparator.comparing(Comment::getCommentId));
 
         for (Comment child : children) {
-            CommentResponse childDto = getCommentResponseDto(child);
+            final CommentResponse childDto = getCommentResponseDto(child);
             commentResponse.getChildren().add(childDto);
         }
         return commentResponse;

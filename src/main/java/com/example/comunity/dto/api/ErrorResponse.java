@@ -22,6 +22,10 @@ public class ErrorResponse {
         return new ErrorResponse(errorCode);
     }
 
+    public static ErrorResponse of(final String message, final ErrorCode errorCode) {
+        return new ErrorResponse(message, errorCode.getStatus());
+    }
+
     public static ErrorResponse of(final BindingResult bindingResult, final ErrorCode errorCode) {
         final String message = bindingResult
                 .getAllErrors()

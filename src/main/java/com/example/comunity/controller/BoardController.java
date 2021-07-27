@@ -30,18 +30,19 @@ public class BoardController {
 
     /**
      * 게시글 작성
+     *
      * @param boardUploadRequest 게시글 작성 dto
-     * @param files 첨부파일
-     * @param session 현재 사용자 세션
+     * @param files              첨부파일
+     * @param session            서버 세션
      */
-    @PostMapping(value = "/boards")
-    public ResponseEntity<ApiResult<BoardResponse>> upload(
-            @Valid @RequestPart final BoardUploadRequest boardUploadRequest,
-            @RequestPart(value = "files", required = false) final MultipartFile[] files,
+    @PostMapping("/boards")
+    public ResponseEntity<ApiResult<BoardResponse>> uploadBoard(
+            final @Valid @RequestPart BoardUploadRequest boardUploadRequest,
+            final @RequestPart(value = "files", required = false) MultipartFile[] files,
             final HttpSession session) {
 
-        User loginUser = getCurrentUser(session);
-        Board newBoard = boardService.upload(boardUploadRequest, loginUser, files);
+        final User loginUser = getCurrentUser(session);
+        final Board newBoard = boardService.upload(boardUploadRequest, loginUser, files);
 
         return ResponseEntity
                 .created(URI.create("/boards/" + newBoard.getBoardId()))
@@ -51,18 +52,18 @@ public class BoardController {
     /**
      * 게시글 삭제
      *
-     * @param id      게시글을 작성한 사용자 id
-     * @param name    게시글이 포함된 특정 카테고리 이름
-     * @param session 현재 사용자 세션
+     * @param boardId      게시글을 작성한 사용자 아이디
+     * @param categoryName 게시글이 포함된 특정 카테고리 이름
+     * @param session      서버 세션
      */
-    @DeleteMapping("/category/{name}/boards/{id}")
-    public ResponseEntity<ApiResult<String>> delete(
-            @PathVariable final Long id,
-            @PathVariable final String name,
+    @DeleteMapping("/boards/{boardId}/category/{categoryName}")
+    public ResponseEntity<ApiResult<String>> deleteBoard(
+            final @PathVariable Long boardId,
+            final @PathVariable String categoryName,
             final HttpSession session) {
 
-        User loginUser = getCurrentUser(session);
-        boardService.delete(id, name, loginUser);
+        final User loginUser = getCurrentUser(session);
+        boardService.delete(boardId, categoryName, loginUser);
 
         return ResponseEntity
                 .ok(succeed("board is deleted successfully"));
@@ -70,20 +71,21 @@ public class BoardController {
 
     /**
      * 게시글 수정
-     * @param id 게시글 번호
-     * @param name 카테고리 이름
+     *
+     * @param boardId            게시글 번호
+     * @param categoryName       카테고리 이름
      * @param boardUpdateRequest 게시글 변경 dto
-     * @param session 현재 사용자 세션
+     * @param session            서버 세션
      */
-    @PatchMapping("/category/{name}/boards/{id}")
-    public ResponseEntity<ApiResult<BoardResponse>> update(
-            @PathVariable final Long id,
-            @PathVariable final String name,
-            @Valid @RequestBody final BoardUpdateRequest boardUpdateRequest,
+    @PatchMapping("/boards/{boardId}/category/{categoryName}")
+    public ResponseEntity<ApiResult<BoardResponse>> updateBoard(
+            final @PathVariable Long boardId,
+            final @PathVariable String categoryName,
+            final @Valid @RequestBody BoardUpdateRequest boardUpdateRequest,
             final HttpSession session) {
 
-        User loginUser = getCurrentUser(session);
-        Board updatedBoard = boardService.update(id, name, boardUpdateRequest, loginUser);
+        final User loginUser = getCurrentUser(session);
+        final Board updatedBoard = boardService.update(boardId, categoryName, boardUpdateRequest, loginUser);
 
         return ResponseEntity
                 .ok(succeed(getBoardResponse(updatedBoard)));
@@ -92,15 +94,17 @@ public class BoardController {
     /**
      * 특정 카테고리에 포함되는 모든 게시글을 조회
      * 페이징 처리 (10개 씩)
-     * @param name 카테고리 명
+     *
+     * @param categoryName 카테고리 이름
+     * @param page         게시글 페이지 번호
      */
-    @GetMapping("/category/{name}/boards/page/{pageNumber}")
+    @GetMapping("/boards/category/{categoryName}")
     public ResponseEntity<ApiResult<List<BoardResponse>>> findAllWithCategory(
-            @PathVariable final String name,
-            final @PathVariable @Min(0) Integer pageNumber) {
+            final @PathVariable String categoryName,
+            final @RequestParam @Min(0) int page) {
 
         List<BoardResponse> boardResponseList = boardService
-                .findAllWithCategory(name, pageNumber)
+                .findAllWithCategory(categoryName, page)
                 .stream()
                 .map(this::getBoardResponse)
                 .collect(Collectors.toList());
@@ -112,13 +116,15 @@ public class BoardController {
     /**
      * 모든 게시글 조회 (모든 카테고리내 게시글들 중에서 가장 최근 게시글 10개를 조회)
      * 페이징 처리 (10개 씩)
+     *
+     * @param page 게시글 페이지 번호
      */
-    @GetMapping("/boards/page/{pageNumber}")
+    @GetMapping("/boards")
     public ResponseEntity<ApiResult<List<BoardResponse>>> findAll(
-            @PathVariable @Min(0) final Integer pageNumber) {
+            final @RequestParam @Min(0) int page) {
 
         List<BoardResponse> boardResponseList = boardService
-                .findAll(pageNumber)
+                .findAll(page)
                 .stream()
                 .map(this::getBoardResponse)
                 .collect(Collectors.toList());
@@ -129,15 +135,24 @@ public class BoardController {
 
     /**
      * 특정 카테고리에 포함된 게시글 단건 조회
-     * @param id 게시글 번호
-     * @param name 카테고리 이름
+     *
+     * @param boardId      게시글 번호
+     * @param categoryName 카테고리 이름
      */
-    @GetMapping("/category/{name}/boards/{id}")
+    @GetMapping("/boards/{boardId}/category/{categoryName}")
     public ResponseEntity<ApiResult<BoardResponse>> findByIdWithCategory(
-            @PathVariable final Long id,
-            @PathVariable final String name) {
+            final @PathVariable Long boardId,
+            final @PathVariable String categoryName) {
+        final Board findBoard = boardService.findByIdWithCategory(boardId, categoryName);
 
-        Board findBoard = boardService.findByIdWithCategory(id, name);
+        return ResponseEntity
+                .ok(succeed(getBoardResponse(findBoard)));
+    }
+
+    @GetMapping("/boards/{boardId}")
+    public ResponseEntity<ApiResult<BoardResponse>> findById(
+            final @PathVariable Long boardId) {
+        final Board findBoard = boardService.findById(boardId);
 
         return ResponseEntity
                 .ok(succeed(getBoardResponse(findBoard)));
@@ -152,6 +167,7 @@ public class BoardController {
 
     /**
      * 현재 세션에 저장되어 있는 사용자 객체를 반환하는 메서드
+     *
      * @param session server session
      * @return currentUser
      */

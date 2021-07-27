@@ -21,7 +21,8 @@ import static lombok.AccessLevel.PROTECTED;
 )
 public class Board extends BaseTimeEntity {
 
-    @Id @GeneratedValue(
+    @Id
+    @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
             generator = "board_sequence_generator")
     private Long boardId;
@@ -44,7 +45,8 @@ public class Board extends BaseTimeEntity {
     private final List<Comment> comments = new ArrayList<>();
 
     private Board(final User user, final Category category, final String title, final String content) {
-        if (!(isValidObjects(user, category) && isValidStrings(title, content))) throw new IllegalArgumentException("유효하지 않은 매개변수 형식 입니다.");
+        if (!(isValidObjects(user, category) && isValidStrings(title, content)))
+            throw new IllegalArgumentException("유효하지 않은 매개변수 형식 입니다.");
         this.user = user;
         this.category = category;
         this.title = title;
@@ -53,6 +55,7 @@ public class Board extends BaseTimeEntity {
 
     /**
      * 게시판과 파일간의 연관관계 편의 메서드
+     *
      * @param uploadFiles 해당 게시판에 업로드될 파일들
      */
     public void uploadFiles(final List<UploadFile> uploadFiles) {
@@ -73,11 +76,10 @@ public class Board extends BaseTimeEntity {
         this.content = content;
     }
 
-    /**
-     * 변경을 위한 추가 메서드 (게시판 정보 수정)
-     */
+    // 변경을 위한 추가 메서드 (게시판 정보 수정)
     public void changeBoard(final String title, final String content, final Category changedCategory) {
-        if (!(isValidObjects(changedCategory) && isValidStrings(title, content))) throw new IllegalArgumentException("유효하지 않은 매개변수 형식 입니다.");
+        if (!(isValidObjects(changedCategory) && isValidStrings(title, content)))
+            throw new IllegalArgumentException("유효하지 않은 매개변수 형식 입니다.");
         this.changeTitle(title);
         this.changeContent(content);
         this.changeCategory(changedCategory);
@@ -85,10 +87,11 @@ public class Board extends BaseTimeEntity {
 
     /**
      * 게시판 생성
-     * @param user 게시판글을 작성한 사용자 엔티티
+     *
+     * @param user     게시판글을 작성한 사용자 엔티티
      * @param category 해당 게시판이 포함되는 카테고리
-     * @param title 게시판의 제목
-     * @param content 게시판 글 내용
+     * @param title    게시판의 제목
+     * @param content  게시판 글 내용
      */
     public static Board from(final User user, final Category category, final String title, final String content) {
         return new Board(user, category, title, content);
@@ -100,5 +103,18 @@ public class Board extends BaseTimeEntity {
 
     private boolean isValidStrings(String... strings) {
         return Arrays.stream(strings).noneMatch(string -> string == null || string.isBlank());
+    }
+
+    @Override
+    public String toString() {
+        return "Board{" +
+                "boardId=" + boardId +
+                ", user=" + user.getUserId() +
+                ", category=" + category.getCategoryName() +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", uploadFiles(size)=" + uploadFiles.size() +
+                ", comments=" + comments +
+                '}';
     }
 }
