@@ -81,4 +81,16 @@ public class User extends BaseTimeEntity {
             throw new NoMatchUserInfoException("비밀번호가 일치하지 않습니다.");
         }
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", userId='" + userId + '\'' +
+                ", name='" + name + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", password='" + "[PROTECTED]" + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
 }

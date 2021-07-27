@@ -57,4 +57,17 @@ public class UploadFile extends BaseTimeEntity {
                                   final String fileDownLoadUri, final String fileType) {
         return new UploadFile(board, originalFileName, storedFileName, fileSize, fileDownLoadUri, fileType);
     }
+
+    @Override
+    public String toString() {
+        return "UploadFile{" +
+                "uploadFileId=" + uploadFileId +
+                ", board=" + board.getTitle() +
+                ", originalFileName='" + originalFileName + '\'' +
+                ", storedFileName='" + storedFileName + '\'' +
+                ", fileDownloadUri='" + fileDownloadUri + '\'' +
+                ", fileType='" + fileType + '\'' +
+                ", fileSize=" + fileSize +
+                '}';
+    }
 }

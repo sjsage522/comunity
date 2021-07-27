@@ -14,7 +14,8 @@ public class FileService {
 
     private final FileRepository fileRepository;
 
-    public UploadFile findById(final Long id) {
+    public UploadFile findById(
+            final Long id) {
         return fileRepository.findById(id)
                 .orElseThrow(NoMatchFileInfoException::new);
     }

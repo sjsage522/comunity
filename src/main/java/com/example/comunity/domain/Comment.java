@@ -84,4 +84,14 @@ public class Comment extends BaseTimeEntity {
     private boolean isValidStrings(String... strings) {
         return Arrays.stream(strings).noneMatch(string -> string == null || string.isBlank());
     }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "commentId=" + commentId +
+                ", user=" + user.getUserId() +
+                ", board=" + board.getBoardId() +
+                ", content='" + content + '\'' +
+                '}';
+    }
 }
