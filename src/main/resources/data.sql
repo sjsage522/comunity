@@ -1,8 +1,8 @@
-INSERT INTO CATEGORY(id, category_name)
+INSERT INTO CATEGORY(id, name)
 VALUES (1, 'game')
 ;
 
-INSERT INTO CATEGORY(id, category_name)
+INSERT INTO CATEGORY(id, name)
 VALUES (2, 'coding')
 ;
 

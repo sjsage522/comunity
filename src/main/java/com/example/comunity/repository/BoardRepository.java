@@ -1,6 +1,7 @@
 package com.example.comunity.repository;
 
 import com.example.comunity.domain.Board;
+import com.example.comunity.domain.CategoryName;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -23,7 +24,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             "order by b.id desc",
             countQuery = "select count(b) from Board b join b.category c where c.categoryName = :categoryName")
     @EntityGraph(attributePaths = {"user"})
-    Page<Board> findAllByCategoryNameWithPaging(final String categoryName, final Pageable pageable);
+    Page<Board> findAllByCategoryNameWithPaging(final CategoryName categoryName, final Pageable pageable);
 
 
     /**
@@ -48,7 +49,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             " where b.id = :boardId" +
             " and c.categoryName = :categoryName")
     @EntityGraph(attributePaths = {"user"})
-    Optional<Board> findByBoardIdAndCategoryName(Long boardId, String categoryName);
+    Optional<Board> findByBoardIdAndCategoryName(Long boardId, CategoryName categoryName);
 
     /**
      * 간단한 fetch join 의 경우 @EntityGraph 애노테이션 활용

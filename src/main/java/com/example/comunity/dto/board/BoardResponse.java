@@ -35,7 +35,10 @@ public class BoardResponse {
     public BoardResponse(final Board newBoard) {
         this.boardId = newBoard.getId();
         this.userId = newBoard.getUser().getUserId();
-        this.categoryName = newBoard.getCategory().getCategoryName();
+        this.categoryName = newBoard
+                .getCategory()
+                .getCategoryName()
+                .getEn();
         this.title = newBoard.getTitle();
         this.content = newBoard.getContent();
         this.uploadFileDtoList = newBoard.getUploadFiles()

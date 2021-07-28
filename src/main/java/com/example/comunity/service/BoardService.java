@@ -22,6 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.example.comunity.domain.CategoryName.*;
+
 @Service
 @RequiredArgsConstructor
 public class BoardService {
@@ -65,7 +67,7 @@ public class BoardService {
             final String categoryName,
             final int page) {
         /* 10개씩 페이징 */
-        Page<Board> boards = boardRepository.findAllByCategoryNameWithPaging(categoryName, PageRequest.of(page, 10));
+        Page<Board> boards = boardRepository.findAllByCategoryNameWithPaging(valueOf(categoryName), PageRequest.of(page, 10));
         return boards.stream().collect(Collectors.toList());
     }
 
@@ -73,7 +75,7 @@ public class BoardService {
     public Board findByIdWithCategory(
             final Long boardId,
             final String categoryName) {
-        return boardRepository.findByBoardIdAndCategoryName(boardId, categoryName)
+        return boardRepository.findByBoardIdAndCategoryName(boardId, valueOf(categoryName))
                 .orElseThrow(NoMatchBoardInfoException::new);
     }
 
@@ -121,12 +123,12 @@ public class BoardService {
     }
 
     private Category findCategoryByName(final String categoryName) {
-        return categoryRepository.findByCategoryName(categoryName)
+        return categoryRepository.findByCategoryName(valueOf(categoryName))
                 .orElseThrow(NoMatchCategoryInfoException::new);
     }
 
     private Board findBoardByIdAndCategoryName(Long boardId, String categoryName) {
-        return boardRepository.findByBoardIdAndCategoryName(boardId, categoryName)
+        return boardRepository.findByBoardIdAndCategoryName(boardId, valueOf(categoryName))
                 .orElseThrow(NoMatchBoardInfoException::new);
     }
 
@@ -150,7 +152,7 @@ public class BoardService {
 
     private Board getBoard(BoardUploadRequest boardUploadRequest, User loginUser) {
         Category findCategory = findCategoryByName(boardUploadRequest.getCategoryName());
-        return Board.from(
+        return Board.of(
                 loginUser,
                 findCategory,
                 boardUploadRequest.getTitle(),
