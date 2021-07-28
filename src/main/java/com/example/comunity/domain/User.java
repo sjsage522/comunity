@@ -9,6 +9,8 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.persistence.*;
 
+import java.util.Arrays;
+
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
@@ -39,6 +41,7 @@ public class User extends BaseTimeEntity {
     private String email;
 
     private User(final String userId, final String name, final String nickName, final String password, final String email) {
+        validationCheck(userId, name, nickName, password, email);
         this.userId = userId;
         this.name = name;
         this.nickName = nickName;
@@ -46,13 +49,12 @@ public class User extends BaseTimeEntity {
         this.email = email;
     }
 
-    /**
-     * 패스워드 인코딩
-     */
+    // 패스워드 인코딩
     private String passwordEncoding(String password) {
         return Base64.encodeBase64String(DigestUtils.sha512(password));
     }
 
+    /* 생성자 팩토리 메서드 */
     public static User from(final UserJoinRequest source) {
         return new User(source.getUserId(), source.getName(), source.getNickName(), source.getPassword(), source.getEmail());
     }
@@ -60,10 +62,9 @@ public class User extends BaseTimeEntity {
     public static User of(final String userId, final String name, final String nickName, final String password, final String email) {
         return new User(userId, name, nickName, password, email);
     }
+    /*                */
 
-    /**
-     * 변경을 위한 추가 메서드 (사용자 정보 수정)
-     */
+    /* 변경을 위한 추가 메서드 (사용자 정보 수정) */
     public void changeName(final String name) {
         this.name = name;
     }
@@ -75,11 +76,22 @@ public class User extends BaseTimeEntity {
     public void changePassword(final String password) {
         this.password = passwordEncoding(password);
     }
+    /*                                 */
 
+    // 사용자 로그인 내부 로직
     public void login(String password) {
         if (password.isBlank() || !passwordEncoding(password).equals(this.password)) {
             throw new NoMatchUserInfoException("비밀번호가 일치하지 않습니다.");
         }
+    }
+
+    // 생성자 매개변수 유효성 검사 메서드
+    private void validationCheck(String... values) {
+        Arrays.stream(values)
+                .filter(value -> value == null || value.isBlank())
+                .forEach(value -> {
+                    throw new IllegalArgumentException("유요하지 않은 매개변수입니다.");
+                });
     }
 
     @Override

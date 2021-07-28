@@ -71,13 +71,12 @@ public class Comment extends BaseTimeEntity {
         return new Comment(user, board, content);
     }
 
-    /**
-     * 변경을 위한 추가 메서드 (게시판 정보 수정)
-     */
+    // 변경을 위한 추가 메서드 (게시판 정보 수정)
     public void changeContent(final String content) {
         this.content = content;
     }
 
+    /*  */
     private boolean isValidObjects(Object... objects) {
         return Arrays.stream(objects).noneMatch(Objects::isNull);
     }
@@ -85,6 +84,7 @@ public class Comment extends BaseTimeEntity {
     private boolean isValidStrings(String... strings) {
         return Arrays.stream(strings).noneMatch(string -> string == null || string.isBlank());
     }
+    /*  */
 
     @Override
     public String toString() {
