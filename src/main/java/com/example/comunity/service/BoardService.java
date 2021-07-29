@@ -133,13 +133,8 @@ public class BoardService {
     }
 
     private void deleteComments(Long boardId) {
-        final List<Comment> commentList = commentRepository.findAllByBoardId(boardId);
-
-        for (Comment comment : commentList) {
-            System.out.println("comment = " + comment + ", class = " + comment.getClass());
-        }
-
-        List<Long> commentIds = commentList.stream()
+        List<Long> commentIds = commentRepository.findAllByBoardId(boardId)
+                .stream()
                 .map(Comment::getId)
                 .collect(Collectors.toList());
         commentRepository.deleteWithIds(commentIds);
