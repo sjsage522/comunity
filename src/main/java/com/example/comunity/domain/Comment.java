@@ -90,6 +90,7 @@ public class Comment extends BaseTimeEntity {
     public String toString() {
         return "Comment{" +
                 "commentId=" + id +
+                ", parent=" + (this.parent == null ? "no" : this.parent.getId()) +
                 ", user=" + user.getUserId() +
                 ", board=" + board.getId() +
                 ", content='" + content + '\'' +
