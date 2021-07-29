@@ -1,9 +1,9 @@
 INSERT INTO CATEGORY(id, name)
-VALUES (1, 'game')
+VALUES (1, 'GAME')
 ;
 
 INSERT INTO CATEGORY(id, name)
-VALUES (2, 'coding')
+VALUES (2, 'CODING')
 ;
 
 INSERT INTO USERS(id, created_date, last_modified_date, email, name, nick_name, password, user_id)
