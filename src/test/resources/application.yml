@@ -1,3 +1,9 @@
 spring:
   profiles:
-    active: test
+    active: test-pg
+
+---
+
+spring:
+  profiles:
+    active: test-h2
