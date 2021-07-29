@@ -10,12 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class UserAuthService {
 
     private final UserRepository userRepository;
 
+    @Transactional(readOnly = true)
     public User authenticate(
             final String userId,
             final String password) {
@@ -27,6 +27,7 @@ public class UserAuthService {
                 .orElseThrow(() -> new NoMatchUserInfoException("아이디가 일치하지 않습니다."));
     }
 
+    @Transactional(readOnly = true)
     public Optional<User> findByUserId(String userId) {
         return userRepository.findByUserId(userId);
     }

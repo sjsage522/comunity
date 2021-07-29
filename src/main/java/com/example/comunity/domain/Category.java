@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import static com.example.comunity.domain.CategoryName.*;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
@@ -29,7 +30,7 @@ public class Category {
 
     private Category(final String categoryName) {
         if (categoryName == null || categoryName.isBlank()) throw new IllegalArgumentException("유효하지 않은 카테고리명 입니다.");
-        this.categoryName = CategoryName.valueOf(categoryName);
+        this.categoryName = upperValueOf(categoryName);
     }
 
     /**
@@ -42,7 +43,7 @@ public class Category {
 
     // 변경을 위한 추가 메서드 (카테고리 정보 수정)
     public void modifyCategory(final String modifiedName) {
-        this.categoryName = CategoryName.valueOf(modifiedName);
+        this.categoryName = upperValueOf(modifiedName);
     }
 
     @Override

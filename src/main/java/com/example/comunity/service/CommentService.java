@@ -54,13 +54,13 @@ public class CommentService {
 
     @Transactional
     public Comment update(
-            User loginUser,
-            Long commentId,
-            CommentUpdateRequest commentUpdateDto) {
+            final User loginUser,
+            final Long commentId,
+            final CommentUpdateRequest commentUpdateRequest) {
         Comment updateComment = findCommentById(commentId);
         compareUser(loginUser, updateComment);
 
-        updateComment.changeContent(commentUpdateDto.getContent());
+        updateComment.changeContent(commentUpdateRequest.getContent());
 
         return updateComment;
     }
@@ -75,23 +75,25 @@ public class CommentService {
     }
 
     private void compareUser(
-            User loginUser,
-            Comment findComment) {
+            final User loginUser,
+            final Comment findComment) {
         if (!findComment.getUser().getUserId().equals(loginUser.getUserId()))
             throw new NoMatchUserInfoException("다른 사용자의 답글을 삭제할 수 없습니다.");
     }
 
-    private Board findBoardById(Long boardId) {
+    private Board findBoardById(final Long boardId) {
         return boardRepository.findById(boardId)
                 .orElseThrow(NoMatchBoardInfoException::new);
     }
 
-    private Comment findCommentById(Long commentId) {
+    private Comment findCommentById(final Long commentId) {
         return commentRepository.findById(commentId)
                 .orElseThrow(NoMatchCommentInfoException::new);
     }
 
-    private void applyToParent(Comment comment, Long parentId) {
+    private void applyToParent(
+            final Comment comment,
+            final Long parentId) {
         if (parentId != null) {
             Comment parentComment = findCommentById(parentId);
             parentComment.addChildComment(comment);

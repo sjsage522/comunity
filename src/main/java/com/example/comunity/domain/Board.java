@@ -65,25 +65,11 @@ public class Board extends BaseTimeEntity {
         }
     }
 
-    public void changeCategory(final Category category) {
-        this.category = category;
-    }
-
-    public void changeTitle(final String title) {
-        this.title = title;
-    }
-
-    public void changeContent(final String content) {
-        this.content = content;
-    }
-
     // 변경을 위한 추가 메서드 (게시판 정보 수정)
     public void changeBoard(final String title, final String content, final Category changedCategory) {
-        if (!(isValidObjects(changedCategory) && isValidStrings(title, content)))
-            throw new IllegalArgumentException("유효하지 않은 매개변수 형식 입니다.");
-        this.changeTitle(title);
-        this.changeContent(content);
-        this.changeCategory(changedCategory);
+        this.title = (title == null || title.isBlank()) ? this.title : title;
+        this.content = (content == null || content.isBlank()) ? this.content : content;
+        this.category = (changedCategory == null) ? this.category : changedCategory;
     }
 
     /**

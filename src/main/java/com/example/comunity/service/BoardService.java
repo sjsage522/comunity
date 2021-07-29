@@ -22,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.example.comunity.domain.CategoryName.*;
+import static com.example.comunity.domain.CategoryName.upperValueOf;
 
 @Service
 @RequiredArgsConstructor
@@ -67,7 +67,7 @@ public class BoardService {
             final String categoryName,
             final int page) {
         /* 10개씩 페이징 */
-        Page<Board> boards = boardRepository.findAllByCategoryNameWithPaging(valueOf(categoryName), PageRequest.of(page, 10));
+        Page<Board> boards = boardRepository.findAllByCategoryNameWithPaging(upperValueOf(categoryName), PageRequest.of(page, 10));
         return boards.stream().collect(Collectors.toList());
     }
 
@@ -75,7 +75,7 @@ public class BoardService {
     public Board findByIdWithCategory(
             final Long boardId,
             final String categoryName) {
-        return boardRepository.findByBoardIdAndCategoryName(boardId, valueOf(categoryName))
+        return boardRepository.findByBoardIdAndCategoryName(boardId, upperValueOf(categoryName))
                 .orElseThrow(NoMatchBoardInfoException::new);
     }
 
@@ -123,12 +123,12 @@ public class BoardService {
     }
 
     private Category findCategoryByName(final String categoryName) {
-        return categoryRepository.findByCategoryName(valueOf(categoryName))
+        return categoryRepository.findByCategoryName(upperValueOf(categoryName))
                 .orElseThrow(NoMatchCategoryInfoException::new);
     }
 
     private Board findBoardByIdAndCategoryName(Long boardId, String categoryName) {
-        return boardRepository.findByBoardIdAndCategoryName(boardId, valueOf(categoryName))
+        return boardRepository.findByBoardIdAndCategoryName(boardId, upperValueOf(categoryName))
                 .orElseThrow(NoMatchBoardInfoException::new);
     }
 
