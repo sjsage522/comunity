@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class CommentTest {
 
     @Test
-    @DisplayName("답글 객체 생성 성공 테스트")
+    @DisplayName("[성공 테스트] 답글 객체 생성")
     void create_comment_succeed_test() {
         User user = User.of("testId", "tester", "testNickname", "1234", "tester@gmail.com");
         Category category = Category.from("game");
@@ -26,7 +26,7 @@ class CommentTest {
     }
 
     @Test
-    @DisplayName("답글 객체 생성 실패 테스트")
+    @DisplayName("[실패 테스트] 답글 객체 생성")
     void create_comment_failed_test() {
         User user = User.of("testId", "tester", "testNickname", "1234", "tester@gmail.com");
         Category category = Category.from("game");

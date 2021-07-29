@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("레포지토리 테스트 (board)")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ActiveProfiles("test")
+@ActiveProfiles("test-h2")
 @TestMethodOrder(MethodOrderer.MethodName.class)
 @DirtiesContext
 class BoardRepositoryTest {
@@ -48,9 +48,9 @@ class BoardRepositoryTest {
     }
 
     @Test
-    @DisplayName("게시글 아이디와 카테고리 이름으로 게시글 단건 조회 성공 테스트")
+    @DisplayName("[성공 테스트] 게시글 아이디와 카테고리 이름으로 게시글 단건 조회")
     void _01_findByBoardIdAndCategoryName_succeed_test() {
-        Board findBoard = boardRepository.findByBoardIdAndCategoryName(6L, CategoryName.game)
+        Board findBoard = boardRepository.findByBoardIdAndCategoryName(6L, CategoryName.GAME)
                 .orElseThrow(NoMatchBoardInfoException::new);
 
 
@@ -59,7 +59,7 @@ class BoardRepositoryTest {
     }
 
     @Test
-    @DisplayName("게시글 아이디 리스트로 게시글들 삭제 성공 테스트")
+    @DisplayName("[성공 테스트] 게시글 아이디 리스트로 게시글들 삭제")
     void _02_deleteWithIds_succeed_test() {
         System.out.println(boardRepository.findAll());
         boardRepository.deleteWithIds(List.of(7L, 8L, 9L));
@@ -69,9 +69,9 @@ class BoardRepositoryTest {
     }
 
     @Test
-    @DisplayName("카테고리 이름으로 전체 게시글 페이징 조회 성공 테스트")
+    @DisplayName("[성공 테스트] 카테고리 이름으로 전체 게시글 페이징 조회")
     void _03findAllByCategoryNameWithPaging_succeed_test() {
-        List<Board> boardList = boardRepository.findAllByCategoryNameWithPaging(CategoryName.coding, PageRequest.of(0, 2))
+        List<Board> boardList = boardRepository.findAllByCategoryNameWithPaging(CategoryName.CODING, PageRequest.of(0, 2))
                 .stream()
                 .collect(Collectors.toList());
 
@@ -79,7 +79,7 @@ class BoardRepositoryTest {
     }
 
     @Test
-    @DisplayName("전체 게시글 페이징 조회 성공 테스트")
+    @DisplayName("[성공 테스트] 전체 게시글 페이징 조회")
     void _04_findAllWithPaging_succeed_test() {
         List<Board> onePageList = boardRepository.findAllWithPaging(PageRequest.of(0, 5))
                 .stream()
@@ -94,7 +94,7 @@ class BoardRepositoryTest {
     }
 
     @Test
-    @DisplayName("사용자 아이디로 모든 게시글 조회 성공 테스트")
+    @DisplayName("[성공 테스트] 사용자 아이디로 모든 게시글 조회")
     void _05_findAllByUser_UserId_succeed_test() {
         List<Board> boardList = boardRepository.findAllByUser_UserId("testId");
 

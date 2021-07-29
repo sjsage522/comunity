@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserTest {
 
     @Test
-    @DisplayName("사용자 객체 생성 성공 테스트")
+    @DisplayName("[성공 테스트] 사용자 객체 생성")
     void create_user_succeed_test() {
         User user = User.of("testId", "tester", "testNickname", "1234", "tester@gmail.com");
 
@@ -20,7 +20,7 @@ class UserTest {
     }
 
     @Test
-    @DisplayName("사용자 객체 생성 실패 테스트")
+    @DisplayName("[실패 테스트] 사용자 객체 생성")
     void create_user_failed_test() {
         assertAll(
                 () -> assertThrows(IllegalArgumentException.class, () -> User.of(null, "name", "nickname", "password", "email")),

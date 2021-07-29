@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("레포지토리 테스트 (comment)")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ActiveProfiles("test")
+@ActiveProfiles("test-pg")
 @TestMethodOrder(MethodOrderer.MethodName.class)
 @DirtiesContext
 class CommentRepositoryTest {
@@ -63,7 +63,7 @@ class CommentRepositoryTest {
     }
 
     @Test
-    @DisplayName("게시글 아이디로 모든 답글 조회 성공 테스트")
+    @DisplayName("[성공 테스트] 게시글 아이디로 모든 답글 조회")
     void _01_findAllByBoardIdIfParentIsNullWithPaging_succeed_test() {
         final List<Comment> all = commentRepository.findAll();
         final Comment comment = all.get(0);
@@ -75,7 +75,7 @@ class CommentRepositoryTest {
     }
 
     @Test
-    @DisplayName("게시글 아이디로 부모답글이 없는 모든 답글 페이징 조회 성공 테스트")
+    @DisplayName("[성공 테스트] 게시글 아이디로 부모답글이 없는 모든 답글 페이징 조회")
     void _02_findAllByBoardIdIfParentIsNullWithPaging_succeed_test() {
         List<Comment> parentCommentList = commentRepository.findAllByBoardIdIfParentIsNullWithPaging(2L, PageRequest.of(0, 2))
                 .stream()
@@ -92,8 +92,14 @@ class CommentRepositoryTest {
         assertThat(comment2Children.size()).isEqualTo(1);
     }
 
+    /**
+     * id 리스트를 매개변수로 넘겨서 in 절로 삭제할 경우 (delete from comment where id in (...))
+     * h2 는 참조 무결성 제약조건 에러 발생
+     * pg 는 DML 적용됨
+     * 따라서, 해당 테스트 클래스의 프로파일을 test-pg 로 활성화
+     */
     @Test
-    @DisplayName("답글 아이디 리스트로 게시글들 삭제 성공 테스트")
+    @DisplayName("[성공 테스트] 답글 아이디 리스트로 게시글들 삭제")
     void _03_deleteWithIds_succeed_test() {
         System.out.println(commentRepository.findAll());
 

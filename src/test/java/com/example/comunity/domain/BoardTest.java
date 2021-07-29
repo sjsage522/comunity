@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class BoardTest {
 
     @Test
-    @DisplayName("board 객체 생성 성공 테스트")
+    @DisplayName("[성공 테스트] board 객체 생성")
     void create_board_succeed_test() {
         User user = User.of("testId", "tester", "testNick", "1234", "tester@gmail.com");
         Category category = Category.from("game");
@@ -18,14 +18,14 @@ class BoardTest {
         Board board = Board.of(user, category, "title", "content");
 
         assertThat(board.getUser().getUserId()).isEqualTo("testId");
-        assertThat(board.getCategory().getCategoryName().getEn()).isEqualTo("game");
+        assertThat(board.getCategory().getCategoryName().getEn()).isEqualTo("GAME");
         assertThat(board.getTitle()).isEqualTo("title");
         assertThat(board.getContent()).isEqualTo("content");
     }
 
 
     @Test
-    @DisplayName("board 객체 생성 실패 테스트")
+    @DisplayName("[실패 테스트] board 객체 생성")
     void create_board_failed_test() {
         User user = User.of("testId", "tester", "testNick", "1234", "tester@gmail.com");
         Category category = Category.from("game");
