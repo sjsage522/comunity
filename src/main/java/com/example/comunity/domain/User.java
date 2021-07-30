@@ -65,16 +65,10 @@ public class User extends BaseTimeEntity {
     /*                */
 
     /* 변경을 위한 추가 메서드 (사용자 정보 수정) */
-    public void changeName(final String name) {
-        this.name = name;
-    }
-
-    public void changeNickname(final String nickName) {
-        this.nickName = nickName;
-    }
-
-    public void changePassword(final String password) {
-        this.password = passwordEncoding(password);
+    public void updateUserInfo(final String name, final String nickName, final String password) {
+        this.name = (name == null || name.isBlank() ? this.name : name);
+        this.nickName = (nickName == null || nickName.isBlank() ? this.nickName : nickName);
+        this.password = (password == null || password.isBlank() ? this.password : passwordEncoding(password));
     }
     /*                                 */
 
@@ -92,6 +86,10 @@ public class User extends BaseTimeEntity {
                 .forEach(value -> {
                     throw new IllegalArgumentException("유요하지 않은 매개변수입니다.");
                 });
+    }
+
+    public String getPassword() {
+        return "[PROTECTED]";
     }
 
     @Override
