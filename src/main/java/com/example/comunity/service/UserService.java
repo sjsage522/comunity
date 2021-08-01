@@ -60,9 +60,11 @@ public class UserService {
         compareUser(loginUser, findUser, "다른 사용자의 정보를 수정할 수 없습니다.");
 
         /* dirty check */
-        findUser.changeName(userUpdateRequest.getName());
-        findUser.changeNickname(userUpdateRequest.getNickName());
-        findUser.changePassword(userUpdateRequest.getPassword());
+        findUser.updateUserInfo(
+                userUpdateRequest.getName(),
+                userUpdateRequest.getNickName(),
+                userUpdateRequest.getPassword()
+        );
         /* 트랜잭션 커밋시점에 1차캐시의 스냅샷과 영속 상태의 entity 정보와 비교 */
         /* 변경된 부분을 update 쿼리를 통해(영속성 컨텍스트 SQL 저장소) db 데이터를 수정 */
 
