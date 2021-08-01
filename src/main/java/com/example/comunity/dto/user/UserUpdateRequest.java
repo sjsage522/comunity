@@ -13,6 +13,8 @@ public class UserUpdateRequest {
 
     private String password;
 
+    protected UserUpdateRequest() {}
+
     /* 빌더를 직접 구현해보자 */
     public static class Builder {
         /* 선택 매개변수 */

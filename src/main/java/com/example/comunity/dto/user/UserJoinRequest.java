@@ -24,6 +24,8 @@ public class UserJoinRequest {
     @NotBlank(message = "이메일은 필수입니다.")
     private String email;
 
+    protected UserJoinRequest() {}
+
     public static class Builder {
         /* 필수 매개 변수 */
         private String userId;

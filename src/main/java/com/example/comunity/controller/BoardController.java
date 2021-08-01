@@ -8,6 +8,7 @@ import com.example.comunity.dto.board.BoardUpdateRequest;
 import com.example.comunity.dto.board.BoardUploadRequest;
 import com.example.comunity.service.BoardService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +25,7 @@ import static com.example.comunity.dto.api.ApiResult.succeed;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@Slf4j
 public class BoardController {
 
     private final BoardService boardService;
@@ -37,9 +39,10 @@ public class BoardController {
      */
     @PostMapping("/boards")
     public ResponseEntity<ApiResult<BoardResponse>> uploadBoard(
-            final @Valid @RequestPart BoardUploadRequest boardUploadRequest,
+            final @Valid @ModelAttribute BoardUploadRequest boardUploadRequest,
             final @RequestPart(value = "files", required = false) MultipartFile[] files,
             final HttpSession session) {
+        log.info("request = {}", boardUploadRequest);
 
         final User loginUser = getCurrentUser(session);
         final Board newBoard = boardService.upload(boardUploadRequest, loginUser, files);

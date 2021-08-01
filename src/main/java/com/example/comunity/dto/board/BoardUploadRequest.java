@@ -1,11 +1,12 @@
 package com.example.comunity.dto.board;
 
-import lombok.Getter;
+import lombok.Setter;
 import org.springframework.util.Assert;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Arrays;
 
+@Setter
 public class BoardUploadRequest {
 
     @NotBlank(message = "제목은 필수입니다.")
@@ -16,6 +17,8 @@ public class BoardUploadRequest {
 
     @NotBlank(message = "카테고리를 설정해주세요.")
     private String categoryName;
+
+    protected BoardUploadRequest() {}
 
     private BoardUploadRequest(String title, String content, String categoryName) {
         Assert.noNullElements(Arrays.asList(title, content, categoryName), "arguments must not be null.");
