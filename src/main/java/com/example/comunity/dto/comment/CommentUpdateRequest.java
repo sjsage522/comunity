@@ -11,6 +11,8 @@ public class CommentUpdateRequest {
     @NotBlank(message = "수정할 답글 내용을 입력해주세요.")
     private String content;
 
+    protected CommentUpdateRequest() {}
+
     private CommentUpdateRequest(String content) {
         this.content = content;
     }

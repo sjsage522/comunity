@@ -57,7 +57,7 @@ public class CommentController {
      * @param session             서버 세션
      */
     @PostMapping("/comments/boards/{boardId}")
-    public ResponseEntity<ApiResult<CommentResponse>> applyComment(
+    public ResponseEntity<ApiResult<CommentResponse>> apply(
             final @Valid @RequestBody CommentApplyRequest commentApplyRequest,
             final @PathVariable Long boardId,
             final HttpSession session) {
@@ -76,7 +76,7 @@ public class CommentController {
      * @param session   서버 세션
      */
     @DeleteMapping("/comments/{commentId}")
-    public ResponseEntity<ApiResult<String>> deleteComment(
+    public ResponseEntity<ApiResult<String>> delete(
             final @PathVariable Long commentId,
             final HttpSession session) {
         final User loginUser = (User) session.getAttribute("authInfo");

@@ -38,7 +38,7 @@ public class BoardController {
      * @param session            서버 세션
      */
     @PostMapping("/boards")
-    public ResponseEntity<ApiResult<BoardResponse>> uploadBoard(
+    public ResponseEntity<ApiResult<BoardResponse>> upload(
             final @Valid @ModelAttribute BoardUploadRequest boardUploadRequest,
             final @RequestPart(value = "files", required = false) MultipartFile[] files,
             final HttpSession session) {
@@ -60,7 +60,7 @@ public class BoardController {
      * @param session      서버 세션
      */
     @DeleteMapping("/boards/{boardId}/category/{categoryName}")
-    public ResponseEntity<ApiResult<String>> deleteBoard(
+    public ResponseEntity<ApiResult<String>> delete(
             final @PathVariable Long boardId,
             final @PathVariable String categoryName,
             final HttpSession session) {
@@ -81,7 +81,7 @@ public class BoardController {
      * @param session            서버 세션
      */
     @PatchMapping("/boards/{boardId}/category/{categoryName}")
-    public ResponseEntity<ApiResult<BoardResponse>> updateBoard(
+    public ResponseEntity<ApiResult<BoardResponse>> update(
             final @PathVariable Long boardId,
             final @PathVariable String categoryName,
             final @Valid @RequestBody BoardUpdateRequest boardUpdateRequest,
