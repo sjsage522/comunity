@@ -141,7 +141,7 @@ public class BoardService {
     }
 
     private void compareUser(User loginUser, User findUser, String errorMessage) {
-        if (!findUser.getUserId().equals(loginUser.getUserId()))
+        if (!findUser.equals(loginUser))
             throw new NoMatchUserInfoException(errorMessage);
     }
 

@@ -98,7 +98,7 @@ public class UserService {
     }
 
     private void compareUser(User loginUser, User findUser, String errorMessage) {
-        if (!loginUser.getUserId().equals(findUser.getUserId()))
+        if (!findUser.equals(loginUser))
             throw new NoMatchUserInfoException(errorMessage);
     }
 

@@ -77,7 +77,7 @@ public class CommentService {
     private void compareUser(
             final User loginUser,
             final Comment findComment) {
-        if (!findComment.getUser().getUserId().equals(loginUser.getUserId()))
+        if (!findComment.getUser().equals(loginUser))
             throw new NoMatchUserInfoException("다른 사용자의 답글을 삭제할 수 없습니다.");
     }
 
