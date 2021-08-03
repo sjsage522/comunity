@@ -94,7 +94,7 @@ public class UserController {
      */
     @GetMapping("/users")
     public ResponseEntity<ApiResult<List<UserResponse>>> findAll() {
-        List<UserResponse> userResponseList = userService
+        final List<UserResponse> userResponseList = userService
                 .findAll()
                 .stream()
                 .map(this::getUserResponse)

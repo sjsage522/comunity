@@ -8,7 +8,7 @@ public class NoMatchUserInfoException extends BusinessException {
         super(ErrorCode.NOMATCH_USER_INFO);
     }
 
-    public NoMatchUserInfoException(String message) {
+    public NoMatchUserInfoException(final String message) {
         super(message, ErrorCode.NOMATCH_USER_INFO);
     }
 }

@@ -23,17 +23,17 @@ public class UserUpdateRequest {
         private String password;
         /*           */
 
-        public Builder name(String name) {
+        public Builder name(final String name) {
             this.name = name;
             return this;
         }
 
-        public Builder nickName(String nickName) {
+        public Builder nickName(final String nickName) {
             this.nickName = nickName;
             return this;
         }
 
-        public Builder password(String password) {
+        public Builder password(final String password) {
             this.password = password;
             return this;
         }
@@ -43,7 +43,7 @@ public class UserUpdateRequest {
         }
     }
 
-    private UserUpdateRequest(Builder builder) {
+    private UserUpdateRequest(final Builder builder) {
         name = builder.name;
         nickName = builder.nickName;
         password = builder.password;

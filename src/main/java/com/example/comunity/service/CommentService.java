@@ -32,9 +32,9 @@ public class CommentService {
             final Long boardId,
             final CommentApplyRequest commentApplyRequest) {
         // 존재하는 게시글에만 답글을 달 수 있음
-        Board targetBoard = findBoardById(boardId);
+        final Board targetBoard = findBoardById(boardId);
 
-        Comment newComment = Comment.of(loginUser, targetBoard, commentApplyRequest.getContent());
+        final Comment newComment = Comment.of(loginUser, targetBoard, commentApplyRequest.getContent());
 
         // 대댓글 작성 부분
         applyToParent(newComment, commentApplyRequest.getParentId());
@@ -46,7 +46,7 @@ public class CommentService {
     public void delete(
             final User loginUser,
             final Long commentId) {
-        Comment deleteComment = findCommentById(commentId);
+        final Comment deleteComment = findCommentById(commentId);
         compareUser(loginUser, deleteComment);
 
         commentRepository.delete(deleteComment);
@@ -57,7 +57,7 @@ public class CommentService {
             final User loginUser,
             final Long commentId,
             final CommentUpdateRequest commentUpdateRequest) {
-        Comment updateComment = findCommentById(commentId);
+        final Comment updateComment = findCommentById(commentId);
         compareUser(loginUser, updateComment);
 
         updateComment.changeContent(commentUpdateRequest.getContent());
@@ -95,7 +95,7 @@ public class CommentService {
             final Comment comment,
             final Long parentId) {
         if (parentId != null) {
-            Comment parentComment = findCommentById(parentId);
+            final Comment parentComment = findCommentById(parentId);
             parentComment.addChildComment(comment);
         }
     }

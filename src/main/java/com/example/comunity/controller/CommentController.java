@@ -39,7 +39,7 @@ public class CommentController {
             final @PathVariable Long boardId,
             final @RequestParam @Min(0) int page) {
 
-        List<CommentResponse> commentResponseList = commentService
+        final List<CommentResponse> commentResponseList = commentService
                 .findAll(boardId, page)
                 .stream()
                 .map(this::getCommentResponseDto)
@@ -108,7 +108,7 @@ public class CommentController {
     /**
      * 계층형 댓글로 나타내기 위한 로직
      */
-    private CommentResponse getCommentResponseDto(Comment comment) {
+    private CommentResponse getCommentResponseDto(final Comment comment) {
         final CommentResponse commentResponse = new CommentResponse(comment);
 
         final Comment parent = comment.getParent();

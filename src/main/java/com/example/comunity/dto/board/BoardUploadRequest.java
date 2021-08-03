@@ -20,14 +20,14 @@ public class BoardUploadRequest {
 
     protected BoardUploadRequest() {}
 
-    private BoardUploadRequest(String title, String content, String categoryName) {
+    private BoardUploadRequest(final String title, final String content, final String categoryName) {
         Assert.noNullElements(Arrays.asList(title, content, categoryName), "arguments must not be null.");
         this.title = title;
         this.content = content;
         this.categoryName = categoryName.toUpperCase();
     }
 
-    public static BoardUploadRequest of(String title, String content, String categoryName) {
+    public static BoardUploadRequest of(final String title, final String content, final String categoryName) {
         return new BoardUploadRequest(title, content, categoryName);
     }
 

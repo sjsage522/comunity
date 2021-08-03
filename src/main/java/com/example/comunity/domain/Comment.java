@@ -78,11 +78,11 @@ public class Comment extends BaseTimeEntity {
     }
 
     /*  */
-    private boolean isValidObjects(Object... objects) {
+    private boolean isValidObjects(final Object... objects) {
         return Arrays.stream(objects).noneMatch(Objects::isNull);
     }
 
-    private boolean isValidStrings(String... strings) {
+    private boolean isValidStrings(final String... strings) {
         return Arrays.stream(strings).noneMatch(string -> string == null || string.isBlank());
     }
     /*  */

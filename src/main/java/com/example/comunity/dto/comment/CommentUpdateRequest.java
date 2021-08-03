@@ -13,11 +13,11 @@ public class CommentUpdateRequest {
 
     protected CommentUpdateRequest() {}
 
-    private CommentUpdateRequest(String content) {
+    private CommentUpdateRequest(final String content) {
         this.content = content;
     }
 
-    public static CommentUpdateRequest from(String content) {
+    public static CommentUpdateRequest from(final String content) {
         Assert.notNull(content, "content must be not null.");
         return new CommentUpdateRequest(content);
     }

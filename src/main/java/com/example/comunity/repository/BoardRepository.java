@@ -49,11 +49,11 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             " where b.id = :boardId" +
             " and c.categoryName = :categoryName")
     @EntityGraph(attributePaths = {"user"})
-    Optional<Board> findByBoardIdAndCategoryName(Long boardId, CategoryName categoryName);
+    Optional<Board> findByBoardIdAndCategoryName(final Long boardId, final CategoryName categoryName);
 
     /**
      * 간단한 fetch join 의 경우 @EntityGraph 애노테이션 활용
      */
     @EntityGraph(attributePaths = {"user"})
-    List<Board> findAllByUser_UserId(String userId);
+    List<Board> findAllByUser_UserId(final String userId);
 }

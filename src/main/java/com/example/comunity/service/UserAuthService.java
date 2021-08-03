@@ -19,6 +19,7 @@ public class UserAuthService {
     public User authenticate(
             final String userId,
             final String password) {
+
         return findByUserId(userId)
                 .map(user -> {
                     user.login(password);
@@ -28,7 +29,7 @@ public class UserAuthService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<User> findByUserId(String userId) {
+    public Optional<User> findByUserId(final String userId) {
         return userRepository.findByUserId(userId);
     }
 }

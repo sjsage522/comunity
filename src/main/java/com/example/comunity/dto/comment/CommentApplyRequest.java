@@ -13,7 +13,7 @@ public class CommentApplyRequest {
     @NotBlank(message = "답글 내용을 입력해주세요.")
     private String content;
 
-    private CommentApplyRequest(Long parentId, String content) {
+    private CommentApplyRequest(final Long parentId, final String content) {
         if (parentId != null && parentId < 0)
             throw new IllegalArgumentException("comment id must not be less than zero");
 
@@ -21,12 +21,12 @@ public class CommentApplyRequest {
         this.content = content;
     }
 
-    public static CommentApplyRequest of(Long parentId, String content) {
+    public static CommentApplyRequest of(final Long parentId, final String content) {
         Assert.notNull(content, "content must be not null.");
         return new CommentApplyRequest(parentId, content);
     }
 
-    public static CommentApplyRequest from(String content) {
+    public static CommentApplyRequest from(final String content) {
         return new CommentApplyRequest(null, content);
     }
 }

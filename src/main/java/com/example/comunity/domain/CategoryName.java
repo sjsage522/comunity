@@ -11,12 +11,12 @@ public enum CategoryName {
     private String en;
     private String kr;
 
-    CategoryName(String en, String kr) {
+    CategoryName(final String en, final String kr) {
         this.en = en;
         this.kr = kr;
     }
 
-    public static CategoryName upperValueOf(String name) {
+    public static CategoryName upperValueOf(final String name) {
         return CategoryName.valueOf(name.toUpperCase());
     }
 }

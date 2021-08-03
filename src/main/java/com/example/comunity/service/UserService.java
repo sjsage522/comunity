@@ -45,7 +45,7 @@ public class UserService {
                     else throw new DuplicateUserNickNameException();
                 });
 
-        User newUser = User.from(userJoinRequest);
+        final User newUser = User.from(userJoinRequest);
         return userRepository.save(newUser);
     }
 
@@ -55,7 +55,7 @@ public class UserService {
             final UserUpdateRequest userUpdateRequest,
             final User loginUser) {
         /* 영속상태의 entity */
-        User findUser = findById(userId);
+        final User findUser = findById(userId);
 
         compareUser(loginUser, findUser, "다른 사용자의 정보를 수정할 수 없습니다.");
 
@@ -78,7 +78,7 @@ public class UserService {
     public void delete(
             final String userId,
             final User loginUser) {
-        User findUser = findById(userId);
+        final User findUser = findById(userId);
         compareUser(loginUser, findUser, "다른 사용자의 정보를 삭제할 수 없습니다.");
 
         deleteBoards(userId);
@@ -97,13 +97,13 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    private void compareUser(User loginUser, User findUser, String errorMessage) {
+    private void compareUser(final User loginUser, final User findUser, final String errorMessage) {
         if (!findUser.equals(loginUser))
             throw new NoMatchUserInfoException(errorMessage);
     }
 
-    private void deleteBoards(String userId) {
-        List<Long> boardIds = boardRepository.findAllByUser_UserId(userId)
+    private void deleteBoards(final String userId) {
+        final List<Long> boardIds = boardRepository.findAllByUser_UserId(userId)
                 .stream()
                 .map(Board::getId)
                 .collect(Collectors.toList());
@@ -116,16 +116,16 @@ public class UserService {
         boardRepository.deleteWithIds(boardIds);
     }
 
-    private void deleteComments(Long boardId) {
-        List<Long> commentIds = commentRepository.findAllByBoardId(boardId)
+    private void deleteComments(final Long boardId) {
+        final List<Long> commentIds = commentRepository.findAllByBoardId(boardId)
                 .stream()
                 .map(Comment::getId)
                 .collect(Collectors.toList());
         commentRepository.deleteWithIds(commentIds);
     }
 
-    private void deleteFiles(Long boardId) {
-        List<Long> fileIds = fileRepository.findAllByBoardId(boardId)
+    private void deleteFiles(final Long boardId) {
+        final List<Long> fileIds = fileRepository.findAllByBoardId(boardId)
                 .stream()
                 .map(UploadFile::getId)
                 .collect(Collectors.toList());

@@ -11,9 +11,9 @@ import java.util.List;
 public interface FileRepository extends JpaRepository<UploadFile, Long> {
 
     @EntityGraph(attributePaths = "board")
-    List<UploadFile> findAllByBoardId(Long boarId);
+    List<UploadFile> findAllByBoardId(final Long boarId);
 
     @Modifying
     @Query("delete from UploadFile f where f.id in :ids")
-    void deleteWithIds(List<Long> ids);
+    void deleteWithIds(final List<Long> ids);
 }

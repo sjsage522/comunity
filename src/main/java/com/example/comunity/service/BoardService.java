@@ -38,7 +38,7 @@ public class BoardService {
     public List<Board> findAll(
             final int page) {
         /* 10개씩 페이징 */
-        Page<Board> boards = boardRepository.findAllWithPaging(PageRequest.of(page, 10));
+        final Page<Board> boards = boardRepository.findAllWithPaging(PageRequest.of(page, 10));
         return boards.stream().collect(Collectors.toList());
     }
 
@@ -47,13 +47,13 @@ public class BoardService {
             final BoardUploadRequest boardUploadRequest,
             final User loginUser,
             final MultipartFile[] files) {
-        Board newBoard = getBoard(boardUploadRequest, loginUser);
+        final Board newBoard = getBoard(boardUploadRequest, loginUser);
 
         // 새로운 게시글 생성
-        Board uploadedBoard = boardRepository.save(newBoard);
+        final Board uploadedBoard = boardRepository.save(newBoard);
 
         // files 가 null 이 아니라면, 파일을 디스크에 저장
-        List<UploadFile> fileList = fileUtils.uploadFiles(files, uploadedBoard);
+        final List<UploadFile> fileList = fileUtils.uploadFiles(files, uploadedBoard);
         if (!CollectionUtils.isEmpty(fileList)) {
             fileRepository.saveAll(fileList);
             uploadedBoard.uploadFiles(fileList);
@@ -67,7 +67,7 @@ public class BoardService {
             final String categoryName,
             final int page) {
         /* 10개씩 페이징 */
-        Page<Board> boards = boardRepository.findAllByCategoryNameWithPaging(upperValueOf(categoryName), PageRequest.of(page, 10));
+        final Page<Board> boards = boardRepository.findAllByCategoryNameWithPaging(upperValueOf(categoryName), PageRequest.of(page, 10));
         return boards.stream().collect(Collectors.toList());
     }
 
@@ -91,8 +91,8 @@ public class BoardService {
             final Long boardId,
             final String categoryName,
             final User loginUser) {
-        Board deleteBoard = findBoardByIdAndCategoryName(boardId, categoryName);
-        User findUser = deleteBoard.getUser();
+        final Board deleteBoard = findBoardByIdAndCategoryName(boardId, categoryName);
+        final User findUser = deleteBoard.getUser();
 
         compareUser(loginUser, findUser, "다른 사용자의 게시글을 삭제할 수 없습니다.");
 
@@ -108,15 +108,15 @@ public class BoardService {
             final BoardUpdateRequest boardUpdateRequest,
             final User loginUser) {
         // 수정하고자 하는 게시글을 찾는다.
-        Board findBoard = findBoardByIdAndCategoryName(boardId, categoryName);
+        final Board findBoard = findBoardByIdAndCategoryName(boardId, categoryName);
 
         // 다른 사용자는 게시글을 수정할 수 없도록 처리
         // loginUser -> 세션에서 꺼내온 사용자 정보
-        User findUser = findBoard.getUser();
+        final User findUser = findBoard.getUser();
         compareUser(loginUser, findUser, "다른 사용자의 게시글을 수정할 수 없습니다.");
 
         // 영속성 컨텍스트의 dirty check
-        Category changedCategory = findCategoryByName(boardUpdateRequest.getCategoryName());
+        final Category changedCategory = findCategoryByName(boardUpdateRequest.getCategoryName());
         findBoard.changeBoard(boardUpdateRequest.getTitle(), boardUpdateRequest.getContent(), changedCategory);
 
         return findBoard;
@@ -146,7 +146,7 @@ public class BoardService {
     }
 
     private Board getBoard(BoardUploadRequest boardUploadRequest, User loginUser) {
-        Category findCategory = findCategoryByName(boardUploadRequest.getCategoryName());
+        final Category findCategory = findCategoryByName(boardUploadRequest.getCategoryName());
         return Board.of(
                 loginUser,
                 findCategory,

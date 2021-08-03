@@ -35,27 +35,27 @@ public class UserJoinRequest {
         private String email;
         /*            */
 
-        public Builder userId(String userId) {
+        public Builder userId(final String userId) {
             this.userId = userId;
             return this;
         }
 
-        public Builder name(String name) {
+        public Builder name(final String name) {
             this.name = name;
             return this;
         }
 
-        public Builder nickName(String nickName) {
+        public Builder nickName(final String nickName) {
             this.nickName = nickName;
             return this;
         }
 
-        public Builder password(String password) {
+        public Builder password(final String password) {
             this.password = password;
             return this;
         }
 
-        public Builder email(String email) {
+        public Builder email(final String email) {
             this.email = email;
             return this;
         }
@@ -65,7 +65,7 @@ public class UserJoinRequest {
         }
     }
 
-    private UserJoinRequest(Builder builder) {
+    private UserJoinRequest(final Builder builder) {
         checkValid(builder.userId, builder.name, builder.nickName, builder.password, builder.email);
         this.userId = builder.userId;
         this.name = builder.name;
@@ -87,7 +87,7 @@ public class UserJoinRequest {
 //        return new UserJoinRequest(userId, name, nickName, password, email);
 //    }
 
-    private void checkValid(String... args) {
+    private void checkValid(final String... args) {
         Arrays.stream(args)
                 .filter(Objects::isNull)
                 .forEach(arg -> {

@@ -19,9 +19,9 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @EntityGraph(attributePaths = {"user"})
     Page<Comment> findAllByBoardIdIfParentIsNullWithPaging(final Long boardId, final Pageable pageable);
 
-    List<Comment> findAllByBoardId(Long boardId);
+    List<Comment> findAllByBoardId(final Long boardId);
 
     @Modifying
     @Query("delete from Comment c where c.id in :ids")
-    void deleteWithIds(List<Long> ids);
+    void deleteWithIds(final List<Long> ids);
 }

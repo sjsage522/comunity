@@ -56,7 +56,7 @@ public class User extends BaseTimeEntity {
     }
 
     // 패스워드 인코딩
-    private String passwordEncoding(String password) {
+    private String passwordEncoding(final String password) {
         return Base64.encodeBase64String(DigestUtils.sha512(password));
     }
 
@@ -79,7 +79,7 @@ public class User extends BaseTimeEntity {
     /*                                 */
 
     // 사용자 로그인 내부 로직
-    public void login(String password) {
+    public void login(final String password) {
         if (password.isBlank() || !passwordEncoding(password).equals(this.password)) {
             throw new NoMatchUserInfoException("비밀번호가 일치하지 않습니다.");
         }
@@ -90,7 +90,7 @@ public class User extends BaseTimeEntity {
     }
 
     // 생성자 매개변수 유효성 검사 메서드
-    private void validationCheck(String... values) {
+    private void validationCheck(final String... values) {
         Arrays.stream(values)
                 .filter(value -> value == null || value.isBlank())
                 .forEach(value -> {
@@ -111,7 +111,7 @@ public class User extends BaseTimeEntity {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (!(o instanceof User)) return false;
         User user = (User) o;

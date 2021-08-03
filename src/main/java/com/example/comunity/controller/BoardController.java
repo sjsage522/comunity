@@ -106,7 +106,7 @@ public class BoardController {
             final @PathVariable String categoryName,
             final @RequestParam @Min(0) int page) {
 
-        List<BoardResponse> boardResponseList = boardService
+        final List<BoardResponse> boardResponseList = boardService
                 .findAllWithCategory(categoryName, page)
                 .stream()
                 .map(this::getBoardResponse)
@@ -126,7 +126,7 @@ public class BoardController {
     public ResponseEntity<ApiResult<List<BoardResponse>>> findAll(
             final @RequestParam @Min(0) int page) {
 
-        List<BoardResponse> boardResponseList = boardService
+        final List<BoardResponse> boardResponseList = boardService
                 .findAll(page)
                 .stream()
                 .map(this::getBoardResponse)
@@ -179,7 +179,7 @@ public class BoardController {
      * @param session server session
      * @return currentUser
      */
-    private User getCurrentUser(HttpSession session) {
+    private User getCurrentUser(final HttpSession session) {
         return (User) session.getAttribute("authInfo");
     }
 }

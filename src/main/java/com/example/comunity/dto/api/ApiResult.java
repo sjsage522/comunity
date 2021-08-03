@@ -13,16 +13,16 @@ public class ApiResult<T> {
     @JsonProperty("error")
     private final ErrorResponse errorResponse;
 
-    private ApiResult(T data, ErrorResponse errorResponse) {
+    private ApiResult(final T data, final ErrorResponse errorResponse) {
         this.data = data;
         this.errorResponse = errorResponse;
     }
 
-    public static <T> ApiResult<T> succeed(T data) {
+    public static <T> ApiResult<T> succeed(final T data) {
         return new ApiResult<>(data, null);
     }
 
-    public static <T> ApiResult<T> failed(ErrorResponse errorResponse) {
+    public static <T> ApiResult<T> failed(final ErrorResponse errorResponse) {
         return new ApiResult<>(null, errorResponse);
     }
 
