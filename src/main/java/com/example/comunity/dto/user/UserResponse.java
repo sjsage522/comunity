@@ -21,11 +21,15 @@ public class UserResponse {
     @JsonProperty("created_at")
     private LocalDateTime createdDate;
 
+    @JsonProperty("last_modified_at")
+    private LocalDateTime lastModifiedDate;
+
     public UserResponse(final User newUser) {
         this.userId = newUser.getUserId();
         this.nickName = newUser.getNickName();
         this.email = newUser.getEmail();
         this.name = newUser.getName();
         this.createdDate = newUser.getCreatedDate();
+        this.lastModifiedDate = newUser.getLastModifiedDate();
     }
 }
