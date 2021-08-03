@@ -10,6 +10,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import javax.persistence.*;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -30,14 +31,19 @@ public class User extends BaseTimeEntity {
     )
     private Long id;
 
-    @Column(unique = true)
+    @Column(name = "user_id", unique = true, nullable = false)
     private String userId;
 
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(unique = true)
+    @Column(name = "nickName", unique = true, nullable = false)
     private String nickName;
+
+    @Column(name = "password", nullable = false)
     private String password;
+
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
     private User(final String userId, final String name, final String nickName, final String password, final String email) {
@@ -79,6 +85,10 @@ public class User extends BaseTimeEntity {
         }
     }
 
+    public String getPassword() {
+        return "[PROTECTED]";
+    }
+
     // 생성자 매개변수 유효성 검사 메서드
     private void validationCheck(String... values) {
         Arrays.stream(values)
@@ -86,10 +96,6 @@ public class User extends BaseTimeEntity {
                 .forEach(value -> {
                     throw new IllegalArgumentException("유요하지 않은 매개변수입니다.");
                 });
-    }
-
-    public String getPassword() {
-        return "[PROTECTED]";
     }
 
     @Override
@@ -102,5 +108,18 @@ public class User extends BaseTimeEntity {
                 ", password='" + "[PROTECTED]" + '\'' +
                 ", email='" + email + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return getUserId().equals(user.getUserId()) && getPassword().equals(user.getPassword());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUserId(), getPassword());
     }
 }

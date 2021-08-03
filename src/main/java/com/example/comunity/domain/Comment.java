@@ -28,14 +28,15 @@ public class Comment extends BaseTimeEntity {
     )
     private Long id;
 
+    @Column(name = "content", nullable = false)
     private String content;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "board_id")
+    @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
     @ManyToOne(fetch = LAZY)
