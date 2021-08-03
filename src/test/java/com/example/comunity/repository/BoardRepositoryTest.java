@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("레포지토리 테스트 (board)")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ActiveProfiles("test-h2")
+@ActiveProfiles("test-pg")
 @TestMethodOrder(MethodOrderer.MethodName.class)
 @DirtiesContext
 class BoardRepositoryTest {
