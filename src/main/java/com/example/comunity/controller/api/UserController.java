@@ -1,8 +1,9 @@
-package com.example.comunity.controller;
+package com.example.comunity.controller.api;
 
 import com.example.comunity.domain.User;
 import com.example.comunity.dto.api.ApiResult;
 import com.example.comunity.dto.user.*;
+import com.example.comunity.security.Auth;
 import com.example.comunity.service.UserAuthService;
 import com.example.comunity.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -65,6 +66,7 @@ public class UserController {
      *
      * @param session 서버 세션
      */
+    @Auth
     @PostMapping("/logout")
     public ResponseEntity<ApiResult<String>> logout(
             final HttpSession session) {
@@ -80,6 +82,7 @@ public class UserController {
      *
      * @param userId 조회할 아이디
      */
+    @Auth
     @GetMapping("/users/{userId}")
     public ResponseEntity<ApiResult<UserResponse>> findById(
             final @PathVariable String userId) {
@@ -92,6 +95,8 @@ public class UserController {
     /**
      * 모든 사용자 조회
      */
+    //TODO 관리자 권한으로 빼기
+    @Auth
     @GetMapping("/users")
     public ResponseEntity<ApiResult<List<UserResponse>>> findAll() {
         final List<UserResponse> userResponseList = userService
@@ -111,6 +116,7 @@ public class UserController {
      * @param userUpdateRequest 사용자 정보 수정 dto
      * @param session           서버 세션
      */
+    @Auth
     @PatchMapping("/users/{userId}")
     public ResponseEntity<ApiResult<UserResponse>> update(
             final @PathVariable String userId,
@@ -129,6 +135,7 @@ public class UserController {
      * @param userId  사용자 아이디
      * @param session 서버 세션
      */
+    @Auth
     @DeleteMapping("/users/{userId}")
     public ResponseEntity<ApiResult<String>> delete(
             final @PathVariable String userId,

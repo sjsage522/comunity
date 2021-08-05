@@ -1,4 +1,4 @@
-package com.example.comunity.controller;
+package com.example.comunity.controller.api;
 
 import com.example.comunity.domain.UploadFile;
 import com.example.comunity.service.FileService;

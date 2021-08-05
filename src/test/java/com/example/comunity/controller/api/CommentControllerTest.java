@@ -1,4 +1,4 @@
-package com.example.comunity.controller;
+package com.example.comunity.controller.api;
 
 import com.example.comunity.domain.Board;
 import com.example.comunity.domain.Category;

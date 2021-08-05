@@ -31,6 +31,8 @@
     - [4.3.2 답글 페이지 조회]
     - [4.3.3 답글 수정]
     - [4.3.4 답글 삭제]
+  - [4.4 예외 사항]
+    - [4.4.1 사용자 권한]
 
 ***
 
@@ -852,4 +854,56 @@ API 응답에 대한 공통 포맷 정의
     ```
 
   - 부모 답글이 삭제 되었으므로, 자식 답글이 모두 삭제된다.
+
+<br/>
+
+## 4.4 예외 사항
+
+### 4.4.1 사용자 권한
+
+- AuthCheckInterceptor.java
+
+  - 권한 분리 적용
+
+- 조회를 제외한 요청들은 로그인 하지않으면 해당 요청을 처리하지 않음 (사용자 조회도 포함)
+
+- URI : GET /api/users/testId
+
+  - 로그인 하지 않았을경우
+
+- Response Body
+
+  - ```json
+    {
+        "data": null,
+        "error": {
+            "message": "로그인하지 않은 사용자입니다.",
+            "status": 400
+        }
+    }
+    ```
+
+
+
+- URI : POST /api/comments/boards/1
+
+- Request Body
+
+  - ```json
+    {
+        "content": "답글"
+    }
+    ```
+
+- Response Body
+
+  - ```json
+    {
+        "data": null,
+        "error": {
+            "message": "로그인하지 않은 사용자입니다.",
+            "status": 400
+        }
+    }
+    ```
 

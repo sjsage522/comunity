@@ -1,4 +1,4 @@
-package com.example.comunity.controller;
+package com.example.comunity.controller.api;
 
 import com.example.comunity.domain.Board;
 import com.example.comunity.domain.User;
@@ -6,6 +6,7 @@ import com.example.comunity.dto.api.ApiResult;
 import com.example.comunity.dto.board.BoardResponse;
 import com.example.comunity.dto.board.BoardUpdateRequest;
 import com.example.comunity.dto.board.BoardUploadRequest;
+import com.example.comunity.security.Auth;
 import com.example.comunity.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,7 @@ public class BoardController {
      * @param files              첨부파일
      * @param session            서버 세션
      */
+    @Auth
     @PostMapping("/boards")
     public ResponseEntity<ApiResult<BoardResponse>> upload(
             final @Valid @ModelAttribute BoardUploadRequest boardUploadRequest,
@@ -59,6 +61,7 @@ public class BoardController {
      * @param categoryName 게시글이 포함된 특정 카테고리 이름
      * @param session      서버 세션
      */
+    @Auth
     @DeleteMapping("/boards/{boardId}/category/{categoryName}")
     public ResponseEntity<ApiResult<String>> delete(
             final @PathVariable Long boardId,
@@ -80,6 +83,7 @@ public class BoardController {
      * @param boardUpdateRequest 게시글 변경 dto
      * @param session            서버 세션
      */
+    @Auth
     @PatchMapping("/boards/{boardId}/category/{categoryName}")
     public ResponseEntity<ApiResult<BoardResponse>> update(
             final @PathVariable Long boardId,

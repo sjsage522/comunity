@@ -17,6 +17,9 @@ public enum ErrorCode {
     INCORRECT_SERVLET_REQUEST(400, "잘못된 서블릿 요청입니다."),
     INCORRECT_HTTP_BODY_FORMAT(400, "잘못된 HTTP BODY 요청 형식입니다."),
     ILLEGAL_ARGUMENT(400, "잘못된 매개변수입니다."),
+    NOT_LOGIN_USER(400, "로그인하지 않은 사용자입니다."),
+
+    FORBIDDEN(403, "접근 권한이 없습니다."),
 
     HANDLER_NOT_FOUND(404, "요청 주소가 잘못되었습니다."),
 

@@ -1,4 +1,4 @@
-package com.example.comunity.controller;
+package com.example.comunity.controller.api;
 
 import com.example.comunity.domain.User;
 import org.junit.jupiter.api.*;
