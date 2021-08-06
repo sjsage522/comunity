@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
+import static com.example.comunity.security.Auth.*;
+import static com.example.comunity.security.Auth.Role.*;
+
 public class AuthCheckInterceptor implements HandlerInterceptor {
 
     @Override
@@ -38,8 +41,8 @@ public class AuthCheckInterceptor implements HandlerInterceptor {
 
         //클래스 레벨에 붙어 있는 Auth 애노테이션 확인 (관리자 인증)
         if (authOnClass != null) {
-            String role = authOnClass.role().toString();
-            if ("ADMIN".equals(role) && !"admin".equals(authUser.getUserId())) {
+            Role role = authOnClass.role();
+            if (ADMIN.equals(role) && !"admin".equals(authUser.getUserId())) {
                 throw new AccessDeniedException();
             }
         }
