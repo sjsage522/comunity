@@ -1,6 +1,6 @@
 # Comunity
 
-- <span style="color:grey">Comunity</span>(오타) : My First Project for Spring Boot 
+- <span style="color:grey">Comunity</span> : My First Project for Spring Boot 
   - 개발도구 : InteliJ IDE
   - 언어 : JAVA
   - SpringBoot와 JPA를 활용한 게시판 API 구현
@@ -33,6 +33,7 @@
     - [4.3.4 답글 삭제]
   - [4.4 예외 사항]
     - [4.4.1 사용자 권한]
+    - [4.4.2 관리자 권한]
 
 ***
 
@@ -176,6 +177,7 @@ API 응답에 대한 공통 포맷 정의
 
 - 정상처리의 경우 리소스 생성은 **HTTP STATUS 201**로 응답
 - 그 외의 정상처리는 모두 **HTTP STATUS 200**으로 응답
+- 인증관련 오류는 **HTTP STATUS 401 또는 403**으로 응답
 - 요청 매핑 핸들러가 없는 경우 **HTTP STATUS 404**로 응답
 - 지원하지 않는 미디어 타입일 경우 **HTTP STATUS 415**로 응답
 - 그 외의 클라이언트 오류 또는 서비스 예외의 경우 **HTTP STATUS 400**으로 응답
@@ -878,12 +880,12 @@ API 응답에 대한 공통 포맷 정의
         "data": null,
         "error": {
             "message": "로그인하지 않은 사용자입니다.",
-            "status": 400
+            "status": 401
         }
     }
     ```
 
-
+<br/>
 
 - URI : POST /api/comments/boards/1
 
@@ -902,8 +904,29 @@ API 응답에 대한 공통 포맷 정의
         "data": null,
         "error": {
             "message": "로그인하지 않은 사용자입니다.",
-            "status": 400
+            "status": 401
         }
     }
     ```
 
+<br/>
+
+### 4.4.2 관리자 권한
+
+- 모든 사용자 조회 API 는 관리자만 호출할 수 있다.
+
+- URI : GET /api/users
+
+  - 관리자가 아닌, 일반 사용자의 경우
+
+- Response Body
+
+  - ```json
+    {
+        "data": null,
+        "error": {
+            "message": "접근 권한이 없습니다.",
+            "status": 403
+        }
+    }
+    ```
