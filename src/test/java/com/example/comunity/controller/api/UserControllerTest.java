@@ -214,7 +214,7 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("[성공 테스트] 07. 모든 사용자 조회")
+    @DisplayName("[실패 테스트] 07. 모든 사용자 조회 - 관리자 전용 API")
     void _07_findAll_succeed_test() throws Exception {
         ResultActions result = mockMvc.perform(
                 get("/api/users")
@@ -226,11 +226,9 @@ class UserControllerTest {
         log.info("current user info = {}", authInfo);
 
         result.andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.length()", is(2)))
-                .andExpect(jsonPath("$.data[0].user_id", is("testId")))
-                .andExpect(jsonPath("$.data[1].user_id", is("otherUser")))
-                .andExpect(jsonPath("$.error").doesNotExist())
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.data").doesNotExist())
+                .andExpect(jsonPath("$.error").exists())
         ;
     }
 

@@ -2,7 +2,10 @@ package com.example.comunity.controller.api;
 
 import com.example.comunity.domain.User;
 import com.example.comunity.dto.api.ApiResult;
-import com.example.comunity.dto.user.*;
+import com.example.comunity.dto.user.UserJoinRequest;
+import com.example.comunity.dto.user.UserLoginRequest;
+import com.example.comunity.dto.user.UserResponse;
+import com.example.comunity.dto.user.UserUpdateRequest;
 import com.example.comunity.security.Auth;
 import com.example.comunity.service.UserAuthService;
 import com.example.comunity.service.UserService;
@@ -14,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.example.comunity.dto.api.ApiResult.succeed;
 
@@ -90,23 +91,6 @@ public class UserController {
 
         return ResponseEntity
                 .ok(succeed(getUserResponse(findUser)));
-    }
-
-    /**
-     * 모든 사용자 조회
-     */
-    //TODO 관리자 권한으로 빼기
-    @Auth
-    @GetMapping("/users")
-    public ResponseEntity<ApiResult<List<UserResponse>>> findAll() {
-        final List<UserResponse> userResponseList = userService
-                .findAll()
-                .stream()
-                .map(this::getUserResponse)
-                .collect(Collectors.toList());
-
-        return ResponseEntity
-                .ok(succeed(userResponseList));
     }
 
     /**
