@@ -47,7 +47,7 @@ public class CommentService {
             final User loginUser,
             final Long commentId) {
         final Comment deleteComment = findCommentById(commentId);
-        compareUser(loginUser, deleteComment);
+        compareUser(loginUser, deleteComment.getUser());
 
         commentRepository.delete(deleteComment);
     }
@@ -58,7 +58,7 @@ public class CommentService {
             final Long commentId,
             final CommentUpdateRequest commentUpdateRequest) {
         final Comment updateComment = findCommentById(commentId);
-        compareUser(loginUser, updateComment);
+        compareUser(loginUser, updateComment.getUser());
 
         updateComment.changeContent(commentUpdateRequest.getContent());
 
@@ -76,8 +76,8 @@ public class CommentService {
 
     private void compareUser(
             final User loginUser,
-            final Comment findComment) {
-        if (!findComment.getUser().equals(loginUser))
+            final User commentUser) {
+        if (!commentUser.equals(loginUser))
             throw new NoMatchUserInfoException("다른 사용자의 답글을 삭제할 수 없습니다.");
     }
 
