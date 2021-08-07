@@ -4,8 +4,10 @@ import com.example.comunity.domain.User;
 import com.example.comunity.dto.api.ErrorCode;
 import com.example.comunity.exception.AccessDeniedException;
 import com.example.comunity.exception.NotLoginUserException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,13 +17,17 @@ import java.util.Optional;
 import static com.example.comunity.security.Auth.*;
 import static com.example.comunity.security.Auth.Role.*;
 
+@Slf4j
 public class AuthCheckInterceptor implements HandlerInterceptor {
+
+    private static final String PREFIX = "AuthCheckInterceptor";
 
     @Override
     public boolean preHandle(
             final HttpServletRequest request,
             final HttpServletResponse response,
             final Object handler) {
+        log.info("{} : preHandle(...) call", PREFIX);
 
         HttpSession session = Optional.ofNullable(request.getSession())
                 .orElseThrow(() -> new IllegalStateException("HttpSession is not created"));
@@ -48,5 +54,15 @@ public class AuthCheckInterceptor implements HandlerInterceptor {
         }
 
         return true;
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        log.info("{} : postHandle(...) call", PREFIX);
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        log.info("{} : afterCompletion(...) call", PREFIX);
     }
 }
