@@ -7,6 +7,7 @@ import com.example.comunity.dto.comment.CommentApplyRequest;
 import com.example.comunity.dto.comment.CommentResponse;
 import com.example.comunity.dto.comment.CommentUpdateRequest;
 import com.example.comunity.security.Auth;
+import com.example.comunity.security.AuthUser;
 import com.example.comunity.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -55,15 +56,14 @@ public class CommentController {
      *
      * @param commentApplyRequest 답글 작성 dto
      * @param boardId             게시글 아이디
-     * @param session             서버 세션
+     * @param loginUser           현재 로그인한 사용자
      */
     @Auth
     @PostMapping("/comments/boards/{boardId}")
     public ResponseEntity<ApiResult<CommentResponse>> apply(
             final @Valid @RequestBody CommentApplyRequest commentApplyRequest,
             final @PathVariable Long boardId,
-            final HttpSession session) {
-        final User loginUser = (User) session.getAttribute("authInfo");
+            final @AuthUser User loginUser) {
         final Comment newComment = commentService.apply(loginUser, boardId, commentApplyRequest);
 
         return ResponseEntity
@@ -75,14 +75,13 @@ public class CommentController {
      * 답글 삭제, 부모 답글 삭제 시 연관된 자식 답글들 모두 삭제
      *
      * @param commentId 답글 아이디
-     * @param session   서버 세션
+     * @param loginUser 현재 로그인한 사용자
      */
     @Auth
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<ApiResult<String>> delete(
             final @PathVariable Long commentId,
-            final HttpSession session) {
-        final User loginUser = (User) session.getAttribute("authInfo");
+            final @AuthUser User loginUser) {
         commentService.delete(loginUser, commentId);
 
         return ResponseEntity
@@ -94,15 +93,14 @@ public class CommentController {
      *
      * @param commentId        답글 아이디
      * @param commentUpdateDto 답글 수정 dto
-     * @param session          서버 세션
+     * @param loginUser        현재 로그인한 사용자
      */
     @Auth
     @PatchMapping("/comments/{commentId}")
     public ResponseEntity<ApiResult<CommentResponse>> update(
             final @PathVariable Long commentId,
             final @Valid @RequestBody CommentUpdateRequest commentUpdateDto,
-            final HttpSession session) {
-        final User loginUser = (User) session.getAttribute("authInfo");
+            final @AuthUser User loginUser) {
         final Comment updateComment = commentService.update(loginUser, commentId, commentUpdateDto);
 
         return ResponseEntity

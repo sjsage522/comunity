@@ -7,6 +7,7 @@ import com.example.comunity.dto.user.UserLoginRequest;
 import com.example.comunity.dto.user.UserResponse;
 import com.example.comunity.dto.user.UserUpdateRequest;
 import com.example.comunity.security.Auth;
+import com.example.comunity.security.AuthUser;
 import com.example.comunity.service.UserAuthService;
 import com.example.comunity.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -98,15 +99,14 @@ public class UserController {
      *
      * @param userId            사용자 아이디
      * @param userUpdateRequest 사용자 정보 수정 dto
-     * @param session           서버 세션
+     * @param loginUser         현재 로그인한 사용자
      */
     @Auth
     @PatchMapping("/users/{userId}")
     public ResponseEntity<ApiResult<UserResponse>> update(
             final @PathVariable String userId,
             final @Valid @RequestBody UserUpdateRequest userUpdateRequest,
-            final HttpSession session) {
-        final User loginUser = (User) session.getAttribute("authInfo");
+            final @AuthUser User loginUser) {
         final User updatedUser = userService.update(userId, userUpdateRequest, loginUser);
 
         return ResponseEntity

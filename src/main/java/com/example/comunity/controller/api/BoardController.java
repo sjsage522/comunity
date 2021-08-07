@@ -7,6 +7,7 @@ import com.example.comunity.dto.board.BoardResponse;
 import com.example.comunity.dto.board.BoardUpdateRequest;
 import com.example.comunity.dto.board.BoardUploadRequest;
 import com.example.comunity.security.Auth;
+import com.example.comunity.security.AuthUser;
 import com.example.comunity.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.net.URI;
@@ -36,17 +36,17 @@ public class BoardController {
      *
      * @param boardUploadRequest 게시글 작성 dto
      * @param files              첨부파일
-     * @param session            서버 세션
+     * @param loginUser          현재 로그인한 사용자
      */
     @Auth
     @PostMapping("/boards")
     public ResponseEntity<ApiResult<BoardResponse>> upload(
             final @Valid @ModelAttribute BoardUploadRequest boardUploadRequest,
             final @RequestPart(value = "files", required = false) MultipartFile[] files,
-            final HttpSession session) {
+            final @AuthUser User loginUser) {
         log.info("request = {}", boardUploadRequest);
 
-        final User loginUser = getCurrentUser(session);
+//        final User loginUser = getCurrentUser(session);
         final Board newBoard = boardService.upload(boardUploadRequest, loginUser, files);
 
         return ResponseEntity
@@ -59,16 +59,15 @@ public class BoardController {
      *
      * @param boardId      게시글을 작성한 사용자 아이디
      * @param categoryName 게시글이 포함된 특정 카테고리 이름
-     * @param session      서버 세션
+     * @param loginUser    현재 로그인한 사용자
      */
     @Auth
     @DeleteMapping("/boards/{boardId}/category/{categoryName}")
     public ResponseEntity<ApiResult<String>> delete(
             final @PathVariable Long boardId,
             final @PathVariable String categoryName,
-            final HttpSession session) {
+            final @AuthUser User loginUser) {
 
-        final User loginUser = getCurrentUser(session);
         boardService.delete(boardId, categoryName, loginUser);
 
         return ResponseEntity
@@ -81,7 +80,7 @@ public class BoardController {
      * @param boardId            게시글 번호
      * @param categoryName       카테고리 이름
      * @param boardUpdateRequest 게시글 변경 dto
-     * @param session            서버 세션
+     * @param loginUser          현재 로그인한 사용자
      */
     @Auth
     @PatchMapping("/boards/{boardId}/category/{categoryName}")
@@ -89,9 +88,8 @@ public class BoardController {
             final @PathVariable Long boardId,
             final @PathVariable String categoryName,
             final @Valid @RequestBody BoardUpdateRequest boardUpdateRequest,
-            final HttpSession session) {
+            final @AuthUser User loginUser) {
 
-        final User loginUser = getCurrentUser(session);
         final Board updatedBoard = boardService.update(boardId, categoryName, boardUpdateRequest, loginUser);
 
         return ResponseEntity
@@ -175,15 +173,5 @@ public class BoardController {
      */
     private BoardResponse getBoardResponse(final Board newBoard) {
         return new BoardResponse(newBoard);
-    }
-
-    /**
-     * 현재 세션에 저장되어 있는 사용자 객체를 반환하는 메서드
-     *
-     * @param session server session
-     * @return currentUser
-     */
-    private User getCurrentUser(final HttpSession session) {
-        return (User) session.getAttribute("authInfo");
     }
 }
