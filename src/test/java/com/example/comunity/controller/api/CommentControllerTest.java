@@ -70,7 +70,7 @@ class CommentControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
                                 toJson(
-                                        new HashMap<>() {
+                                        new HashMap<String, String>() {
                                             {
                                                 put("content", "답글1");
                                             }
@@ -97,7 +97,7 @@ class CommentControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
                                 toJson(
-                                        new HashMap<>() {
+                                        new HashMap<String, Object>() {
                                             {
                                                 put("parentId", 1L);
                                                 put("content", "답글2");
@@ -125,7 +125,7 @@ class CommentControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
                                 toJson(
-                                        new HashMap<>() {
+                                        new HashMap<String, String>() {
                                             {
                                                 put("content", "답글3");
                                             }
@@ -179,7 +179,7 @@ class CommentControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
                                 toJson(
-                                        new HashMap<>() {
+                                        new HashMap<String, String>() {
                                             {
                                                 put("content", "UPDATE_CONTENT");
                                             }
@@ -205,7 +205,7 @@ class CommentControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
                                 toJson(
-                                        new HashMap<>() {
+                                        new HashMap<String, String>() {
                                             {
                                                 put("content", "UPDATE_CONTENT");
                                             }

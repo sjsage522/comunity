@@ -46,7 +46,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
                                 toJson(
-                                        new HashMap<>() {
+                                        new HashMap<String, String>() {
                                             {
                                                 put("userId", "testId");
                                                 put("name", "testName");
@@ -81,7 +81,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
                                 toJson(
-                                        new HashMap<>() {
+                                        new HashMap<String, String>() {
                                             {
                                                 put("userId", "testId");
                                                 put("password", "1234");
@@ -109,7 +109,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
                                 toJson(
-                                        new HashMap<>() {
+                                        new HashMap<String, String>() {
                                             {
                                                 put("userId", "testId");
                                                 put("password", "1111");
@@ -134,7 +134,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
                                 toJson(
-                                        new HashMap<>() {
+                                        new HashMap<String, String>() {
                                             {
                                                 put("userId", "unknown");
                                                 put("password", "1234");
@@ -159,7 +159,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
                                 toJson(
-                                        new HashMap<>() {
+                                        new HashMap<String, String>() {
                                             {
                                                 put("userId", "otherUser");
                                                 put("name", "other");
@@ -193,7 +193,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
                                 toJson(
-                                        new HashMap<>() {
+                                        new HashMap<String, String>() {
                                             {
                                                 put("userId", "otherUser");
                                                 put("password", "1234");
@@ -275,7 +275,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
                                 toJson(
-                                        new HashMap<>() {
+                                        new HashMap<String, String>() {
                                             {
                                                 put("name", "UPDATE_NAME");
                                             }
@@ -300,7 +300,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
                                 toJson(
-                                        new HashMap<>() {
+                                        new HashMap<String, String>() {
                                             {
                                                 put("name", "UPDATE_NAME");
                                                 put("nickName", "UPDATE_NICKNAME");
@@ -329,7 +329,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
                                 toJson(
-                                        new HashMap<>() {
+                                        new HashMap<String, String>() {
                                             {
                                                 put("userId", "testId");
                                                 put("password", "1234");
@@ -355,7 +355,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
                                 toJson(
-                                        new HashMap<>() {
+                                        new HashMap<String, String>() {
                                             {
                                                 put("userId", "otherUser");
                                                 put("password", "1234");
@@ -381,7 +381,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
                                 toJson(
-                                        new HashMap<>() {
+                                        new HashMap<String, String>() {
                                             {
                                                 put("userId", "otherUser");
                                                 put("password", "1234");

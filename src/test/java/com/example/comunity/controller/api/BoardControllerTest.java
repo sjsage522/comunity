@@ -42,9 +42,6 @@ class BoardControllerTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private CategoryRepository categoryRepository;
-
     private final MockHttpSession session = new MockHttpSession();
 
     @BeforeAll
@@ -54,7 +51,6 @@ class BoardControllerTest {
         Category gameCategory = Category.from("game");
 
         userRepository.save(user);
-        categoryRepository.saveAll(List.of(codingCategory, gameCategory));
 
         session.setAttribute("authInfo", user);
     }
@@ -243,7 +239,7 @@ class BoardControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
                                 toJson(
-                                        new HashMap<>() {
+                                        new HashMap<String, String>() {
                                             {
                                                 put("categoryName", "coding");
                                             }
