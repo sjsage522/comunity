@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class CommentService {
 
@@ -65,6 +64,7 @@ public class CommentService {
         return updateComment;
     }
 
+    @Transactional(readOnly = true)
     public List<Comment> findAll(
             final Long boardId,
             final int page) {

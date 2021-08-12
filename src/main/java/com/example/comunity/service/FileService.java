@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class FileService {
 
     private final FileRepository fileRepository;
 
+    @Transactional(readOnly = true)
     public UploadFile findById(
             final Long id) {
         return fileRepository.findById(id)
