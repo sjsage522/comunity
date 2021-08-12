@@ -17,6 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -42,6 +44,9 @@ class BoardControllerTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+
     private final MockHttpSession session = new MockHttpSession();
 
     @BeforeAll
@@ -51,6 +56,8 @@ class BoardControllerTest {
         Category gameCategory = Category.from("game");
 
         userRepository.save(user);
+        categoryRepository.save(codingCategory);
+        categoryRepository.save(gameCategory);
 
         session.setAttribute("authInfo", user);
     }
